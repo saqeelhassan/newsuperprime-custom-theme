@@ -1,4 +1,4 @@
-name: Production Deployment
+name: Production Deployment via SSH
 
 on:
   push:
@@ -9,6 +9,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger aaPanel Server Sync
-        run: |
-          curl -X POST "http://31.220.84.34:41836/hook?access_key=mWfjhZ6k7vvLxDJ6oJhEhzleZpmLPvcxcFpOoVITCJh2IFWC"
+      - name: Deploying Code to Contabo VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 31.220.84.34
+          username: root
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22  # Change this if your server uses a custom SSH port instead of 22
+          script: |
+            echo "=== Syncing repository updates ==="
+            cd /www/wwwroot/newsuperprime.sa/wp-content/themes/newsuperprime-theme-3
+            git config --global --add safe.directory /www/wwwroot/newsuperprime.sa/wp-content/themes/newsuperprime-theme-3
+            git fetch --all
+            git reset --hard origin/main
+            chown -R www:www /www/wwwroot/newsuperprime.sa/wp-content/themes/newsuperprime-theme-3
+            echo "=== Deploy finished successfully ==="
