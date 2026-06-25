@@ -48,10 +48,10 @@ function nsp_customizer_register( WP_Customize_Manager $wp_customize ) {
     ] );
 
     nsp_add_text_setting( $wp_customize, 'nsp_copyright_text', 'nsp_footer', esc_html__( 'Copyright Text', 'newsuperprime' ),
-        'Copyright © 2024 New Super Prime. All rights reserved. | Crafted by <a href="https://deweboo.com/" target="_blank">De Weboo</a>' );
+        'Copyright © 2026 New Super Prime. All rights reserved. | Crafted by <a href="https://deweboo.com/" target="_blank">De Weboo</a>' );
     nsp_add_url_setting( $wp_customize, 'nsp_footer_logo',  'nsp_footer', esc_html__( 'Footer Logo URL', 'newsuperprime' ), '' );
     nsp_add_textarea_setting( $wp_customize, 'nsp_footer_about', 'nsp_footer', esc_html__( 'Footer About Text', 'newsuperprime' ),
-        'Your trusted cleaning partner in the Eastern Province since 1997. Serving Dammam, Khobar, Jubail, Qatif, Al-Ahsa and beyond.' );
+        'Your trusted cleaning partner in the Eastern Province. Serving Dammam, Khobar, Jubail, Qatif, Al-Ahsa and beyond.' );
 
     /* ================================================================
        Section: CTA / Promo

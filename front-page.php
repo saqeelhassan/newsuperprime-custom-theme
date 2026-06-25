@@ -119,8 +119,8 @@ get_header();
 						<div class="clinox-about-text-area-3">
 							<div class="clinox-section-title-3 headline pera-content wow fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
 								<div class="subtitle text-uppercase"><?php nsp_te( 'about New Super Prime', 'عن نيو سوبر برايم' ); ?></div>
-								<h2><?php nsp_te( "Eastern Province's Leading Cleaning Company Since 1997", 'شركة التنظيف الرائدة في المنطقة الشرقية منذ عام 1997' ); ?></h2>
-								<p><?php nsp_te( 'We are the Eastern Province\'s most trusted cleaning company, proudly serving Dammam, Khobar, Dhahran, Jubail, Qatif, Al-Ahsa, Ras Tanura, Hafr Al-Batin and all surrounding Eastern Region cities since 1997. Our services support deep cleaning, home cleaning, office cleaning, pest control, AC cleaning, water tank cleaning, upholstery cleaning and moving maintenance needs across the Eastern Region.', 'نحن شركة التنظيف الأكثر ثقة في المنطقة الشرقية، نخدم بفخر الدمام والخبر والظهران والجبيل والقطيف والأحساء ورأس تنورة وحفر الباطن وجميع المدن المحيطة منذ عام 1997.' ); ?></p>
+								<h2><?php nsp_te( 'Your Trusted Partner for Cleaning, Pest Control & Maintenance', 'شريككم الموثوق في التنظيف ومكافحة الآفات والصيانة' ); ?></h2>
+								<p><?php nsp_te( 'We proudly serve Dammam, Khobar, Dhahran, Jubail, Qatif, Al-Ahsa, Ras Tanura, Hafr Al-Batin and all surrounding Eastern Region cities. Our services include deep cleaning, home cleaning, office cleaning, pest control, AC cleaning, water tank cleaning, upholstery cleaning and moving maintenance across the Eastern Province.', 'نخدم بفخر الدمام والخبر والظهران والجبيل والقطيف والأحساء ورأس تنورة وحفر الباطن وجميع مدن المنطقة الشرقية. تشمل خدماتنا التنظيف العميق وتنظيف المنازل والمكاتب ومكافحة الآفات وتنظيف المكيفات وخزانات المياه والمفروشات وصيانة النقل في جميع أنحاء المنطقة الشرقية.' ); ?></p>
 							</div>
 							<div class="clinox-about-text-wrap-3">
 								<h3 class="wow fadeInUp" data-wow-delay="400ms" data-wow-duration="1500ms"><?php nsp_te( 'We proudly serve the Eastern Province and all its cities, our services include:', 'نخدم بفخر المنطقة الشرقية وجميع مدنها، وتشمل خدماتنا:' ); ?></h3>
@@ -279,7 +279,7 @@ get_header();
 							<div class="clinox-section-title-3 headline pera-content wow fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
 								<div class="subtitle text-uppercase"><?php nsp_te( 'Why Choose US', 'لماذا تختارنا' ); ?></div>
 								<h2><?php nsp_te( 'We Will Make Every Inch Clean & Organized', 'سنجعل كل شبر نظيفاً ومرتباً' ); ?></h2>
-								<p><?php nsp_te( "We are the Eastern Province's most trusted cleaning company, proudly serving Dammam, Khobar, Dhahran, Jubail, Qatif, Al-Ahsa and all surrounding cities since 1997.", 'نسعى دائماً لتقديم أفضل خدمات التنظيف باستخدام أحدث الأساليب والمواد الآمنة، لنمنح عملاءنا بيئة نظيفة وصحية.' ); ?></p>
+								<p><?php nsp_te( 'We deliver professional cleaning, pest control and maintenance services across the Eastern Province — proudly serving Dammam, Khobar, Dhahran, Jubail, Qatif, Al-Ahsa and beyond.', 'نسعى دائماً لتقديم أفضل خدمات التنظيف باستخدام أحدث الأساليب والمواد الآمنة، لنمنح عملاءنا بيئة نظيفة وصحية.' ); ?></p>
 							</div>
 							<div class="clinox-why-choose-feature-wrap-3 d-flex flex-wrap position-relative">
 								<?php

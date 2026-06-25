@@ -19,8 +19,8 @@ nsp_breadcrumb( esc_url( nsp_asset( 'assets/img/banner/breadcrumb-about.jpg' ) )
 							<img src="<?php echo esc_url( nsp_asset( 'assets/img/about/ab2.jpg' ) ); ?>" alt="">
 						</div>
 						<div class="about-exp position-absolute headline d-flex align-items-center justify-content-center">
-							<h3>25</h3>
-							<span><?php nsp_te( 'Years of Experience', 'سنوات الخبرة' ); ?></span>
+							<h3>100%</h3>
+							<span><?php nsp_te( 'Quality Commitment', 'التزام بالجودة' ); ?></span>
 						</div>
 					</div>
 				</div>
@@ -28,10 +28,10 @@ nsp_breadcrumb( esc_url( nsp_asset( 'assets/img/banner/breadcrumb-about.jpg' ) )
 					<div class="clinox-about-text-wrap">
 						<div class="clinox-section-title headline pera-content pr-text-in">
 							<h3 class="sub-title d-inline-block">
-								<span class="pr-text-in_item1"><span class="pr-text-in_item2"><span class="pr-text-in_item3"><?php nsp_te( 'About New Super Prime', 'عن نيو سوبر برايم' ); ?></span></span></span>
+								<span class="pr-text-in_item1"><span class="pr-text-in_item2"><span class="pr-text-in_item3"><?php nsp_te( 'Who We Are', 'من نحن' ); ?></span></span></span>
 							</h3>
 							<h2>
-								<span class="pr-text-in_item1"><span class="pr-text-in_item2"><span class="pr-text-in_item3"><?php nsp_te( "Eastern Province's Most Trusted Cleaning Company Since 1997.", 'شركة التنظيف الأكثر ثقة في المنطقة الشرقية منذ عام 1997' ); ?></span></span></span>
+								<span class="pr-text-in_item1"><span class="pr-text-in_item2"><span class="pr-text-in_item3"><?php nsp_te( 'Your Trusted Partner for Cleaning, Pest Control & Maintenance', 'شريككم الموثوق في التنظيف ومكافحة الآفات والصيانة' ); ?></span></span></span>
 							</h2>
 							<?php the_content(); ?>
 						</div>
@@ -43,14 +43,6 @@ nsp_breadcrumb( esc_url( nsp_asset( 'assets/img/banner/breadcrumb-about.jpg' ) )
 							</ul>
 						</div>
 						<div class="about-signature-cta-wrap d-flex">
-							<div class="about-signature-img-2 d-flex">
-								<div class="inner-img"><img src="<?php echo esc_url( nsp_asset( 'assets/img/about/abs1.jpg' ) ); ?>" alt=""></div>
-								<div class="inner-text headline pera-content position-relative">
-									<h4><?php nsp_te( 'Raymond Turner', 'عبدالرحمن الغامدي' ); ?></h4>
-									<p><?php nsp_te( 'CEO Founder', 'المدير التنفيذي والمؤسس' ); ?></p>
-									<span class="sign-img"><img src="<?php echo esc_url( nsp_asset( 'assets/img/about/sign.png' ) ); ?>" alt=""></span>
-								</div>
-							</div>
 							<div class="about-cta-btn d-flex">
 								<div class="banener-cta d-flex align-items-center">
 									<i class="far fa-phone-alt"></i>

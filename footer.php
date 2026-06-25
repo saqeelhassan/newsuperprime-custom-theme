@@ -11,8 +11,8 @@
 								<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php nsp_footer_logo(); ?></a>
 							</div>
 							<p><?php echo esc_html( nsp_t(
-								get_theme_mod( 'nsp_footer_about', 'Your trusted cleaning partner in the Eastern Province since 1997. Serving Dammam, Khobar, Jubail, Qatif, Al-Ahsa and beyond.' ),
-								get_theme_mod( 'nsp_footer_about_ar', 'نسعى دائماً لتقديم أفضل خدمات التنظيف باستخدام أحدث الأساليب والمواد الآمنة، لنمنح عملاءنا بيئة نظيفة وصحية.' )
+								get_theme_mod( 'nsp_footer_about', 'Your trusted cleaning partner in the Eastern Province. Serving Dammam, Khobar, Jubail, Qatif, Al-Ahsa and beyond.' ),
+								get_theme_mod( 'nsp_footer_about_ar', 'شريككم الموثوق للتنظيف والصيانة في المنطقة الشرقية. نخدم الدمام والخبر والجبيل والقطيف والأحساء وما بعدها.' )
 							) ); ?></p>
 						</div>
 					</div>
@@ -73,7 +73,7 @@
 			<div class="container">
 				<span>
 					<?php
-					$copyright_text = get_theme_mod( 'nsp_copyright_text', 'Copyright &copy; 2024 New Super Prime. All rights reserved. | Crafted by De Weboo' );
+					$copyright_text = get_theme_mod( 'nsp_copyright_text', 'Copyright &copy; 2026 New Super Prime. All rights reserved. | Crafted by De Weboo' );
 					if ( strpos( $copyright_text, 'href="https://deweboo.com/"' ) === false ) {
 						$copyright_text = str_replace( 'De Weboo', '<a href="https://deweboo.com/" target="_blank">De Weboo</a>', $copyright_text );
 					}
