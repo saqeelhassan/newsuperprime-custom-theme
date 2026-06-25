@@ -10865,10 +10865,14 @@ Color Code
 .clinox-banner-section-3 .clinox-banner-social {
   left: 10px;
   bottom: 30px;
+  z-index: 2;
+  position: absolute;
 }
 .clinox-banner-section-3 .clinox-banner-social a {
   color: #000000;
   margin-right: 20px;
+  position: relative;
+  z-index: 1;
 }
 .clinox-banner-section-3 .banner-shape1 {
   top: 0;
