@@ -1,0 +1,14 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger aaPanel Server Sync
+        run: |
+          curl -X POST "http://31.220.84.34:41836/hook?access_key=mWfjhZ6k7vvLxDJ6oJhEhzleZpmLPvcxcFpOoVITCJh2IFWC"
