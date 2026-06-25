@@ -14,7 +14,7 @@ jobs:
         with:
           host: 31.220.84.34
           username: root
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.SERVER_SSH_KEY_NSP }}
           port: 22  # Change this if your server uses a custom SSH port instead of 22
           script: |
             echo "=== Syncing repository updates ==="
