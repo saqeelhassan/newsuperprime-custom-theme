@@ -1,0 +1,717 @@
+/*
+ * RTL overrides — loaded automatically by WordPress when is_rtl() is true.
+ * Depends on style.css already being loaded.
+ */
+
+/* ── 0. Noto Sans Arabic font-face declarations ───────────────────────── */
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    src: url('assets/fonts/Noto_Sans_Arabic/static/NotoSansArabic-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ── 1. Arabic typography ─────────────────────────────────────────────── */
+body,
+h1, h2, h3, h4, h5, h6,
+p, li, a, span, label, button, input, textarea, select {
+    font-family: 'Noto Sans Arabic', sans-serif;
+}
+
+/* ── 2. Base direction ────────────────────────────────────────────────── */
+body {
+    direction: rtl;
+    text-align: right;
+}
+
+/* ── 3. Language switcher — swap LTR margins ──────────────────────────── */
+.nsp-lang-switcher {
+    margin-inline-end: 12px;
+    margin-inline-start: 0;
+}
+
+/* ── 4. Header top-bar ────────────────────────────────────────────────── */
+/* direction:rtl on body already reverses flex row — no row-reverse needed */
+.clinox-header-top-content { flex-direction: row; }
+.clinox-header-top-content .top-info ul li + li { margin-inline-start: 20px; margin-inline-end: 0; }
+
+/* Top-info list items: keep phone/email LTR so +966 isn't visually reversed */
+.clinox-header-top-content .top-info ul li {
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+/* ── 5. Header CTA wrapper items ──────────────────────────────────────── */
+/* direction:rtl already reverses — use row (not row-reverse) */
+.header-cta-wrapper { flex-direction: row; margin-inline-start: 0; margin-inline-end: 30px; }
+.hd-item-icon { display: none; }
+.hd-item-meta { text-align: right; }
+
+/* Phone/email/address data must stay LTR to prevent bidi reversal of +966 */
+.hd-item-meta span,
+.hd-item-meta a,
+.clinox-header-top-wrap .top-info ul li {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+
+/* ── 6. Main navigation (desktop only — mobile stays column) ─────────── */
+
+/* Chevron icon: swap margin direction in RTL */
+.nsp-nav-arrow {
+    margin-left: 0;
+    margin-right: 4px;
+}
+
+.main-navigation .nav.navbar-nav { flex-direction: row; }
+
+.main-navigation .nav.navbar-nav > li > ul.sub-menu { left: auto; right: 0; }
+.main-navigation .nav.navbar-nav > li > ul.sub-menu li > ul.sub-menu { left: auto; right: 100%; }
+
+/* Mobile menu: override any inherited flex-direction back to column */
+.mobile_menu_content .nav.navbar-nav { flex-direction: column; }
+.mobile_menu_content .nav.navbar-nav > li > ul.sub-menu { right: 0; left: auto; }
+
+/* ── 6b. Section subtitle dots — flip from left to right ─────────────── */
+
+/* Main subtitle style (clinox-section-title-3): dots + underline at left:0 → right:0 */
+.clinox-section-title-3 .subtitle {
+    padding-left: 0;
+    padding-right: 35px;
+}
+.clinox-section-title-3 .subtitle::before {
+    left: auto;
+    right: 0;
+}
+.clinox-section-title-3 .subtitle::after {
+    left: auto;
+    right: 0;
+}
+
+/* sec-title__two subtitle: dash line at left:0 → right:0 */
+.sec-title__two .subtitle {
+    padding-left: 0;
+    padding-right: 22px;
+}
+.sec-title__two .subtitle::before {
+    left: auto;
+    right: 0;
+}
+
+/* ── 7. Breadcrumb separators ─────────────────────────────────────────── */
+.clinox-breadcrumb li + li::before { transform: scaleX(-1); }
+
+/* ── 8. Arrow icons on buttons / read-more ───────────────────────────── */
+.read-more-btn i,
+.clinox-btn a i,
+.h-cta-btn a i,
+a .fal.fa-long-arrow-right,
+a .far.fa-long-arrow-right,
+a .fas.fa-arrow-right,
+.nsp-flip-rtl {
+    transform: scaleX(-1);
+    display: inline-block;
+}
+
+/* ── 8b. About section (front page) ──────────────────────────────────── */
+
+/* Swap image and service list order */
+.clinox-about-feature-list-3 { flex-direction: row-reverse; }
+
+/* Image margin: was margin-right, flip to left */
+.clinox-about-text-wrap-3 .clinox-about-feature-list-3 .inner-img {
+    margin-right: 0;
+    margin-left: 25px;
+}
+
+/* Service list checkmark bullets: was left:0 / padding-left:35px */
+.clinox-about-text-wrap-3 .clinox-about-feature-list-3 .inner-text li {
+    padding-left: 0;
+    padding-right: 35px;
+}
+.clinox-about-text-wrap-3 .clinox-about-feature-list-3 .inner-text li:before {
+    left: auto;
+    right: 0;
+}
+
+/* CTA button group — in RTL natural flow button is already on right */
+.clinox-about-text-wrap-3 .clinox-about-cta-btn-grp .clinox-btn-3 {
+    margin-right: 0;
+    margin-left: 50px;
+}
+
+/* Phone icon sits naturally on the right in RTL — only flip the margin */
+.clinox-about-text-wrap-3 .clinox-about-cta-btn-grp .about-cta i {
+    margin-right: 0;
+    margin-left: 20px;
+}
+.clinox-about-text-wrap-3 .clinox-about-cta-btn-grp .about-cta .about-cta-text { text-align: right; }
+
+/* Phone number links — keep LTR to prevent +966 reversal */
+.clinox-about-text-wrap-3 .clinox-about-cta-btn-grp .about-cta .about-cta-text a {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+
+/* ── 9. Service offer items (numbered) ───────────────────────────────── */
+/* Natural RTL flex: circle (first child) sits on the RIGHT, text on LEFT */
+.clinox-service-offer-item .inner-serial { margin-inline-start: 0; margin-inline-end: 30px; }
+.clinox-service-offer-item .inner-text { text-align: right; }
+
+/* ── 10. Why-choose section ───────────────────────────────────────────── */
+
+/* Blue side-bg is at right:0 in LTR (behind image col on right).
+   In RTL Bootstrap reverses columns: image is now on the LEFT, text on the RIGHT.
+   Move the blue panel to the LEFT so it stays behind the image, not the text. */
+.clinox-why-choose-section-3 .clinox-wc-sidebg {
+    right: auto;
+    left: 0;
+}
+
+/* Decorative shape was top-left — move to top-right in RTL */
+.clinox-why-choose-section-3 .clinox-wc-sidebg2 {
+    left: auto;
+    right: -170px;
+}
+
+/* Feature items: icon is already on the right in RTL natural flow */
+.clinox-why-choose-inner-item-3 .inner-icon {
+    margin-right: 0;
+    margin-left: 25px;
+}
+.clinox-why-choose-inner-item-3 .inner-text { text-align: right; }
+
+/* Vertical centre divider: flip horizontal anchor */
+.clinox-why-choose-feature-wrap-3::after {
+    left: 0;
+    right: -45px;
+}
+
+/* ── 11. Fun-fact / counter items ─────────────────────────────────────── */
+.clinox-fun-fact-item-3 .inner-text-counter { text-align: center; }
+
+/* ── 12. How-work steps ───────────────────────────────────────────────── */
+.clinox-how-work-item-3 .serial { right: auto; left: 20px; }
+
+/* ── 13. Project & testimonial sliders ───────────────────────────────── */
+.clinox-project-top-content-3 { flex-direction: row-reverse; }
+
+/* Project card inner-text: anchor to right, flip radius & read-more button */
+.clinox-project-item-3 .inner-text {
+    right: 0;
+    left: auto;
+    text-align: right;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.clinox-project-item-3 .inner-text .read-more-btn {
+    right: auto;
+    left: -20px;
+}
+
+.clinox-project-slider-3[dir="rtl"] .slick-slide,
+.clinox-project-slider-3[dir="rtl"] .clinox-slider-item-3 {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.clinox-project-slider-3[dir="rtl"] .slick-slide > div,
+.clinox-project-slider-3[dir="rtl"] .clinox-slider-item-3 > div {
+    height: 100%;
+}
+
+@media (max-width: 767px) {
+    .clinox-project-slider-3 .slick-list {
+        overflow: hidden;
+    }
+    .clinox-project-slider-3 .slick-slide {
+        opacity: 1;
+    }
+}
+
+/* ── 13d. Testimonial slider ──────────────────────────────────────────── */
+/* Avatar image was at left:40px — move to right so it doesn't overlap RTL text */
+.clenfix-testimonial-item-3 .inner-img {
+    left: auto;
+    right: 40px;
+}
+/* Author area: flip padding so space is on the right (next to avatar) */
+.clenfix-testimonial-item-3 .inner-author {
+    padding-left: 0;
+    padding-right: 45px;
+    text-align: right;
+}
+
+/* ── 13c. FAQ section ─────────────────────────────────────────────────── */
+/* Side-bg was at left:0 (behind left/image col in LTR).
+   In RTL Bootstrap reversal, image is now on the RIGHT — move bg to match. */
+.clinox-faq-section-3 .clinox-fq-sidebg {
+    left: auto;
+    right: 0;
+}
+/* Decorative shape: was top-right, flip to top-left in RTL */
+.clinox-faq-section-3 .clinox-fq-sidebg2 {
+    right: auto;
+    left: -170px;
+}
+/* Text wrapper: flip padding from left to right */
+.clinox-faq-text-wrapper-3 {
+    padding-left: 0;
+    padding-right: 40px;
+}
+/* Image wrapper: flip padding from left to right */
+.clinox-faq-img-3 {
+    padding-left: 0;
+    padding-right: 30px;
+}
+/* Accordion icon: absolutely-positioned at right:25px — move to left */
+.clinox-faq-accordion-3 .accordion-button {
+    text-align: right;
+}
+.clinox-faq-accordion-3 .accordion-button::after {
+    right: auto;
+    left: 25px;
+}
+
+/* ── 13b. Estimate form select arrow ─────────────────────────────────── */
+/* Arrow triangle: flip from right to left in RTL */
+.estimate-form-wrap .est-input-area::before {
+    right: auto;
+    left: 15px;
+}
+.estimate-form-wrap select {
+    padding: 0 20px 0 40px; /* 40px left gap for the arrow */
+    text-align: right;
+    direction: rtl;
+}
+.estimate-form-wrap input[type="text"],
+.estimate-form-wrap input:not([type]) {
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: right;
+}
+
+/* ── 14. Contact section ─────────────────────────────────────────────── */
+.contact-info-item { flex-direction: row; }
+.contact-info-item .inner-icon { margin-right: 20px; margin-left: 0; }
+/* Keep phone/email links LTR in contact info */
+.clinox-contact-info .inner-text span,
+.clinox-contact-info .inner-text a {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+/* Contact form service-select chevron: move from right to left */
+.clinox-contact-form .service-select:after {
+    right: auto;
+    left: 15px;
+}
+.clinox-contact-form .service-select select {
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0 20px 0 40px;
+    text-align: right;
+    direction: rtl;
+}
+
+/* ── 15. Footer columns ───────────────────────────────────────────────── */
+.clinox-footer-widget ul li a { padding-inline-start: 0; padding-inline-end: 18px; }
+.clinox-footer-widget ul li a::before { left: auto; right: 0; }
+
+/* ── 16. Mobile menu ─────────────────────────────────────────────────── */
+.mobile_menu_content { left: auto; right: 0; transform: translateX(100%); }
+.mobile_menu_content.active { transform: translateX(0); }
+.mobile_menu_button { margin-inline-start: auto; margin-inline-end: 0; }
+
+/* ── 17. Slick slider arrows ─────────────────────────────────────────── */
+.slick-prev { left: auto; right: 10px; }
+.slick-next { right: auto; left: 10px; }
+
+/* ── 17b. Slick dots — move to left side in RTL ──────────────────────── */
+/* Testimonial slider-3 dots: anchored right:0 in LTR → flip to left:0 */
+.clinox-testimonial-slider-3 .slick-dots {
+    right: auto;
+    left: 0;
+}
+
+/* All other static dots: align to left side in RTL */
+.slick-dots {
+    text-align: left;
+}
+
+/* ── 18. Banner social icons ─────────────────────────────────────────── */
+.clinox-banner-section-3 .clinox-banner-social {
+    left: auto;
+    right: 10px;
+}
+
+/* ── 19. Pricing section ─────────────────────────────────────────────── */
+.clinox-price-item-3 .inner-list li {
+    text-align: right;
+    padding-left: 0;
+    padding-right: 25px;
+}
+.clinox-price-item-3 .inner-list li:before {
+    left: auto;
+    right: 0;
+}
+
+/* ── 20. Desktop nav item spacing (inner page & home) ────────────────── */
+
+/* Inner pages (header-style-one) default */
+.header-navigation-content .main-navigation li {
+    margin-right: 0;
+    margin-left: 60px;
+}
+
+/* Home page (header-style-three) default + sticky */
+.clinox-header-section.header-style-three .header-navigation-content {
+    padding: 0px 30px 0px 0px;
+}
+.clinox-header-section.header-style-three .header-navigation-content .navbar-nav {
+    flex-direction: row;
+}
+.clinox-header-section.header-style-three .header-navigation-content .main-navigation li {
+    margin-right: 0;
+    margin-left: 55px;
+}
+.clinox-header-section.header-style-three.sticky-on .header-navigation-content .main-navigation li {
+    margin-right: 0;
+    margin-left: 35px;
+}
+
+@media screen and (max-width: 1100px) {
+    .header-navigation-content .main-navigation li {
+        margin-right: 0;
+        margin-left: 35px;
+    }
+    .clinox-header-section.sticky-on .header-navigation-content .main-navigation li {
+        margin-right: 0;
+        margin-left: 20px;
+    }
+}
+@media screen and (max-width: 1024px) {
+    .header-navigation-content .main-navigation li {
+        margin-right: 0;
+        margin-left: 40px;
+    }
+}
+
+/* ── 21. Promo / CTA section ────────────────────────────────────────────── */
+
+/* Wrapper: reverse so button sits on LEFT, أو+phones appear to its RIGHT */
+.clinox-promo-content .banner-btn-wrapper {
+    flex-direction: row-reverse;
+}
+
+/* Restore button's right margin (gap between button and cta to its right) */
+.clinox-promo-content .banner-btn-wrapper .banner-btn {
+    margin-right: 30px;
+    margin-left: 0;
+}
+
+/* banener-cta: reverse so أو is on LEFT, phones on RIGHT */
+.clinox-promo-content .banner-btn-wrapper .banener-cta {
+    flex-direction: row-reverse;
+}
+
+/* أو span: restore right margin (gap between أو and phones) */
+.clinox-promo-content .banner-btn-wrapper .banener-cta > span {
+    margin-right: 15px;
+    margin-left: 0;
+}
+
+/* Keep phone numbers LTR so +966 isn't reversed by bidi */
+.clinox-promo-section .banener-cta a,
+.clinox-promo-content-2 .banener-cta a {
+    direction: ltr;
+    unicode-bidi: embed;
+    display: inline-block;
+}
+
+/* ── 22. Why-choose skill progress bars ─────────────────────────────────── */
+
+/* Percentage counter: was at right:0 (same position as RTL-aligned h4 — they overlap).
+   Move to left:0 so it sits at the far-left above the bar, away from the label. */
+.clinox-why-choose-skill-wrap .skill-progress-bar .skill-set-percent .progress span {
+    right: auto;
+    left: 0;
+}
+
+/* Bar fill: flip from float:left/left:2px to float:right/right:2px so it
+   fills from the right (RTL reading direction). */
+.clinox-why-choose-skill-wrap .skill-progress-bar .skill-set-percent .progress-bar {
+    float: right;
+    left: auto;
+    right: 2px;
+}
+
+/* ── 23b. Why-choose image — prevent z-index overlap in RTL ─────────────── */
+
+/* In RTL Bootstrap reverses the columns, so the image col sits next to the
+   text col with z-index:1 still active — it layers on top and hides the text.
+   Reset the stacking context so both columns sit at the same level. */
+.clinox-why-choose-img-3 {
+    z-index: auto;
+    position: relative;
+}
+
+/* wc-shape2 was pinned to right:0 — flip to left:0 in RTL so it stays
+   inside the image column and doesn't bleed over the text. */
+.clinox-why-choose-img-3 .wc-shape2 {
+    right: auto;
+    left: 0;
+}
+
+/* ── 24. About page (tpl-about.php) ────────────────────────────────────── */
+
+/* Decorative yellow shape behind about image: flip rounded corners */
+.clinox-about-img-wrapper:before {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 80px;
+    border-bottom-left-radius: 80px;
+}
+
+/* Experience badge: move from right edge to left edge */
+.clinox-about-img-wrapper .about-exp {
+    right: auto;
+    left: 6px;
+}
+
+/* Text wrap: swap left padding to right */
+.clinox-about-text-wrap {
+    padding: 15px 30px 0px 0px;
+}
+
+/* Bullet list: move dot from left to right */
+.about-feature-item-wrap-2 li {
+    padding-left: 0;
+    padding-right: 28px;
+}
+.about-feature-item-wrap-2 li:before {
+    left: auto;
+    right: 0;
+}
+
+/* Signature section: flip inner-img margin and wrapper margin */
+.about-signature-img-2 {
+    margin-right: 0;
+    margin-left: 15px;
+}
+.about-signature-img-2 .inner-img {
+    margin-right: 0;
+    margin-left: 20px;
+}
+
+/* About page CTA phone icon: flip margin */
+.about-cta-btn .banener-cta i {
+    margin-right: 0;
+    margin-left: 15px;
+}
+
+/* banener-cta-text: right-align label, keep phones LTR */
+.banener-cta-text {
+    text-align: right;
+}
+.banener-cta-phones {
+    text-align: left;
+    display: block;
+}
+
+/* ── 25. Blog feed / archive cards ──────────────────────────────────────── */
+
+/* Sidebar column: move to the right in RTL (flex order -1 = first in RTL row = rightmost) */
+#clinox-blog-feed .col-lg-4,
+#clinox-archive .col-lg-4 {
+    order: -1;
+}
+
+
+/* Card text block: force right-aligned text */
+.clinox-blog-feed-item .inner-text,
+.clinox-blog-feed-item .inner-text h3,
+.clinox-blog-feed-item .inner-text p {
+    text-align: right;
+    direction: rtl;
+}
+
+/* Meta row: reverse so category badge sits on the right */
+.clinox-blog-feed-item .inner-meta-category {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+}
+
+/* Gap between badge and meta list */
+.clinox-blog-feed-item .inner-meta-category .blog-cat {
+    margin-inline-start: 0;
+    margin-inline-end: 10px;
+}
+
+/* Read-more button: align to the right */
+.clinox-blog-feed-item .read-more {
+    text-align: right;
+}
+
+/* Sidebar category widget: right-align list items */
+.clinox-category-widget ul,
+.clinox-category-widget ul li {
+    text-align: right;
+    direction: rtl;
+}
+
+/* Sidebar recent-posts: right-align text, flip flex direction */
+.recent-blog-img-text {
+    flex-direction: row-reverse;
+}
+.recent-blog-img-text .recent-img {
+    margin-inline-start: 0;
+    margin-inline-end: 15px;
+}
+
+/* Mobile RTL polish */
+@media screen and (max-width: 991px) {
+    .mobile_menu_content {
+        left: auto;
+        right: -100%;
+        transform: none !important;
+    }
+    .clinox-header-section.header-style-three .mobile_menu_content,
+    .clinox-header-section.header-style-one .mobile_menu_content {
+        left: auto;
+        right: -100%;
+        transform: none !important;
+    }
+    .mobile_menu_wrap.mobile_menu_on .mobile_menu_content {
+        left: auto;
+        right: 0;
+        transform: none !important;
+    }
+    .clinox-header-section.header-style-three .mobile_menu_wrap.mobile_menu_on .mobile_menu_content,
+    .clinox-header-section.header-style-one .mobile_menu_wrap.mobile_menu_on .mobile_menu_content {
+        left: auto;
+        right: 0;
+        transform: none !important;
+    }
+    .mobile_menu_button,
+    .clinox-header-section.header-style-three .mobile_menu_button {
+        left: auto;
+        right: 15px;
+    }
+    .mobile_menu_wrap.mobile_menu_on .mobile_menu_button,
+    body.mobile_menu_overlay_on .mobile_menu_button {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .header-cart-btn-search {
+        margin-inline-start: 52px;
+        margin-inline-end: auto;
+    }
+    .mobile_menu .dropdown .dropdown-btn {
+        right: auto;
+        left: 0;
+    }
+    .mobile_menu_content .mobile-main-navigation .navbar-nav li a {
+        padding: 13px 0 13px 36px;
+        text-align: right;
+    }
+    .mobile_menu_close {
+        right: auto;
+        left: 25px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .mobile_menu_button,
+    .clinox-header-section.header-style-three .mobile_menu_button {
+        left: auto;
+        right: 12px;
+    }
+    .header-cart-btn-search {
+        margin-inline-start: 46px;
+        margin-inline-end: auto;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .header-cart-btn-search {
+        margin-inline-start: 42px;
+        margin-inline-end: auto;
+    }
+}
+.recent-blog-img-text .recent-text {
+    text-align: right;
+}
+
+.mobile_menu_content .nsp-lang-switcher {
+    justify-content: center;
+    margin: 22px 0 0;
+}
+
+body.mobile_menu_overlay_on .header-cart-btn-search .nsp-lang-switcher {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}

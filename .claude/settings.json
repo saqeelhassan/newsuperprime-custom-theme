@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wp --version)",
+      "PowerShell(wp --version 2>&1)",
+      "PowerShell(& \"c:\\\\laragon\\\\bin\\\\php\\\\php-8.3.26-Win32-vs16-x64\\\\php.exe\" --version 2>&1)",
+      "PowerShell(& \"c:\\\\laragon\\\\bin\\\\php\\\\php-8.3.26-Win32-vs16-x64\\\\php.exe\" -r \"echo 'PHP OK';\" 2>&1)",
+      "PowerShell(& \"c:\\\\laragon\\\\bin\\\\php\\\\php-8.3.26-Win32-vs16-x64\\\\php.exe\" \"c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\make-pot.php\" 2>&1)",
+      "Bash(Get-ChildItem -Path \"C:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\" -Recurse -File)",
+      "Bash(Sort-Object FullName)",
+      "Bash(grep -oP \"\\\\.navbar-nav\\\\{[^}]{0,200}\" \"c:/laragon/www/newsuperprime-wordpress/wp-content/themes/newsuperprime-theme-3/assets/css/bootstrap.min.css\")",
+      "Bash(grep -oP \"\\\\.nav\\\\{[^}]{0,200}\" \"c:/laragon/www/newsuperprime-wordpress/wp-content/themes/newsuperprime-theme-3/assets/css/bootstrap.min.css\")",
+      "PowerShell($content = Get-Content \"c:/laragon/www/newsuperprime-wordpress/wp-content/themes/newsuperprime-theme-3/assets/css/bootstrap.min.css\" -Raw; $match = [regex]::Match\\($content, '\\\\.navbar-nav\\\\{[^}]{0,300}'\\); $match.Value)",
+      "PowerShell($content = Get-Content \"c:/laragon/www/newsuperprime-wordpress/wp-content/themes/newsuperprime-theme-3/assets/css/bootstrap.min.css\" -Raw; $match = [regex]::Match\\($content, '\\\\.navbar-nav .{0,5}\\\\.dropdown-menu\\\\{[^}]{0,200}'\\); $match.Value)",
+      "PowerShell($content = Get-Content \"c:/laragon/www/newsuperprime-wordpress/wp-content/themes/newsuperprime-theme-3/assets/css/bootstrap.min.css\" -Raw; [regex]::Matches\\($content, '\\\\.dropdown-menu\\\\{[^}]{0,300}'\\) | ForEach-Object { $_.Value } | Select-Object -First 3)",
+      "Bash(Get-ChildItem \"c:/laragon/www/newsuperprime-wordpress/wp-content/themes/\" -Directory)",
+      "Bash(Select-Object Name)",
+      "WebFetch(domain:localhost)",
+      "Bash(dir \"c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\assets\\\\img\\\\about\")",
+      "Read(//c/Users/A_QEE/**)",
+      "Bash(Get-ChildItem -Path \"c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\" -Recurse -Filter \"*.php\")",
+      "Bash(php -l \"c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\front-page.php\")",
+      "Bash(xxd \"c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\header.php\")",
+      "Bash(dir \"C:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\assets\\\\img\\\\img-5\\\\banner\")",
+      "Bash(dir \"C:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\assets\\\\img\\\\bg\\\\promo-bg.jpg\")",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\('C:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\assets\\\\img\\\\bg\\\\promo-bg.jpg'\\); Write-Host \"$\\($img.Width\\) x $\\($img.Height\\)\"; $img.Dispose\\(\\))",
+      "Bash(Get-ChildItem -Path \"c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\" -Recurse -File -Name)",
+      "Bash(python3 -c ' *)",
+      "PowerShell($lines = Get-Content 'c:\\\\laragon\\\\www\\\\newsuperprime-wordpress\\\\wp-content\\\\themes\\\\newsuperprime-theme-3\\\\front-page.php' -Encoding UTF8; $lines[298..304] | ForEach-Object { [System.Text.RegularExpressions.Regex]::Replace\\($_, '\\\\t', '>>TAB<<'\\); })"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\A_QEE\\AppData\\Roaming\\Code\\User"
+    ]
+  }
+}

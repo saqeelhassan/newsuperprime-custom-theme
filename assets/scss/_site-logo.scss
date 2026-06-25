@@ -1,0 +1,49 @@
+/* Site logo (assets/img/logo/logo.svg) — constrain intrinsic SVG size */
+.brand-logo a,
+.sticky-brand-logo a,
+.m-brand-logo a,
+.clinox-footer-widget .footer-logo a,
+.clinox-footer-widget-3 .footer-logo a {
+	display: inline-block;
+	line-height: 0;
+	vertical-align: middle;
+}
+
+.brand-logo img {
+	max-height: 100px;
+	width: auto;
+	max-width: 280px;
+	height: auto;
+	object-fit: contain;
+	display: block;
+}
+
+.sticky-brand-logo img {
+	max-height: 100px;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	object-fit: contain;
+	display: block;
+}
+
+.m-brand-logo img {
+	max-height: 100px;
+	max-width: 100%;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.clinox-footer-widget .footer-logo img,
+.clinox-footer-widget-3 .footer-logo img {
+	height: 225px;
+	max-height: 225px;
+	max-width: 100%;
+	width: auto;
+	object-fit: contain;
+	display: block;
+}
