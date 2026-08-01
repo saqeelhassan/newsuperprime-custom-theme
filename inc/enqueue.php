@@ -1,16 +1,33 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-add_action( 'wp_head', function () {
-    echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-    echo '<link rel="dns-prefetch" href="https://maps.googleapis.com">' . "\n";
-    echo '<link rel="dns-prefetch" href="https://maps.google.com">' . "\n";
-}, 1 );
+/**
+ * Add preconnect resource hints for Google Fonts and Maps for performance.
+ *
+ * @param array  $urls          URLs to print for resource hints.
+ * @param string $relation_type The relation type the URLs are printed for.
+ * @return array
+ */
+function nsp_resource_hints( array $urls, string $relation_type ): array {
+	if ( 'preconnect' === $relation_type ) {
+		$urls[] = 'https://fonts.googleapis.com';
+		$urls[] = 'https://fonts.gstatic.com';
+	}
+	if ( 'dns-prefetch' === $relation_type ) {
+		$urls[] = 'https://maps.googleapis.com';
+		$urls[] = 'https://maps.google.com';
+	}
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'nsp_resource_hints', 10, 2 );
 
 function nsp_enqueue_assets() {
     $v   = NSP_THEME_VERSION;
     $uri = NSP_THEME_URI;
+
+    // Enqueue Google Fonts correctly instead of using @import or manual <link> tags.
+    $font_url = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap';
+	wp_enqueue_style( 'nsp-google-fonts', $font_url, [], null );
 
     // ---------- Stylesheets (same order as source <head>) ----------
     wp_enqueue_style( 'nsp-bootstrap',    $uri . '/assets/css/bootstrap.min.css',  [], $v );
@@ -23,7 +40,7 @@ function nsp_enqueue_assets() {
     wp_enqueue_style( 'nsp-reset',        $uri . '/assets/css/reset.css',           [], $v );
     $main_css_file = NSP_THEME_DIR . '/assets/css/style.css';
     $main_css_ver  = file_exists( $main_css_file ) ? filemtime( $main_css_file ) : $v;
-    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [], $main_css_ver );
+    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-google-fonts' ], $main_css_ver );
 
     // ---------- Arabic font + RTL stylesheet (must come after nsp-main and Bootstrap) ----------
     // Enqueueing rtl BEFORE Bootstrap caused WordPress to pull nsp-main early via the
@@ -33,6 +50,29 @@ function nsp_enqueue_assets() {
         $rtl_css_file = NSP_THEME_DIR . '/rtl.css';
         $rtl_css_ver  = file_exists( $rtl_css_file ) ? filemtime( $rtl_css_file ) : $v;
         wp_enqueue_style( 'nsp-rtl', $uri . '/rtl.css', [ 'nsp-main' ], $rtl_css_ver );
+
+        // **RTL Animation Fix**
+        // This inline style block overrides the hardcoded `translateX` in animate.css
+        // for RTL layouts, ensuring animations slide in the correct direction.
+        $rtl_animation_fix = "
+            /* RTL Animation Overrides for animate.css */
+            @keyframes slideOutLeft {
+                from { transform: translateX(0); }
+                to { opacity: 0; transform: translateX(2000px); }
+            }
+            .slideOutLeft { animation-name: slideOutLeft; }
+
+            @keyframes bounceInLeft {
+                from, 60%, 75%, 90%, to { animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
+                0% { opacity: 0; transform: translate3d(3000px, 0, 0) scaleX(3); }
+                60% { opacity: 1; transform: translate3d(-25px, 0, 0) scaleX(1); }
+                75% { transform: translate3d(10px, 0, 0) scaleX(0.98); }
+                90% { transform: translate3d(-5px, 0, 0) scaleX(0.995); }
+                to { transform: translate3d(0, 0, 0); }
+            }
+            .bounceInLeft { animation-name: bounceInLeft; }
+        ";
+        wp_add_inline_style( 'nsp-main', $rtl_animation_fix );
     }
 
 
