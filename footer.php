@@ -73,7 +73,10 @@
 			<div class="container">
 				<span>
 					<?php
-					$copyright_text = get_theme_mod( 'nsp_copyright_text', 'Copyright &copy; 2026 New Super Prime. All rights reserved.' );
+					$copyright_text = trim( (string) get_theme_mod( 'nsp_copyright_text', '' ) );
+					if ( '' === $copyright_text ) {
+						$copyright_text = 'Copyright &copy; 2026 New Super Prime. All rights reserved.';
+					}
 					echo wp_kses_post( $copyright_text );
 					?>
 					| Crafted by <a href="https://deweboo.com/" target="_blank">De Weboo</a>
