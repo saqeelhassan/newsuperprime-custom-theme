@@ -74,10 +74,10 @@ nsp_breadcrumb( esc_url( nsp_asset( 'assets/img/banner/breadcrumb-about.jpg' ) )
 			<div class="row">
 				<?php
 				$facts = [
-					[ '58',  'k+', nsp_t( 'Complete Project',  'مشروع منجز' ) ],
-					[ '305', '+',  nsp_t( 'Cleaning Expert',   'خبير تنظيف' ) ],
-					[ '48',  'k+', nsp_t( 'Satisfied Client',  'عميل راضٍ' ) ],
-					[ '125', '+',  nsp_t( 'National Awarded',  'جائزة وطنية' ) ],
+					[ '2000', '+', nsp_t( 'Complete Project',  'مشروع منجز' ) ],
+					[ '100',  '+', nsp_t( 'Cleaning Expert',   'خبير تنظيف' ) ],
+					[ '1500', '+', nsp_t( 'Satisfied Client',  'عميل راضٍ' ) ],
+					[ '15',   '+', nsp_t( 'National Awarded',  'جائزة وطنية' ) ],
 				];
 				foreach ( $facts as $f ) :
 				?>
