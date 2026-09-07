@@ -73,12 +73,10 @@
 			<div class="container">
 				<span>
 					<?php
-					$copyright_text = get_theme_mod( 'nsp_copyright_text', 'Copyright &copy; 2026 New Super Prime. All rights reserved. | Crafted by De Weboo' );
-					if ( strpos( $copyright_text, 'href="https://deweboo.com/"' ) === false ) {
-						$copyright_text = str_replace( 'De Weboo', '<a href="https://deweboo.com/" target="_blank">De Weboo</a>', $copyright_text );
-					}
+					$copyright_text = get_theme_mod( 'nsp_copyright_text', 'Copyright &copy; 2026 New Super Prime. All rights reserved.' );
 					echo wp_kses_post( $copyright_text );
 					?>
+					| Crafted by <a href="https://deweboo.com/" target="_blank">De Weboo</a>
 				</span>
 			</div>
 		</div>
