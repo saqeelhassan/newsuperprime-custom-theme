@@ -2160,6 +2160,7 @@ h1, h2, h3, h4, h5, h6 {
 .clinox-header-logo-cta-content .header-info-item {
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
+  min-width: 0;
 }
 .clinox-header-logo-cta-content .header-info-item:last-child {
   margin-right: 0;
@@ -2184,7 +2185,8 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: 14px;
   font-weight: 400;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .header-navigation-content {
@@ -10082,6 +10084,7 @@ Color Code
 .clinox-header-section.header-style-three .clinox-header-logo-cta-content .header-info-item {
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
+  min-width: 0;
 }
 .clinox-header-section.header-style-three .clinox-header-logo-cta-content .header-info-item:last-child {
   margin-right: 0;
@@ -10106,7 +10109,8 @@ Color Code
   display: block;
   font-size: 14px;
   font-weight: 400;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 .clinox-header-section.header-style-three .header-navigation-content-wrapper {
   background-color: #0277fb;
