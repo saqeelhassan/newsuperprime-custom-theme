@@ -38,9 +38,22 @@ Last change:    00/00/00
 				
 			},
 			preloader: function (){
-				jQuery(window).on('load', function(){
-					jQuery('#preloader').fadeOut('slow',function(){jQuery(this).remove();});
-				})
+				var hidePreloader = function(){
+					var $preloader = jQuery('#preloader');
+					if ( ! $preloader.length ) {
+						return;
+					}
+					$preloader.fadeOut('slow', function(){ jQuery(this).remove(); });
+				};
+
+				// Normal path: hide once every asset (images, fonts, embeds) has finished loading.
+				jQuery(window).on('load', hidePreloader);
+
+				// Safety net: on a slow connection, a blocked/slow third-party resource
+				// (fonts, maps embed, large images) can delay or prevent the window "load"
+				// event entirely, leaving visitors stuck behind a fullscreen loader forever.
+				// Force it away after 6s regardless, so the page is always usable.
+				setTimeout(hidePreloader, 6000);
 			},
 			BackgroundImage: function (){
 				$('[data-background]').each(function() {
