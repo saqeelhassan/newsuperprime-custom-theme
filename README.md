@@ -10,6 +10,165 @@ Converted from the Clinox HTML template by Themexriver. A cleaning-services busi
 - PHP 7.4+
 - **Contact Form 7** plugin (for booking and contact forms)
 
+## Service catalog page
+
+Browse Services uses **Service Categories**, rather than individual-service tabs:
+**Home Cleaning** (9 related services), **Pest Control** (8 treatments), and
+**Office & Commercial Cleaning** (1 service). **All Services** shows all 18.
+Selecting a category updates service cards, specialized services, the featured
+banner, and package offers. Package cards show up to eight matching offers.
+
+Manage groups in **Services → Service Categories**, then assign categories when
+editing a service. New categories appear automatically once assigned to a
+published service; parent categories also include their child-category services.
+Run `php tools/setup-service-categories.php` to restore the initial assignments
+explicitly, or `node tests/service-categories.cjs` for live filtering checks.
+
+The active directory contains the requested 18 cleaning and pest-control services,
+in the order defined in `inc/service-directory.php`. Each has a detail page and
+booking packages. The Services navigation links directly to the catalog; individual services
+appear on that page instead of in a navigation dropdown. Existing carpet and office entries were renamed while
+preserving their URLs and packages. AC cleaning, car washing, and home shifting
+entries are retained as drafts. New service packages use clearly marked demo
+prices; edit them under **Services → Edit → Booking Packages**.
+
+For another local installation, run `php tools/update-service-directory.php` to
+apply this service directory setup. This explicit, repeatable command preserves
+existing packages; it does not run automatically during frontend requests.
+`node tests/service-directory.cjs` checks the live directory and menu.
+
+The Services page (`/services/`) and the service archive use the catalog layout:
+search and service filters, a featured banner, service cards, package offers,
+the first-booking benefit, specialized services, project cards, booking steps,
+and city selection. It keeps the theme palette and supports Arabic/RTL.
+You can also assign **Service Catalog** as the template for another page.
+
+Content comes from published **Services** and their **Booking Packages**.
+Add a featured image, short description, and packages in the service editor.
+Without package prices, cards show **Price on request** and quote links.
+Clicking a service image, title, card, or booking button opens a service-details
+popup with its image, overview, selectable packages, perks, and a fixed price /
+**Book Service** footer. The footer continues into the existing five-step wizard
+with the selected package. Services without packages offer a contact quote link.
+Package buttons preselect that package in the popup, and selecting a
+service area prefills the booking city. Project cards use **Projects** content;
+add featured images there to replace the illustrative service-image fallbacks.
+
+Files: `template-parts/services/catalog.php`, `inc/service-catalog.php`,
+`assets/css/service-catalog.css`, and `assets/js/service-catalog.js`.
+Run `node tests/service-catalog.cjs` with Playwright and Microsoft Edge installed
+against the local WordPress site to check search, filters, booking, and RTL.
+The preview uses `template-parts/booking/preview.php`,
+`assets/css/service-preview.css`, and `assets/js/service-preview.js`.
+Run `node tests/service-preview.cjs` for package selection, wizard handoff,
+keyboard focus, mobile layout, empty packages, and homepage service clicks.
+
+## WhatsApp booking setup
+
+### Automatic special-offer popup
+
+The four screenshot offers are available across the website in an automatic
+popup slider: Pest Control / Complete Flat **199 SAR**, Sofa Deep Cleaning /
+5 Seater Sofa **149 SAR**, Sofa Deep Cleaning / 7 Seater Sofa **199 SAR**, and
+Bed Bug Treatment / Complete Flat **199 SAR**. Perks and payment/warranty notes
+follow the supplied offer copy.
+
+The popup appears only on a new visitor's first visit, shortly after loading.
+A site-specific localStorage flag remembers the first display across pages and
+future visits, with a one-year cookie fallback if storage is blocked. Clearing
+browser site data or using another browser counts as a new visitor. It skips
+opening if a booking dialog is already active. Arrows, dots, keyboard arrows,
+and swipe select an offer. Booking carries the exact package into the service
+preview and wizard, including on regular pages such as About and Contact.
+The existing 10% first-booking benefit still applies in the wizard review.
+
+Edit the matching packages under **Services → Edit → Booking Packages**; their
+saved price is used by both the popup and booking. Offer associations, Arabic
+labels, and terms are in `inc/special-offers.php`. Run
+`php tools/setup-special-offers.php` to install/reset the four screenshot offer
+packages explicitly. Other packages are preserved. No prices are written on page
+visits. Run `node tests/special-offers.cjs` for the live popup checks; other page
+tests suppress this marketing modal through `tests/hide-offers.cjs`.
+
+Service detail pages now offer a five-step **Book Service** modal. These requests
+are sent to WhatsApp **966559357772**; they are not saved in WordPress or charged.
+Contact Form 7 is not required for this wizard. The wizard currently uses English
+labels, including when the surrounding site uses Arabic.
+
+Go to **Services → Add New** (or edit a service). Add a title, description,
+featured image, and category. In **Booking Packages**, click **Add package**,
+fill in the fields below, and **Publish / Update** the service. Use **Remove
+package** to remove a row. The frontend **Book Service** modal reads these saved
+packages automatically. ACF Pro is not required.
+
+Published services also appear in the homepage service carousel, using their
+featured image and short description. Each **Book Now** button opens that
+service's booking modal directly. The carousel shows three cards on desktop,
+two on tablets, and one on phones, with arrows and swipe navigation.
+
+The homepage Featured Services section shares
+`template-parts/services/featured.php` with the Services catalog, so card styling,
+package prices, and the service preview stay consistent on both pages.
+
+The homepage hero also shares `template-parts/services/hero.php` with the catalog.
+Its service dots change the image of the existing water ripple canvas using the
+plugin's `imageUrl` setting. Reduced-motion preferences or unavailable WebGL use
+static slide images. Run `node tests/home-hero.cjs` to check the real canvas,
+slide switching, booking popup, and reduced-motion fallback in Microsoft Edge.
+
+| Field | Input | Value |
+|---|---|---|
+| `package_name` | Text | Required package label |
+| `package_price` | Number | Required nonnegative SAR price, up to two decimals |
+| `package_description` | Textarea | Plain text description |
+| `package_perk` | Text | Plain text perk |
+
+Packages are stored in `_nsp_booking_packages` post meta. If native packages have
+never been saved for a service, the editor and frontend fall back to its existing
+ACF `service_packages` repeater, when available. After saving the native editor,
+it becomes the source for this service; removing all rows keeps the package list
+empty instead of restoring old ACF packages. Invalid package submissions preserve
+the previously saved list and display an admin notice.
+Missing packages displays an unavailable message without inventing prices.
+The dedicated service page templates resolve packages from their matching service
+CPT entry through the existing service URL mapping. A new `single-service.php`
+also supports direct CPT detail URLs.
+
+Implementation:
+
+- `inc/booking.php`: escaped trigger data, package normalization, conditional assets.
+- `inc/booking-admin.php`: native package editor, validation, and save handler.
+- `assets/js/booking-admin.js`: add/remove rows in the service editor.
+- `template-parts/booking/modal.php`: native dialog with five steps and Tailwind utilities.
+- `assets/js/booking.js`: state, validation, GPS, review, and encoded WhatsApp request.
+- `assets/css/booking.css`: compiled, scoped Tailwind utilities without Preflight.
+
+Use `<?php nsp_booking_button( get_the_ID() ); ?>` inside a service loop to render
+another trigger. Native dialog provides focus containment and Escape dismissal;
+closing clears customer input. GPS requires HTTPS or localhost and permission.
+Choose a city, then either capture GPS or enter both street and neighborhood.
+Dates use Saudi Arabia time; availability is confirmed by the team.
+The fixed 10% First Booking Benefit applies to every request, as specified; no
+customer history is collected to determine first-booking eligibility.
+
+To rebuild CSS after changing utility classes (Node/npm required):
+
+```sh
+npm exec --yes --package=tailwindcss@3.4.17 -- tailwindcss -c tailwind.booking.config.cjs -i assets/css/booking.source.css -o assets/css/booking.css --minify
+```
+
+Deploy the compiled CSS with the theme; no Tailwind CDN or build process runs in
+the visitor's browser. Package prices are client-visible request estimates; the
+team confirms the request and price in WhatsApp.
+
+Browser checks are in `tests/booking.cjs`. With PHP on PATH, Playwright installed
+(`npm install --no-save playwright@1.64.1`), and Microsoft Edge installed, run
+`node tests/booking.cjs`. Tests render the PHP modal with WordPress helper stubs;
+they simulate GPS and intercept WhatsApp navigation without sending a request.
+Run `php tests/booking-admin.php` for WordPress package-save checks and
+`node tests/booking-admin.cjs` for admin row controls. These checks create a
+temporary draft service and remove it afterwards; use a local development site.
+
 ---
 
 ## Installation

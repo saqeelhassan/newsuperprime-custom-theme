@@ -18,7 +18,7 @@
 						</ul>
 					</div>
 					<div class="top-btn">
-						<a class="d-flex justify-content-center align-items-center" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php nsp_te( 'GET A QUOTE', 'احصل على عرض سعر' ); ?></a>
+                        <?php nsp_header_booking_button( nsp_t( 'Book Service Now', 'احجز خدمة الآن' ) ); ?>
 					</div>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 						</div>
 						<div class="hd-item-meta">
 							<label><?php nsp_te( 'Email us', 'راسلنا' ); ?></label>
-							<span><?php echo esc_html( get_theme_mod( 'nsp_email', 'info@newsuperprime.sa' ) ); ?></span>
+							<span class="nsp-header-email" dir="ltr"><a href="mailto:<?php echo esc_attr( sanitize_email( get_theme_mod( 'nsp_email', 'info@newsuperprime.sa' ) ) ); ?>"><?php echo esc_html( get_theme_mod( 'nsp_email', 'info@newsuperprime.sa' ) ); ?></a></span>
 						</div>
 					</div>
 					<div class="header-info-item d-flex align-items-center position-relative">
@@ -58,7 +58,11 @@
 						</div>
 						<div class="hd-item-meta">
 							<label><?php nsp_te( 'Free Call', 'اتصل مجاناً' ); ?></label>
-							<span><?php echo esc_html( get_theme_mod( 'nsp_phone1', '+966 593657772' ) ); ?>, <?php echo esc_html( get_theme_mod( 'nsp_phone2', '+966 559357772' ) ); ?></span>
+							<div class="nsp-header-phones" dir="ltr">
+                                <?php foreach ( [ get_theme_mod( 'nsp_phone1', '+966 593657772' ), get_theme_mod( 'nsp_phone2', '+966 559357772' ) ] as $header_phone ) : ?>
+                                    <a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $header_phone ) ); ?>"><?php echo esc_html( $header_phone ); ?></a>
+                                <?php endforeach; ?>
+                            </div>
 						</div>
 					</div>
 				</div>

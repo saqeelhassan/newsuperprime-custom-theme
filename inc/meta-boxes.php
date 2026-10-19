@@ -10,7 +10,6 @@ function nsp_register_meta_boxes() {
     add_meta_box( 'nsp_project_meta',      esc_html__( 'Project Details',     'newsuperprime' ), 'nsp_render_project_meta',      'project',     'normal', 'high' );
     add_meta_box( 'nsp_team_meta',         esc_html__( 'Team Member Details', 'newsuperprime' ), 'nsp_render_team_meta',         'team',        'normal', 'high' );
     add_meta_box( 'nsp_testimonial_meta',  esc_html__( 'Testimonial Details', 'newsuperprime' ), 'nsp_render_testimonial_meta',  'testimonial', 'normal', 'high' );
-    add_meta_box( 'nsp_pricing_meta',      esc_html__( 'Pricing Details',     'newsuperprime' ), 'nsp_render_pricing_meta',      'pricing',     'normal', 'high' );
 }
 add_action( 'add_meta_boxes', 'nsp_register_meta_boxes' );
 
@@ -139,42 +138,6 @@ function nsp_render_testimonial_meta( WP_Post $post ) {
 }
 
 /* ============================================================
-   Pricing meta box
-   ============================================================ */
-function nsp_render_pricing_meta( WP_Post $post ) {
-    wp_nonce_field( 'nsp_pricing_meta_save', 'nsp_pricing_meta_nonce' );
-    $price    = get_post_meta( $post->ID, '_nsp_pricing_price',    true );
-    $icon     = get_post_meta( $post->ID, '_nsp_pricing_icon',     true );
-    $features = get_post_meta( $post->ID, '_nsp_pricing_features', true );
-    $cta_url  = get_post_meta( $post->ID, '_nsp_pricing_cta_url',  true );
-    $featured = get_post_meta( $post->ID, '_nsp_pricing_featured', true );
-    ?>
-    <p>
-        <label><?php esc_html_e( 'Price (e.g. $29.99)', 'newsuperprime' ); ?></label><br>
-        <input type="text" name="_nsp_pricing_price" value="<?php echo esc_attr( $price ); ?>" class="widefat">
-    </p>
-    <p>
-        <label><?php esc_html_e( 'Icon (attachment ID)', 'newsuperprime' ); ?></label><br>
-        <input type="number" name="_nsp_pricing_icon" value="<?php echo esc_attr( $icon ); ?>" class="widefat">
-    </p>
-    <p>
-        <label><?php esc_html_e( 'Features (one per line)', 'newsuperprime' ); ?></label><br>
-        <textarea name="_nsp_pricing_features" rows="6" class="widefat"><?php echo esc_textarea( $features ); ?></textarea>
-    </p>
-    <p>
-        <label><?php esc_html_e( 'CTA Button URL', 'newsuperprime' ); ?></label><br>
-        <input type="url" name="_nsp_pricing_cta_url" value="<?php echo esc_attr( $cta_url ); ?>" class="widefat">
-    </p>
-    <p>
-        <label>
-            <input type="checkbox" name="_nsp_pricing_featured" value="1" <?php checked( $featured, '1' ); ?>>
-            <?php esc_html_e( 'Featured plan (highlighted)', 'newsuperprime' ); ?>
-        </label>
-    </p>
-    <?php
-}
-
-/* ============================================================
    Save all meta boxes
    ============================================================ */
 function nsp_save_meta_boxes( int $post_id ) {
@@ -236,14 +199,6 @@ function nsp_save_meta_boxes( int $post_id ) {
         update_post_meta( $post_id, '_nsp_testimonial_rating', min( 5, max( 1, absint( $_POST['_nsp_testimonial_rating'] ?? 5 ) ) ) );
     }
 
-    // --- Pricing ---
-    if ( 'pricing' === $post_type && isset( $_POST['nsp_pricing_meta_nonce'] )
-        && wp_verify_nonce( sanitize_key( $_POST['nsp_pricing_meta_nonce'] ), 'nsp_pricing_meta_save' ) ) {
-        update_post_meta( $post_id, '_nsp_pricing_price',    sanitize_text_field( wp_unslash( $_POST['_nsp_pricing_price'] ?? '' ) ) );
-        update_post_meta( $post_id, '_nsp_pricing_icon',     absint( $_POST['_nsp_pricing_icon'] ?? 0 ) );
-        update_post_meta( $post_id, '_nsp_pricing_features', sanitize_textarea_field( wp_unslash( $_POST['_nsp_pricing_features'] ?? '' ) ) );
-        update_post_meta( $post_id, '_nsp_pricing_cta_url',  esc_url_raw( wp_unslash( $_POST['_nsp_pricing_cta_url'] ?? '' ) ) );
-        update_post_meta( $post_id, '_nsp_pricing_featured', isset( $_POST['_nsp_pricing_featured'] ) ? '1' : '0' );
-    }
+
 }
 add_action( 'save_post', 'nsp_save_meta_boxes' );

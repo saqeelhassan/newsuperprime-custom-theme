@@ -10974,7 +10974,7 @@ Color Code
 /*Estimate area*/
 /*----------------------------------------------------*/
 .clinox-estimate-section {
-  padding: 75px 0px;
+  padding: 35px 0px;
   background-color: #ffcd05;
 }
 
@@ -11066,7 +11066,7 @@ Color Code
 /*----------------------------------------------------*/
 .clinox-about-section-3 {
   overflow: hidden;
-  padding: 160px 0px 135px;
+  padding: 70px 0px 5px;
 }
 .clinox-about-section-3 .clinox-bg-shape {
   right: 0;
@@ -12582,7 +12582,7 @@ Color Code
     margin-top: 20px;
   }
   .clinox-about-section-3 {
-    padding: 100px 0px 60px;
+    padding: 70px 0px 5px;
   }
   .clinox-service-section-3,
 .clinox-why-choose-section-3,
@@ -14118,3 +14118,133 @@ Color Code
     font-size: 24px;
   }
 }
+#clinox-service-3 .inner-text { display: flex; flex-direction: column; align-items: center; }
+#clinox-service-3 .inner-text .nsp-booking-trigger { margin: auto 0 8px; min-height: 46px; }
+#clinox-service-3 .inner-text p { margin-bottom: 20px; }
+#clinox-service-3 .nsp-booking-trigger:hover { background: #0c6fb6; }
+#clinox-service-3 .carousel_nav button:focus-visible { outline: 3px solid #0c6fb6; outline-offset: 3px; }
+
+/* Hide the inactive search backdrop instead of only moving it offscreen. */
+body:not(.search-active) .search-popup { visibility: hidden; pointer-events: none; }
+#clinox-about-3 .nsp-emergency-phones { display:flex; align-items:center; gap:6px; white-space:nowrap; }
+#clinox-about-3 .nsp-emergency-phones a { display:inline; }
+#nsp-about-services[data-collapsed] li:nth-child(n+5) { display:none; }
+#clinox-about-3 .nsp-about-services-toggle { display:inline-block; margin-top:12px; padding:4px 0; border:0; background:transparent; color:var(--nsp-green); font-family:inherit; font-size:15px; font-weight:600; line-height:1.5; text-decoration:underline; text-underline-offset:4px; cursor:pointer; }
+#clinox-about-3 .nsp-about-services-toggle:hover { background:transparent; color:var(--nsp-blue); }
+#clinox-about-3 .nsp-about-services-toggle:focus-visible { outline:3px solid var(--nsp-blue); outline-offset:4px; }
+@media(max-width:600px) { #clinox-about-3 .nsp-emergency-phones a { font-size:14px; } }
+
+/* Use a fluid header on the homepage, inner pages, and sticky navigation. */
+@media(min-width:992px) {
+ #clinox-header .header-navigation-content .nsp-service-menu>.dropdown-menu { width:300px; max-height:65vh; overflow-y:auto; overscroll-behavior:contain; }
+ #clinox-header .header-navigation-content .nsp-service-menu>.dropdown-menu>li { margin:0; }
+ #clinox-header .header-navigation-content .nsp-service-menu>.dropdown-menu>li>a { white-space:normal; line-height:1.5; }
+}
+#clinox-header .container { width:100%; max-width:none; padding-inline:clamp(16px,3vw,48px); }
+#clinox-header .header-info-item .hd-item-icon { flex-shrink:0; }
+#clinox-header .nsp-header-email,#clinox-header .nsp-header-email a,#clinox-header .nsp-header-phones a { white-space:nowrap; word-break:normal; overflow-wrap:normal; }
+#clinox-header .nsp-header-email a,#clinox-header .nsp-header-phones a { color:inherit; font-size:14px; font-weight:400; line-height:1.7; }
+#clinox-header .nsp-header-phones { display:flex; gap:4px 14px; flex-wrap:wrap; }
+@media(min-width:992px) {
+ #clinox-header .header-cta-wrapper { display:grid !important; grid-template-columns:minmax(0,1fr) max-content max-content; align-items:center; gap:24px; }
+ #clinox-header .header-info-item .hd-item-meta { min-width:0; }
+}
+@media(min-width:992px) and (max-width:1399px) {
+ #clinox-header .nsp-header-phones { flex-direction:column; gap:0; }
+}
+@media(min-width:992px) and (max-width:1199px) {
+ #clinox-header .main-navigation>ul>li { margin-inline:0 20px; }
+ #clinox-header .header-cart-btn-search .h-cta-btn { margin-inline-start:15px; }
+ #clinox-header .header-cart-btn-search .h-cta-btn a { width:150px; font-size:13px; }
+}
+
+/* Homepage booking process: the five steps of the WhatsApp booking flow. */
+.nsp-quick-booking-heading { margin-bottom:20px; }
+.nsp-quick-booking-heading h2 { margin:0 0 6px; font-size:30px; line-height:1.3; font-weight:700; }
+.nsp-quick-booking-heading p { margin:0; font-size:14px; color:#333; }
+.nsp-home-booking-controls { display:grid; grid-template-columns:2fr 1fr 1fr; gap:20px; align-items:end; }
+.nsp-home-booking-controls label { min-width:0; margin:0; font-size:13px; font-weight:600; color:#173b2a; }
+.nsp-home-booking-controls select { display:block; width:100%; min-width:0; height:60px; padding:0 16px; margin-top:7px; border:1px solid #ffffff99; border-radius:7px; background:white; color:#173b2a; font:400 15px 'DM Sans',sans-serif; }
+.nsp-home-booking-controls button { display:flex; justify-content:center; align-items:center; gap:12px; height:60px; border:0; border-radius:7px; background:var(--nsp-green); color:white; padding:12px 20px; font-size:16px; font-weight:700; cursor:pointer; }
+.nsp-home-booking-controls button:disabled { opacity:.6; cursor:not-allowed; }
+.nsp-home-booking-controls button:hover:not(:disabled) { background:var(--nsp-blue); }
+.nsp-home-booking-controls :focus-visible { outline:3px solid var(--nsp-blue); outline-offset:3px; }
+html[dir=rtl] .nsp-home-booking-controls button i { transform:rotate(180deg); }
+@media(max-width:600px) { .nsp-home-booking-controls { grid-template-columns:1fr; gap:15px; } .nsp-quick-booking-heading h2 { font-size:25px; } }
+
+.nsp-home-booking { padding:32px 0; background:#f7faf8; }
+.nsp-booking-process-heading { margin-bottom:24px; }
+.nsp-booking-process-heading .nsp-booking-process-eyebrow { margin:0 0 8px; color:var(--nsp-green); font-size:12px; font-weight:700; letter-spacing:.08em; }
+.nsp-booking-process-heading h2 { margin:0 0 10px; color:#173b2a; font-size:32px; line-height:1.3; font-weight:700; letter-spacing:-.7px; }
+.nsp-booking-process-heading>p:last-child { margin:0; color:#708076; font-size:15px; line-height:1.7; }
+.nsp-booking-process { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:0; list-style:none; margin:0; padding:30px 12px; border:1px solid #e0e9e2; border-radius:18px; background:white; box-shadow:0 5px 20px #173b2a04; }
+.nsp-booking-process li { padding:0 22px; min-width:0; }
+.nsp-booking-process li+li { border-inline-start:1px solid #eaf0eb; }
+.nsp-booking-step-icon { position:relative; display:grid; place-items:center; width:48px; height:48px; margin-bottom:22px; border-radius:13px; background:#ecf6ee; color:var(--nsp-green); font-size:20px; }
+.nsp-booking-step-icon>span { position:absolute; top:-6px; inset-inline-end:-7px; display:grid; place-items:center; height:21px; width:21px; border:2px solid white; border-radius:50%; background:var(--nsp-orange); color:white; font-size:10px; font-weight:700; }
+.nsp-booking-process li:last-child .nsp-booking-step-icon { color:white; background:var(--nsp-green); }
+.nsp-booking-process h3 { margin:0 0 8px; color:#173b2a; font-size:15px; font-weight:700; line-height:1.5; }
+.nsp-booking-process li>p { margin:0; color:#708076; font-size:12px; line-height:1.8; }
+@media(max-width:991px) {
+ .nsp-booking-process { grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:28px; }
+ .nsp-booking-process li:nth-child(4) { border-inline-start:0; }
+}
+@media(max-width:600px) {
+ .nsp-home-booking { padding:24px 0; }
+ .nsp-booking-process-heading h2 { font-size:26px; }
+ .nsp-booking-process-heading>p:last-child { font-size:13px; }
+ .nsp-booking-process { grid-template-columns:1fr; gap:0; padding:8px 20px; }
+ .nsp-booking-process li { position:relative; padding:22px 0; padding-inline-start:66px; }
+ .nsp-booking-process li+li { border-inline-start:0; border-top:1px solid #eaf0eb; }
+ .nsp-booking-step-icon { position:absolute; top:24px; inset-inline-start:0; margin:0; width:43px; height:43px; font-size:18px; }
+ .nsp-booking-process h3 { font-size:14px; margin-bottom:4px; }
+}
+
+/* Clear, comfortably sized language controls in desktop and mobile headers. */
+#clinox-header .nsp-lang-switcher ul { gap:8px; }
+#clinox-header .nsp-lang-switcher ul li a {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:54px;
+  min-height:44px;
+  padding:9px 14px;
+  border-radius:6px;
+  font-size:16px;
+  font-weight:700;
+  line-height:1.4;
+  letter-spacing:0;
+}
+#clinox-header .nsp-lang-switcher a:focus-visible {
+  outline:3px solid #ffd000;
+  outline-offset:3px;
+}
+@media(max-width:480px) {
+  #clinox-header .nsp-lang-switcher ul { gap:5px; }
+  #clinox-header .nsp-lang-switcher ul li a {
+    min-width:46px;
+    padding:8px 10px;
+    font-size:15px;
+  }
+}
+
+/* Language button hover uses the theme yellow. */
+#clinox-header .nsp-lang-switcher ul li a:hover,
+#clinox-header .nsp-lang-switcher ul li a:focus-visible {
+  background:#ffd000;
+  border-color:#ffd000 !important;
+  color:#173b2a !important;
+}
+
+/* Header booking triggers keep the existing CTA layout. */
+#clinox-header .h-cta-btn .nsp-booking-trigger,
+#clinox-header .top-btn .nsp-booking-trigger {
+ display:flex; align-items:center; justify-content:center;
+ width:100%; min-width:170px; height:auto; min-height:60px;
+ margin:0; padding:18px 24px; border:0; border-radius:0;
+ font:600 16px/1.5 'DM Sans',sans-serif;
+ background:#02aaf9; color:white; cursor:pointer;
+}
+#clinox-header .h-cta-btn .nsp-booking-trigger { min-height:70px; background:#ffd000; color:#101010; }
+#clinox-header .top-btn .nsp-booking-trigger:hover { background:#ffd000; color:#173b2a; }
+#clinox-header .h-cta-btn .nsp-booking-trigger:hover { background:#02aaf9; color:white; }

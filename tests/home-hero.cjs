@@ -1,0 +1,40 @@
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+(async () => {
+    const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--enable-unsafe-swiftshader'] });
+    try {
+        const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+        await require('./hide-offers.cjs')(page);
+        const errors = [];
+        page.on('pageerror', error => errors.push(error.message));
+        await page.goto('http://localhost/newsuperprime-wordpress/?lang=en', { waitUntil: 'networkidle' });
+        const hero = page.locator('#clinox-banner-3');
+        const bounds = await hero.boundingBox();
+        assert.equal(bounds.x, 0);
+        assert.equal(bounds.width, 1440);
+        assert.ok(await hero.locator('[data-hero-slide]').count() > 1);
+        await page.waitForFunction(() => !!window.jQuery('#clinox-banner-3').data('ripples'));
+        assert.equal(await hero.locator('canvas').count(), 1);
+        await hero.evaluate(el => { window.heroCanvas = el.querySelector('canvas'); });
+        await hero.locator('[data-hero-dot="1"]').click();
+        const image = await hero.locator('[data-hero-slide]').nth(1).locator('img').getAttribute('src');
+        assert.equal(await hero.evaluate(el => window.jQuery(el).data('ripples').imageUrl), image);
+        assert.equal(await hero.evaluate(el => el.querySelector('canvas') === window.heroCanvas), true);
+        await hero.evaluate(el => window.jQuery(el).ripples('drop', 200, 150, 18, .03));
+        await hero.locator('[data-hero-slide]:not([hidden]) [data-nsp-booking]').click();
+        await page.waitForSelector('#nsp-service-preview[open]');
+        await page.keyboard.press('Escape');
+        await page.setViewportSize({ width: 390, height: 844 });
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+        await hero.locator('[data-hero-dot="2"]').click();
+        assert.equal(await hero.locator('[data-hero-slide]').nth(2).isVisible(), true);
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await page.reload({ waitUntil: 'networkidle' });
+        assert.equal(await hero.locator('canvas').count(), 0);
+        assert.equal(await hero.locator('[data-hero-slide]').first().locator('img').isVisible(), true);
+        await hero.locator('[data-hero-dot="1"]').click();
+        assert.equal(await hero.locator('[data-hero-slide]').nth(1).isVisible(), true);
+        assert.deepEqual(errors, []);
+        console.log('PASS: real ripple canvas, slide image updates without replacing canvas, drop effect, booking popup, mobile, and reduced-motion fallback.');
+    } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exit(1); });

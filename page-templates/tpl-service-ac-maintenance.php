@@ -34,6 +34,7 @@ nsp_breadcrumb( '', nsp_t( 'AC Maintenance Service', 'خدمة صيانة الم
 						<li><?php nsp_te( 'All brands and models covered', 'تغطية جميع الماركات والموديلات' ); ?></li>
 					</ul>
 				</div>
+				<?php nsp_booking_button( nsp_booking_service_id() ?: get_queried_object_id() ); ?>
 				<div class="clinox-btn mt-30">
 					<a class="d-flex align-items-center justify-content-center" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><span><?php nsp_te( 'Book a Technician', 'احجز فنياً' ); ?></span></a>
 				</div>

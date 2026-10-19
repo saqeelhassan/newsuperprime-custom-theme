@@ -1,0 +1,140 @@
+/* Homepage presentation. Shared catalog, dialogs and inner pages retain their styles. */
+.nsp-home-redesign {
+    --home-blue:#007bff;
+    --home-yellow:#ffd000;
+    --home-ink:#173b2a;
+    --home-muted:#66776f;
+    --home-line:#dfe8e3;
+    background:#fff;
+    color:var(--home-ink);
+}
+#nsp-home .container { max-width:1320px; padding-inline:24px; }
+#nsp-home :is(h1,h2,h3,h4) { font-family:'Poppins','DM Sans',sans-serif; }
+html[dir=rtl] #nsp-home :is(h1,h2,h3,h4) { font-family:inherit; }
+#nsp-home .clinox-section-title-3 h2,
+#nsp-home .nsp-section-heading h2,
+#nsp-home .nsp-booking-process-heading h2 {
+    font-size:clamp(28px,3vw,44px); line-height:1.2; letter-spacing:-.035em; font-weight:700;
+}
+#nsp-home .clinox-section-title-3 .subtitle,
+#nsp-home .nsp-eyebrow,
+#nsp-home .nsp-booking-process-eyebrow { font-size:12px; font-weight:700; letter-spacing:.12em; }
+#nsp-home .clinox-section-title-3 .subtitle { margin-bottom:18px; color:var(--home-blue); }
+#nsp-home .clinox-section-title-3 p { font-size:16px; line-height:1.85; color:var(--home-muted); margin-top:22px; }
+#nsp-home .nsp-home-hero { background:#123d2d; }
+#nsp-home #clinox-banner-3 { min-height:540px; height:clamp(520px,40vw,680px); }
+#nsp-home .nsp-catalog-hero article { height:100%; min-height:100%; padding-inline:clamp(24px,7vw,110px); }
+#nsp-home .nsp-hero-copy { width:56%; max-width:710px; padding-inline:0; }
+#nsp-home .nsp-hero-copy h2 { font-size:clamp(36px,4.5vw,68px); line-height:1.08; letter-spacing:-.045em; max-width:620px; }
+#nsp-home .nsp-hero-copy p { font-size:18px; line-height:1.7; max-width:460px; }
+#nsp-home .nsp-hero-actions { gap:14px; }
+#nsp-home .nsp-hero-actions button,
+#nsp-home .nsp-hero-all-services { border-radius:8px; min-height:52px; padding:15px 24px; }
+#nsp-home #clinox-estimate { padding:30px 0; background:var(--home-yellow); }
+#nsp-home #clinox-estimate > .container { display:grid; grid-template-columns:1fr 1.9fr; gap:36px; align-items:center; }
+#nsp-home .nsp-quick-booking-heading { margin:0; }
+#nsp-home .nsp-quick-booking-heading h2 { font-size:28px; line-height:1.2; letter-spacing:-.025em; margin-bottom:8px; }
+#nsp-home .nsp-quick-booking-heading p { font-size:14px; margin:0; line-height:1.6; color:#344a3d; }
+#nsp-home .nsp-home-booking-controls { gap:14px; grid-template-columns:1.5fr 1fr 1fr; }
+#nsp-home .nsp-home-booking-controls select { height:54px; border:0; border-radius:8px; }
+#nsp-home .nsp-home-booking-controls button { height:54px; background:var(--home-blue); border-radius:8px; }
+#nsp-home .nsp-home-booking-controls button:disabled { opacity:1; background:#596e76; }
+#nsp-home #clinox-about-3 { padding:100px 0 60px; overflow:hidden; }
+#nsp-home .clinox-about-content-3 > .row { align-items:center; row-gap:48px; }
+#nsp-home .clinox-about-text-area-3 { padding-inline-start:34px; }
+#nsp-home .clinox-about-img-3 { margin-inline:18px 38px; }
+#nsp-home .clinox-about-img-3 .inner-img-wrap { border-radius:16px 90px 16px 16px; overflow:hidden; }
+#nsp-home .clinox-about-img-3 .inner-img-wrap > img { width:100%; }
+#nsp-home .clinox-about-img-3 .inner-bottom-img > img { border:8px solid #fff; border-radius:18px; }
+#nsp-home .clinox-about-text-wrap-3 h3 { font-size:16px; line-height:1.6; margin:22px 0 16px; }
+#nsp-home .clinox-about-feature-list-3 { gap:20px; align-items:flex-start!important; }
+#nsp-home .clinox-about-feature-list-3 .inner-img { width:110px; flex:0 0 110px; margin:0; }
+#nsp-home .clinox-about-feature-list-3 .inner-img img { border-radius:10px; }
+#nsp-home #nsp-about-services li { font-size:15px; font-weight:500; margin-bottom:12px; padding-inline-start:32px; line-height:1.6; }
+#nsp-home #nsp-about-services li::before { width:22px; height:22px; line-height:22px; font-size:12px; top:1px; }
+#nsp-home .nsp-about-services-toggle { font-size:14px; margin-top:4px; }
+#nsp-home .clinox-about-cta-btn-grp { margin-top:24px; padding-top:22px; border-top:1px solid var(--home-line); }
+#nsp-home .about-cta > i { width:48px; height:48px; line-height:48px; font-size:22px; margin-inline-end:16px; }
+#nsp-home .about-cta-text { font-size:14px; }
+#nsp-home .nsp-emergency-phones { font-size:14px; gap:6px; }
+#nsp-home .nsp-home-featured { padding:10px 0; background:#f6f9f7; border-block:1px solid #edf2ef; }
+#nsp-home .nsp-home-featured .nsp-section-heading { margin:20px 0 26px; }
+#nsp-home .nsp-service-card { border-radius:16px; box-shadow:0 5px 20px #173b2a06; }
+#nsp-home .nsp-service-card-body { padding:24px; }
+#nsp-home .nsp-service-card-body h3 { font-size:21px; letter-spacing:-.025em; }
+#nsp-home .nsp-service-card-body p { font-size:15px; line-height:1.7; }
+#nsp-home .nsp-service-card-bottom { padding-top:20px; }
+#nsp-home .nsp-home-services-link { margin:22px 0; text-align:center; }
+#nsp-home .nsp-home-services-link a { display:inline-flex; align-items:center; gap:14px; padding:12px 22px; border:1px solid var(--home-line); border-radius:8px; background:white; font-size:14px; font-weight:700; }
+#nsp-home #clinox-why-choose-3 { padding:80px 0; }
+#nsp-home .clinox-why-choose-content-3 > .row { align-items:center; row-gap:36px; }
+#nsp-home .clinox-why-choose-feature-wrap-3 { margin-top:28px; gap:14px; }
+#nsp-home .clinox-why-choose-inner-item-3 { width:calc(50% - 7px); margin:0; padding:18px 12px; border:1px solid var(--home-line); border-radius:12px; background:white; }
+#nsp-home .clinox-why-choose-inner-item-3 .inner-icon { flex:0 0 42px; margin-inline-end:12px; }
+#nsp-home .clinox-why-choose-inner-item-3 .inner-icon img { max-width:38px; }
+#nsp-home .clinox-why-choose-inner-item-3 h3 { font-size:15px; line-height:1.5; }
+#nsp-home .clinox-why-choose-img-3 .inner-img { border-radius:18px; overflow:hidden; }
+#nsp-home #clinox-fun-fact { padding:44px 0; }
+#nsp-home .clinox-fun-fact-item-3 { padding:12px 0; }
+#nsp-home .clinox-fun-fact-item-3 h3 { font-size:46px; letter-spacing:-.04em; }
+#nsp-home .clinox-fun-fact-item-3 p { font-size:14px; margin-top:8px; }
+#nsp-home #clinox-faq-3 { padding:80px 0; }
+#nsp-home .clinox-faq-img-3 .inner-img { border-radius:18px; overflow:hidden; }
+#nsp-home .clinox-faq-accordion-3 { margin-top:28px; }
+#nsp-home .accordion-item { border:1px solid var(--home-line); border-radius:12px; overflow:hidden; margin-bottom:12px; box-shadow:none; }
+#nsp-home .accordion-button { font-size:16px; padding:20px; line-height:1.5; }
+#nsp-home .accordion-body { font-size:15px; line-height:1.8; }
+#nsp-home #clinox-how-work-3 { padding:60px 0; background:#f6f9f7; }
+#nsp-home .nsp-booking-process-heading { margin-bottom:32px; }
+#nsp-home .nsp-booking-process { border-radius:16px; box-shadow:0 6px 24px #173b2a04; }
+#nsp-home .nsp-booking-process li h3 { font-size:16px; }
+#nsp-home .nsp-booking-process li p { font-size:14px; line-height:1.7; }
+#nsp-home #clinox-testimonial-3 { padding:80px 0; }
+#nsp-home #clinox-project-3 { padding:70px 0; }
+#nsp-home .clinox-project-content-3 { padding-top:32px; }
+#nsp-home .clinox-project-item-3 { border-radius:14px; overflow:hidden; border:1px solid var(--home-line); }
+#nsp-home .clinox-project-item-3 .inner-text { box-shadow:none; }
+#nsp-home .clinox-project-item-3 .inner-text h3 { font-size:20px; }
+#nsp-home .clinox-project-top-content-3 { gap:32px; }
+#nsp-home .clinox-project-top-content-3 > div { flex:1; }
+#nsp-home .clinox-testimonial-text-wrap-3 h2 { font-size:clamp(28px,3vw,42px); line-height:1.25; letter-spacing:-.03em; }
+#nsp-home .clinox-testimonial-content-3 > .row { align-items:center; row-gap:32px; }
+#nsp-home .clinox-testimonial-img-3 { border-radius:18px; overflow:hidden; }
+#nsp-home .clenfix-testimonial-item-wrap-3 { border-radius:16px; }
+#nsp-home .clenfix-testimonial-item-3 .inner-decs { font-size:16px; line-height:1.85; }
+#nsp-home #clinox-blog-3 { padding:70px 0; background:#f6f9f7; }
+#nsp-home .clinox-blog-content-3 { padding-top:32px; }
+#nsp-home .clinox-blog-item-3 { border:1px solid var(--home-line); border-radius:16px; overflow:hidden; background:white; box-shadow:none; margin-bottom:24px; }
+#nsp-home .clinox-blog-item-3 .inner-img img { width:100%; aspect-ratio:1.6; object-fit:cover; }
+#nsp-home .clinox-blog-item-3 .inner-text { padding:24px; }
+#nsp-home .clinox-blog-item-3 h3 { font-size:21px; line-height:1.5; }
+#nsp-home .clinox-blog-item-3 .blog-meta { font-size:12px; padding-top:18px; }
+#nsp-home .clinox-blog-item-3 .read-more-btn a { border-radius:8px; }
+#nsp-home :is(a,button,select):focus-visible { outline:3px solid var(--home-blue); outline-offset:4px; }
+html[dir=rtl] #nsp-home :is(h2,h3) { letter-spacing:normal; }
+@media(max-width:991px) {
+    #nsp-home #clinox-estimate > .container { grid-template-columns:1fr; gap:20px; }
+    #nsp-home .clinox-about-text-area-3 { padding-inline-start:0; }
+    #nsp-home .clinox-about-img-3 { max-width:540px; margin:20px auto 30px; }
+    #nsp-home :is(#clinox-about-3,#clinox-why-choose-3,#clinox-faq-3,#clinox-testimonial-3,#clinox-blog-3) { padding-block:56px; }
+    #nsp-home #clinox-about-3 { padding-top:90px; }
+}
+@media(max-width:600px) {
+    #nsp-home .container { padding-inline:20px; }
+    #nsp-home #clinox-banner-3 { height:560px; min-height:0; }
+    #nsp-home .nsp-hero-copy { width:100%; padding-inline:0; }
+    #nsp-home .nsp-hero-copy h2 { font-size:38px; }
+    #nsp-home .nsp-hero-copy p { font-size:16px; }
+    #nsp-home .nsp-hero-actions { flex-wrap:wrap; }
+    #nsp-home .nsp-home-booking-controls { grid-template-columns:1fr; }
+    #nsp-home .clinox-about-img-3 { margin-inline:8px; }
+    #nsp-home .clinox-about-feature-list-3 .inner-img { display:none; }
+    #nsp-home .clinox-why-choose-inner-item-3 { width:100%; }
+    #nsp-home .clinox-fun-fact-item-3 h3 { font-size:36px; }
+    #nsp-home .nsp-service-card-body { padding:20px; }
+    #nsp-home .nsp-emergency-phones { flex-wrap:wrap; }
+}
+@media(prefers-reduced-motion:reduce) {
+    #nsp-home .wow { visibility:visible!important; animation:none!important; }
+    #nsp-home * { scroll-behavior:auto; transition:none!important; }
+}

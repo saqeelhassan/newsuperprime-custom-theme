@@ -21,6 +21,13 @@ function nsp_resource_hints( array $urls, string $relation_type ): array {
 }
 add_filter( 'wp_resource_hints', 'nsp_resource_hints', 10, 2 );
 
+add_action( 'wp_enqueue_scripts', function () {
+    if ( ! is_front_page() ) return;
+    $dependencies = [ 'nsp-main', 'nsp-service-catalog' ];
+    if ( nsp_is_arabic() ) $dependencies[] = 'nsp-rtl';
+    wp_enqueue_style( 'nsp-home-design', NSP_THEME_URI . '/assets/css/home.css', $dependencies, filemtime( NSP_THEME_DIR . '/assets/css/home.css' ) );
+}, 30 );
+
 function nsp_enqueue_assets() {
     $v   = NSP_THEME_VERSION;
     $uri = NSP_THEME_URI;
@@ -107,6 +114,10 @@ function nsp_enqueue_assets() {
     $dropdown_js_file = NSP_THEME_DIR . '/assets/js/nsp-dropdowns.js';
     $dropdown_js_ver  = file_exists( $dropdown_js_file ) ? filemtime( $dropdown_js_file ) : $v;
     wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.js', [], $dropdown_js_ver, true );
+    if ( is_front_page() ) {
+        wp_enqueue_script( 'nsp-about-services', $uri . '/assets/js/about-services.js', [], filemtime( NSP_THEME_DIR . '/assets/js/about-services.js' ), true );
+        wp_enqueue_script( 'nsp-home-booking', $uri . '/assets/js/home-booking.js', [], filemtime( NSP_THEME_DIR . '/assets/js/home-booking.js' ), true );
+    }
 
     // Pass dynamic data for JS
     wp_localize_script( 'nsp-main', 'nspData', [

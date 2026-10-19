@@ -151,6 +151,10 @@ add_filter( 'body_class', function ( $classes ) {
  */
 function nsp_translate_menu_title( string $title ): string {
     if ( ! nsp_is_arabic() ) return $title;
+    if ( $title === 'All Services' ) return 'جميع الخدمات';
+    foreach ( nsp_service_directory() as $entry ) {
+        if ( html_entity_decode( $title, ENT_QUOTES, 'UTF-8' ) === $entry['title'] ) return esc_html( $entry['ar'] );
+    }
 
     static $map = [
         'Home'              => 'الرئيسية',

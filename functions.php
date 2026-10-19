@@ -6,6 +6,7 @@ define( 'NSP_THEME_DIR', get_template_directory() );
 define( 'NSP_THEME_URI', get_template_directory_uri() );
 
 require_once NSP_THEME_DIR . '/inc/lang.php';
+require_once NSP_THEME_DIR . '/inc/service-directory.php';
 require_once NSP_THEME_DIR . '/inc/theme-setup.php';
 require_once NSP_THEME_DIR . '/inc/enqueue.php';
 require_once NSP_THEME_DIR . '/inc/post-types.php';
@@ -18,6 +19,9 @@ require_once NSP_THEME_DIR . '/inc/breadcrumb.php';
 require_once NSP_THEME_DIR . '/inc/helpers.php';
 require_once NSP_THEME_DIR . '/inc/nav-walker.php';
 require_once NSP_THEME_DIR . '/inc/setup-demo-content.php';
+require_once NSP_THEME_DIR . '/inc/booking.php';
+require_once NSP_THEME_DIR . '/inc/service-catalog.php';
+require_once NSP_THEME_DIR . '/inc/special-offers.php';
 
 /**
  * Defines all service pages: title, URL slug, and which page template to use.

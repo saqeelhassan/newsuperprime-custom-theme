@@ -34,6 +34,7 @@ nsp_breadcrumb( '', nsp_t( 'Carpet Cleaning Service', 'خدمة تنظيف ال�
 						<li><?php nsp_te( 'Fast drying process', 'عملية تجفيف سريعة' ); ?></li>
 					</ul>
 				</div>
+				<?php nsp_booking_button( nsp_booking_service_id() ?: get_queried_object_id() ); ?>
 				<div class="clinox-btn mt-30">
 					<a class="d-flex align-items-center justify-content-center" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><span><?php nsp_te( 'Get A Free Quote', 'احصل على عرض مجاني' ); ?></span></a>
 				</div>

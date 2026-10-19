@@ -211,36 +211,13 @@ function nsp_get_service_page_url( string $title ): string {
 }
 
 /**
- * Return service CPT terms as an array of ['slug', 'title'] — mirrors the
- * old services-data.php so existing markup can call nsp_get_services().
+ * Return published services for shared lists and estimate form choices.
  */
 function nsp_get_services(): array {
-    static $cache = null;
-    if ( $cache !== null ) return $cache;
-
-    $terms = get_terms( [
-        'taxonomy'   => 'service_category',
-        'hide_empty' => false,
-    ] );
-
-    if ( is_wp_error( $terms ) || empty( $terms ) ) {
-        $cache = [
-            [ 'slug' => 'pest-control',                           'title' => nsp_t( 'Pest Control Services', 'خدمات مكافحة الحشرات' ) ],
-            [ 'slug' => 'office-house-mosque-schools-cleaning',    'title' => nsp_t( 'Office, House, Mosque & Schools Cleaning', 'تنظيف المكاتب والمنازل والمساجد والمدارس' ) ],
-            [ 'slug' => 'ac-repairing-cleaning',                  'title' => nsp_t( 'AC Repairing & Cleaning Services', 'خدمات إصلاح وتنظيف المكيفات' ) ],
-            [ 'slug' => 'car-detailing',                          'title' => nsp_t( 'Car Detailing Services', 'خدمات تلميع السيارات' ) ],
-            [ 'slug' => 'car-upholstery',                         'title' => nsp_t( 'Car Upholstery Services', 'خدمات تنجيد السيارات' ) ],
-            [ 'slug' => 'car-window-tinting-body-ppf',            'title' => nsp_t( 'Car Window Tinting & Body PPF', 'تظليل زجاج السيارة وحماية الطلاء' ) ],
-        ];
-        return $cache;
-    }
-
-    $out = [];
-    foreach ( $terms as $t ) {
-        $out[] = [ 'slug' => $t->slug, 'title' => $t->name ];
-    }
-    $cache = $out;
-    return $cache;
+    $posts = get_posts( [ 'post_type' => 'service', 'post_status' => 'publish', 'numberposts' => -1, 'orderby' => 'menu_order title', 'order' => 'ASC' ] );
+    return array_map( function ( $post ) {
+        return [ 'slug' => $post->post_name, 'title' => nsp_service_ar( $post->post_title, 'title' ) ?: html_entity_decode( $post->post_title, ENT_QUOTES, 'UTF-8' ) ];
+    }, $posts );
 }
 
 function nsp_seo_keyword_map(): array {
@@ -311,6 +288,11 @@ add_action( 'wp_head', function () {
  */
 function nsp_service_ar( string $en_title, string $key ): string {
     if ( ! nsp_is_arabic() ) return '';
+    foreach ( nsp_service_directory() as $entry ) {
+        if ( html_entity_decode( $en_title, ENT_QUOTES, 'UTF-8' ) === $entry['title'] ) {
+            return 'title' === $key ? $entry['ar'] : ( 'desc' === $key ? $entry['desc_ar'] : '' );
+        }
+    }
 
     static $map = [
         'Carpet Cleaning'              => [ 'title' => 'تنظيف السجاد',             'desc' => 'تنظيف عميق للسجاد يزيل البقع والغبار ومسببات الحساسية.' ],

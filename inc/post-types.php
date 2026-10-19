@@ -71,24 +71,6 @@ function nsp_register_post_types() {
         'menu_position' => 8,
     ] );
 
-    // ---------- Pricing ----------
-    register_post_type( 'pricing', [
-        'labels' => [
-            'name'          => esc_html__( 'Pricing Plans',          'newsuperprime' ),
-            'singular_name' => esc_html__( 'Pricing Plan',           'newsuperprime' ),
-            'add_new_item'  => esc_html__( 'Add New Pricing Plan',   'newsuperprime' ),
-            'edit_item'     => esc_html__( 'Edit Pricing Plan',      'newsuperprime' ),
-        ],
-        'public'        => false,
-        'show_ui'       => true,
-        'has_archive'   => false,
-        'rewrite'       => false,
-        'supports'      => [ 'title', 'editor', 'thumbnail' ],
-        'show_in_rest'  => true,
-        'menu_icon'     => 'dashicons-tag',
-        'menu_position' => 9,
-    ] );
-
     // ---------- FAQ ----------
     register_post_type( 'faq', [
         'labels' => [

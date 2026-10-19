@@ -40,11 +40,6 @@ function nsp_setup_demo_content() {
             'template' => '',
             'slug'     => 'team',
         ],
-        'pricing' => [
-            'title'    => 'Pricing',
-            'template' => 'page-templates/tpl-pricing.php',
-            'slug'     => 'pricing',
-        ],
         'faq' => [
             'title'    => 'FAQ',
             'template' => 'page-templates/tpl-faq.php',
@@ -355,47 +350,6 @@ function nsp_setup_demo_content() {
     }
 
     // ------------------------------------------------------------------ //
-    // 6. PRICING PLANS (custom post type)
-    // ------------------------------------------------------------------ //
-    $plans = [
-        [
-            'title'    => 'One Service',
-            'price'    => 'SAR 499',
-            'features' => "Choose any one cleaning service\nFixed quote before work starts\nSingle team visit\nBook when needed, no membership",
-            'featured' => '0',
-        ],
-        [
-            'title'    => 'Add More Services',
-            'price'    => 'SAR 999',
-            'features' => "Combine any 2 to 3 services\nBetter value than separate bookings\nCoordinated same-day schedule\nOne invoice for all services",
-            'featured' => '1',
-        ],
-        [
-            'title'    => 'All Services Bundle',
-            'price'    => 'SAR 1499',
-            'features' => "Add all required services together\nWhole home or office solution\nPriority scheduling\nCustom scope after inspection",
-            'featured' => '0',
-        ],
-    ];
-
-    foreach ( $plans as $plan ) {
-        if ( nsp_post_exists( $plan['title'], 'pricing' ) ) continue;
-
-        $id = wp_insert_post( [
-            'post_title'  => $plan['title'],
-            'post_status' => 'publish',
-            'post_type'   => 'pricing',
-        ] );
-
-        if ( ! is_wp_error( $id ) ) {
-            update_post_meta( $id, '_nsp_pricing_price',    $plan['price'] );
-            update_post_meta( $id, '_nsp_pricing_features', $plan['features'] );
-            update_post_meta( $id, '_nsp_pricing_featured', $plan['featured'] );
-            update_post_meta( $id, '_nsp_pricing_cta_url',  home_url( '/booking/' ) );
-        }
-    }
-
-    // ------------------------------------------------------------------ //
     // 7. FAQs (custom post type)
     // ------------------------------------------------------------------ //
     $faqs = [
@@ -547,7 +501,6 @@ function nsp_setup_demo_content() {
                 'about'    => 'About',
                 'services' => 'Services',
                 'faq'      => 'FAQ',
-                'pricing'  => 'Pricing',
                 'contact'  => 'Contact',
                 'blog'     => 'Blog',
             ];
