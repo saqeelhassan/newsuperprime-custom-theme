@@ -82,45 +82,84 @@ Last change:    00/00/00
 					wow.init();
 				}
 			},
-			StickyHeader: function (){
-				var $header = jQuery('.clinox-header-section');
-				function updateStickyHeader() {
-					if (window.matchMedia && window.matchMedia('(max-width: 991px)').matches) {
-						$header.removeClass('sticky-on');
-						jQuery('body').css('padding-top', '');
-						return;
-					}
-
-					if (jQuery(window).scrollTop() > 250) {
-						$header.addClass('sticky-on');
-						jQuery('body').css('padding-top', $header.outerHeight() + 'px');
-					} else {
-						$header.removeClass('sticky-on');
-						jQuery('body').css('padding-top', '');
-					}
-				}
-
-				jQuery(window).on('scroll resize', updateStickyHeader);
-				updateStickyHeader();
-			},
-			HeroRipples: function () {
-				var $hero = jQuery('#clinox-banner-3');
-				if (!$hero.length) return; // home hero only
-				if (typeof jQuery.fn.ripples !== 'function') return;
-				if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-				try {
-					$hero.ripples({
-                        imageUrl: $hero.attr('data-background'),
-						// Use hero section background (set via data-background / CSS)
-						resolution: 256,
-						dropRadius: 18,
-						perturbance: 0.02,
-					});
-				} catch (e) {
-					// If WebGL/float textures unsupported, silently skip
-				}
-			},
+            StickyHeader: function () {
+                var header = document.querySelector('.clinox-header-section');
+                if (!header) return;
+                var sticky = false, height = 0, resizeTimer;
+                function update() {
+                    var next = innerWidth >= 992 && window.scrollY > 250;
+                    if (next === sticky) return;
+                    sticky = next;
+                    header.classList.toggle('sticky-on', sticky);
+                    if (sticky) height = header.getBoundingClientRect().height;
+                    document.body.style.paddingTop = sticky ? height + 'px' : '';
+                }
+                window.addEventListener('scroll', update, {passive:true});
+                window.addEventListener('resize', function () {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function () {
+                        if (sticky) { height = header.getBoundingClientRect().height; document.body.style.paddingTop = height + 'px'; }
+                        update();
+                    }, 150);
+                });
+                update();
+            },
+            HeroRipples: function () {
+                var hero = document.querySelector('#clinox-banner-3');
+                if (!hero) return;
+                var inView = true, resizeTimer, loading = false;
+                var media = matchMedia('(max-width: 991px), (pointer: coarse), (any-pointer: coarse), (prefers-reduced-motion: reduce)');
+                function allowed() {
+                    return !media.matches &&
+                        !(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) &&
+                        !(navigator.connection && navigator.connection.saveData);
+                }
+                function sync() {
+                    var instance = $(hero).data('ripples');
+                    if (!instance) return;
+                    if (!allowed() || !inView || document.hidden) {
+                        $(hero).ripples('pause').ripples('hide');
+                        hero.classList.add('nsp-ripples-paused');
+                        hero.style.backgroundImage = 'url("' + hero.dataset.background + '")';
+                    } else { hero.classList.remove('nsp-ripples-paused'); $(hero).ripples('show').ripples('play'); }
+                }
+                function initialize() {
+                    if (!allowed() || document.hidden || !inView || $(hero).data('ripples')) return;
+                    try {
+                        $(hero).ripples({imageUrl: hero.dataset.background, resolution: 256, dropRadius: 18, perturbance: 0.02});
+                        sync();
+                    } catch (error) { /* Keep the existing static slides on unsupported WebGL. */ }
+                }
+                function loadAndInitialize() {
+                    if (!allowed() || document.hidden || !inView) return;
+                    if (typeof $.fn.ripples === 'function') return initialize();
+                    if (loading || !window.nspData || !nspData.ripplesUrl) return;
+                    loading = true;
+                    var script = document.createElement('script');
+                    script.id = 'nsp-ripples-js';
+                    script.src = nspData.ripplesUrl;
+                    script.defer = true;
+                    script.onload = initialize;
+                    script.onerror = function () { loading = false; };
+                    document.body.appendChild(script);
+                }
+                function schedule() {
+                    if (!allowed()) return sync();
+                    if ('requestIdleCallback' in window) requestIdleCallback(loadAndInitialize, {timeout: 2000});
+                    else setTimeout(loadAndInitialize, 200);
+                }
+                if ('IntersectionObserver' in window) new IntersectionObserver(function (entries) {
+                    inView = entries[0].isIntersecting;
+                    sync();
+                    if (inView && document.readyState === 'complete') schedule();
+                }).observe(hero);
+                document.addEventListener('visibilitychange', function () { sync(); if (!document.hidden) schedule(); });
+                window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(function () { sync(); schedule(); }, 150); });
+                media.addEventListener('change', function () { sync(); schedule(); });
+                if (navigator.connection) navigator.connection.addEventListener('change', function () { sync(); schedule(); });
+                if (document.readyState === 'complete') schedule();
+                else window.addEventListener('load', schedule, {once:true});
+            },
 			searchPopUp: function (){
 				if($('.search-box-outer').length) {
 					$('.search-box-outer').on('click', function() {

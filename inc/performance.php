@@ -78,3 +78,16 @@ remove_action( 'wp_head', 'wp_generator' );
 remove_action( 'wp_head', 'wlwmanifest_link' );
 remove_action( 'wp_head', 'rsd_link' );
 remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+
+/** Delay Site Kit's Google tag without losing its inline configuration queue. */
+add_filter( 'script_loader_tag', function ( $html, $handle, $src ) {
+    if ( is_admin() || ! preg_match( '~^https://www\.googletagmanager\.com/(?:gtag/js|gtm\.js)~', $src ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) return $html;
+    $tag = new WP_HTML_Tag_Processor( $html );
+    if ( ! $tag->next_tag( 'SCRIPT' ) ) return $html;
+    $tag->remove_attribute( 'src' );
+    $tag->remove_attribute( 'async' );
+    $tag->remove_attribute( 'defer' );
+    $tag->set_attribute( 'type', 'text/plain' );
+    $tag->set_attribute( 'data-nsp-tracking-src', $src );
+    return $tag->get_updated_html();
+}, 20, 3 );

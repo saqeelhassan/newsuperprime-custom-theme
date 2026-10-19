@@ -48,7 +48,7 @@
                 catch { /* Static slide image remains available without WebGL. */ }
             }
         }
-        if (!ripple?.data('ripples')) hero.style.backgroundImage = `url("${image}")`;
+        if (!ripple?.data('ripples') || !ripple.data('ripples').visible) hero.style.backgroundImage = `url("${image}")`;
     }
     dots.forEach(button => button.addEventListener('click', () => showHero(Number(button.dataset.heroDot))));
     hero.filterCategory = category => {

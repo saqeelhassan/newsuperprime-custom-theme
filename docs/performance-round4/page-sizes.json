@@ -1,0 +1,39 @@
+{
+  "htmlBefore": 318142,
+  "htmlAfter": 231602,
+  "htmlGzipAfter": 25642,
+  "inlineCriticalBytes": 1462,
+  "inlineFontFaceCount": 0,
+  "criticalFiles": [
+    {
+      "file": "assets/css/critical-catalog-ar.css",
+      "bytes": 34093,
+      "gzipBytes": 7330
+    },
+    {
+      "file": "assets/css/critical-catalog-en.css",
+      "bytes": 31369,
+      "gzipBytes": 6948
+    },
+    {
+      "file": "assets/css/critical-home-ar.css",
+      "bytes": 40823,
+      "gzipBytes": 8009
+    },
+    {
+      "file": "assets/css/critical-home-en.css",
+      "bytes": 37786,
+      "gzipBytes": 7573
+    },
+    {
+      "file": "assets/css/critical-inner-ar.css",
+      "bytes": 37389,
+      "gzipBytes": 7934
+    },
+    {
+      "file": "assets/css/critical-inner-en.css",
+      "bytes": 34897,
+      "gzipBytes": 7577
+    }
+  ]
+}

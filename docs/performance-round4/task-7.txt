@@ -1,0 +1,1 @@
+No source change: core jQuery and Migrate are already footer group 1 on wp_enqueue_scripts. Migrate is retained because Waypoints uses the removed .load(fn) shorthand; Filterizr also uses bind/unbind. Admin and login are unaffected.

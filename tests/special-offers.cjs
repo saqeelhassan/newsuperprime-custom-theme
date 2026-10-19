@@ -31,6 +31,8 @@ const assert = require('node:assert/strict');
         assert.equal(await page.locator('#nsp-booking input[name=package]:checked').inputValue(), chosen);
         assert.match(await page.locator('#nsp-booking input[name=package]:checked').locator('..').innerText(), /5 Seater Sofa/);
         await page.keyboard.press('Escape');
+        // Native dialog close events are queued after the Escape key event.
+        await page.waitForFunction(() => !['nsp-offers-open', 'nsp-preview-open', 'nsp-booking-open'].some(name => document.documentElement.classList.contains(name)));
         assert.equal(await page.locator('html').evaluate(el => el.classList.contains('nsp-offers-open') || el.classList.contains('nsp-preview-open') || el.classList.contains('nsp-booking-open')), false);
         // Returning visitors must not see the popup on other pages or reloads.
         await page.goto(`http://localhost/newsuperprime-wordpress/about/?lang=en&offer_check=${Date.now()}`, { waitUntil: 'networkidle' });

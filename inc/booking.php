@@ -76,13 +76,13 @@ function nsp_service_price_label( int $id ): string {
 add_action( 'wp_enqueue_scripts', function () {
     if ( ! nsp_special_offer_items() && ! nsp_is_service_catalog() && ! is_front_page() && ! is_singular( 'service' ) && ! ( is_page() && strpos( (string) get_page_template_slug(), 'page-templates/tpl-service-' ) === 0 ) ) return;
     foreach ( [ 'css' => 'style', 'js' => 'script' ] as $extension => $type ) {
-        $path = '/assets/' . $extension . '/booking.' . $extension;
+        $path = '/assets/' . $extension . '/booking' . ( 'js' === $extension ? '.min' : '' ) . '.' . $extension;
         $version = filemtime( NSP_THEME_DIR . $path );
         if ( 'style' === $type ) wp_enqueue_style( 'nsp-booking', NSP_THEME_URI . $path, [ 'nsp-main' ], $version );
         else wp_enqueue_script( 'nsp-booking', NSP_THEME_URI . $path, [ 'jquery' ], $version, nsp_script_args() );
     }
     wp_enqueue_style( 'nsp-service-preview', NSP_THEME_URI . '/assets/css/service-preview.css', [ 'nsp-booking' ], filemtime( NSP_THEME_DIR . '/assets/css/service-preview.css' ) );
-    wp_enqueue_script( 'nsp-service-preview', NSP_THEME_URI . '/assets/js/service-preview.js', [ 'jquery', 'nsp-booking' ], filemtime( NSP_THEME_DIR . '/assets/js/service-preview.js' ), nsp_script_args() );
+    wp_enqueue_script( 'nsp-service-preview', NSP_THEME_URI . '/assets/js/service-preview.min.js', [ 'jquery', 'nsp-booking' ], filemtime( NSP_THEME_DIR . '/assets/js/service-preview.min.js' ), nsp_script_args() );
 } );
 
 add_action( 'wp_footer', function () {

@@ -1,0 +1,542 @@
+--- before/assets/js/script.js
++++ after/assets/js/script.js
+@@ -82,45 +82,84 @@
+ 					wow.init();
+ 				}
+ 			},
+-			StickyHeader: function (){
+-				var $header = jQuery('.clinox-header-section');
+-				function updateStickyHeader() {
+-					if (window.matchMedia && window.matchMedia('(max-width: 991px)').matches) {
+-						$header.removeClass('sticky-on');
+-						jQuery('body').css('padding-top', '');
+-						return;
+-					}
+-
+-					if (jQuery(window).scrollTop() > 250) {
+-						$header.addClass('sticky-on');
+-						jQuery('body').css('padding-top', $header.outerHeight() + 'px');
+-					} else {
+-						$header.removeClass('sticky-on');
+-						jQuery('body').css('padding-top', '');
+-					}
+-				}
+-
+-				jQuery(window).on('scroll resize', updateStickyHeader);
+-				updateStickyHeader();
+-			},
+-			HeroRipples: function () {
+-				var $hero = jQuery('#clinox-banner-3');
+-				if (!$hero.length) return; // home hero only
+-				if (typeof jQuery.fn.ripples !== 'function') return;
+-				if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+-
+-				try {
+-					$hero.ripples({
+-                        imageUrl: $hero.attr('data-background'),
+-						// Use hero section background (set via data-background / CSS)
+-						resolution: 256,
+-						dropRadius: 18,
+-						perturbance: 0.02,
+-					});
+-				} catch (e) {
+-					// If WebGL/float textures unsupported, silently skip
+-				}
+-			},
++            StickyHeader: function () {
++                var header = document.querySelector('.clinox-header-section');
++                if (!header) return;
++                var sticky = false, height = 0, resizeTimer;
++                function update() {
++                    var next = innerWidth >= 992 && window.scrollY > 250;
++                    if (next === sticky) return;
++                    sticky = next;
++                    header.classList.toggle('sticky-on', sticky);
++                    if (sticky) height = header.getBoundingClientRect().height;
++                    document.body.style.paddingTop = sticky ? height + 'px' : '';
++                }
++                window.addEventListener('scroll', update, {passive:true});
++                window.addEventListener('resize', function () {
++                    clearTimeout(resizeTimer);
++                    resizeTimer = setTimeout(function () {
++                        if (sticky) { height = header.getBoundingClientRect().height; document.body.style.paddingTop = height + 'px'; }
++                        update();
++                    }, 150);
++                });
++                update();
++            },
++            HeroRipples: function () {
++                var hero = document.querySelector('#clinox-banner-3');
++                if (!hero) return;
++                var inView = true, resizeTimer, loading = false;
++                var media = matchMedia('(max-width: 991px), (pointer: coarse), (any-pointer: coarse), (prefers-reduced-motion: reduce)');
++                function allowed() {
++                    return !media.matches &&
++                        !(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) &&
++                        !(navigator.connection && navigator.connection.saveData);
++                }
++                function sync() {
++                    var instance = $(hero).data('ripples');
++                    if (!instance) return;
++                    if (!allowed() || !inView || document.hidden) {
++                        $(hero).ripples('pause').ripples('hide');
++                        hero.classList.add('nsp-ripples-paused');
++                        hero.style.backgroundImage = 'url("' + hero.dataset.background + '")';
++                    } else { hero.classList.remove('nsp-ripples-paused'); $(hero).ripples('show').ripples('play'); }
++                }
++                function initialize() {
++                    if (!allowed() || document.hidden || !inView || $(hero).data('ripples')) return;
++                    try {
++                        $(hero).ripples({imageUrl: hero.dataset.background, resolution: 256, dropRadius: 18, perturbance: 0.02});
++                        sync();
++                    } catch (error) { /* Keep the existing static slides on unsupported WebGL. */ }
++                }
++                function loadAndInitialize() {
++                    if (!allowed() || document.hidden || !inView) return;
++                    if (typeof $.fn.ripples === 'function') return initialize();
++                    if (loading || !window.nspData || !nspData.ripplesUrl) return;
++                    loading = true;
++                    var script = document.createElement('script');
++                    script.id = 'nsp-ripples-js';
++                    script.src = nspData.ripplesUrl;
++                    script.defer = true;
++                    script.onload = initialize;
++                    script.onerror = function () { loading = false; };
++                    document.body.appendChild(script);
++                }
++                function schedule() {
++                    if (!allowed()) return sync();
++                    if ('requestIdleCallback' in window) requestIdleCallback(loadAndInitialize, {timeout: 2000});
++                    else setTimeout(loadAndInitialize, 200);
++                }
++                if ('IntersectionObserver' in window) new IntersectionObserver(function (entries) {
++                    inView = entries[0].isIntersecting;
++                    sync();
++                    if (inView && document.readyState === 'complete') schedule();
++                }).observe(hero);
++                document.addEventListener('visibilitychange', function () { sync(); if (!document.hidden) schedule(); });
++                window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(function () { sync(); schedule(); }, 150); });
++                media.addEventListener('change', function () { sync(); schedule(); });
++                if (navigator.connection) navigator.connection.addEventListener('change', function () { sync(); schedule(); });
++                if (document.readyState === 'complete') schedule();
++                else window.addEventListener('load', schedule, {once:true});
++            },
+ 			searchPopUp: function (){
+ 				if($('.search-box-outer').length) {
+ 					$('.search-box-outer').on('click', function() {
+--- before/assets/js/jquery.ripples.source.js
++++ after/assets/js/jquery.ripples.source.js
+@@ -0,0 +1,330 @@
++/**
++ * jQuery Ripples plugin v0.6.3 / https://github.com/sirxemic/jquery.ripples
++ * MIT License; @author sirxemic / https://sirxemic.com/
++ * Theme patch: cached texture bounds and debounced resize.
++ */
++!function(e, t) {
++    "object" == typeof exports && "undefined" != typeof module ? t(require("jquery")) : "function" == typeof define && define.amd ? define([ "jquery" ], t) : t(e.jQuery || e.$);
++}(this, function(e) {
++    "use strict";
++    function t(e) {
++        return "%" == e[e.length - 1];
++    }
++    function r(e) {
++        var t = e.split(" ");
++        if (1 !== t.length) return t.map(function(t) {
++            switch (e) {
++              case "center":
++                return "50%";
++
++              case "top":
++              case "left":
++                return "0";
++
++              case "right":
++              case "bottom":
++                return "100%";
++
++              default:
++                return t;
++            }
++        });
++        switch (e) {
++          case "center":
++            return [ "50%", "50%" ];
++
++          case "top":
++            return [ "50%", "0" ];
++
++          case "bottom":
++            return [ "50%", "100%" ];
++
++          case "left":
++            return [ "0", "50%" ];
++
++          case "right":
++            return [ "100%", "50%" ];
++
++          default:
++            return [ e, "50%" ];
++        }
++    }
++    function i(e, t, r) {
++        function i(e, t) {
++            var r = s.createShader(e);
++            if (s.shaderSource(r, t), s.compileShader(r), !s.getShaderParameter(r, s.COMPILE_STATUS)) throw new Error("compile error: " + s.getShaderInfoLog(r));
++            return r;
++        }
++        var o = {};
++        if (o.id = s.createProgram(), s.attachShader(o.id, i(s.VERTEX_SHADER, e)), s.attachShader(o.id, i(s.FRAGMENT_SHADER, t)), 
++        s.linkProgram(o.id), !s.getProgramParameter(o.id, s.LINK_STATUS)) throw new Error("link error: " + s.getProgramInfoLog(o.id));
++        o.uniforms = {}, o.locations = {}, s.useProgram(o.id), s.enableVertexAttribArray(0);
++        for (var n, a, u = /uniform (\w+) (\w+)/g, h = e + t; null != (n = u.exec(h)); ) a = n[2], 
++        o.locations[a] = s.getUniformLocation(o.id, a);
++        return o;
++    }
++    function o(e, t) {
++        s.activeTexture(s.TEXTURE0 + (t || 0)), s.bindTexture(s.TEXTURE_2D, e);
++    }
++    function n(e) {
++        var t = /url\(["']?([^"']*)["']?\)/.exec(e);
++        return null == t ? null : t[1];
++    }
++    function a(e) {
++        return e.match(/^data:/);
++    }
++    var s, u = (e = e && "default" in e ? e.default : e)(window), h = function() {
++        function e(e, t, i) {
++            var o = "OES_texture_" + e, n = o + "_linear", a = n in r, s = [ o ];
++            return a && s.push(n), {
++                type: t,
++                arrayType: i,
++                linearSupport: a,
++                extensions: s
++            };
++        }
++        var t = document.createElement("canvas");
++        if (!(s = t.getContext("webgl") || t.getContext("experimental-webgl"))) return null;
++        var r = {};
++        if ([ "OES_texture_float", "OES_texture_half_float", "OES_texture_float_linear", "OES_texture_half_float_linear" ].forEach(function(e) {
++            var t = s.getExtension(e);
++            t && (r[e] = t);
++        }), !r.OES_texture_float) return null;
++        var i = [];
++        i.push(e("float", s.FLOAT, Float32Array)), r.OES_texture_half_float && i.push(e("half_float", r.OES_texture_half_float.HALF_FLOAT_OES, null));
++        var o = s.createTexture(), n = s.createFramebuffer();
++        s.bindFramebuffer(s.FRAMEBUFFER, n), s.bindTexture(s.TEXTURE_2D, o), s.texParameteri(s.TEXTURE_2D, s.TEXTURE_MIN_FILTER, s.NEAREST), 
++        s.texParameteri(s.TEXTURE_2D, s.TEXTURE_MAG_FILTER, s.NEAREST), s.texParameteri(s.TEXTURE_2D, s.TEXTURE_WRAP_S, s.CLAMP_TO_EDGE), 
++        s.texParameteri(s.TEXTURE_2D, s.TEXTURE_WRAP_T, s.CLAMP_TO_EDGE);
++        for (var a = null, u = 0; u < i.length; u++) if (s.texImage2D(s.TEXTURE_2D, 0, s.RGBA, 32, 32, 0, s.RGBA, i[u].type, null), 
++        s.framebufferTexture2D(s.FRAMEBUFFER, s.COLOR_ATTACHMENT0, s.TEXTURE_2D, o, 0), 
++        s.checkFramebufferStatus(s.FRAMEBUFFER) === s.FRAMEBUFFER_COMPLETE) {
++            a = i[u];
++            break;
++        }
++        return a;
++    }(), d = function(e, t) {
++        try {
++            return new ImageData(e, t);
++        } catch (r) {
++            return document.createElement("canvas").getContext("2d").createImageData(e, t);
++        }
++    }(32, 32);
++    e("head").prepend("<style>.jquery-ripples { position: relative; z-index: 0; }</style>");
++    var c = function(t, r) {
++        function i() {
++            o.destroyed || (o.step(), requestAnimationFrame(i));
++        }
++        var o = this;
++        this.$el = e(t), this.interactive = r.interactive, this.resolution = r.resolution, 
++        this.textureDelta = new Float32Array([ 1 / this.resolution, 1 / this.resolution ]), 
++        this.perturbance = r.perturbance, this.dropRadius = r.dropRadius, this.crossOrigin = r.crossOrigin, 
++        this.imageUrl = r.imageUrl;
++        var n = document.createElement("canvas");
++        n.width = this.$el.innerWidth(), n.height = this.$el.innerHeight(), this.canvas = n, 
++        this.$canvas = e(n), this.$canvas.css({
++            position: "absolute",
++            left: 0,
++            top: 0,
++            right: 0,
++            bottom: 0,
++            zIndex: -1
++        }), this.$el.addClass("jquery-ripples").append(n), this.context = s = n.getContext("webgl") || n.getContext("experimental-webgl"), 
++        h.extensions.forEach(function(e) {
++            s.getExtension(e);
++        }), this.updateSize = this.updateSize.bind(this), this.onResize = function(){ clearTimeout(o.resizeTimer); o.resizeTimer = setTimeout(o.updateSize, 150); }, e(window).on("resize", this.onResize), 
++        this.textures = [], this.framebuffers = [], this.bufferWriteIndex = 0, this.bufferReadIndex = 1;
++        for (var a = h.arrayType, u = a ? new a(this.resolution * this.resolution * 4) : null, d = 0; d < 2; d++) {
++            var c = s.createTexture(), f = s.createFramebuffer();
++            s.bindFramebuffer(s.FRAMEBUFFER, f), s.bindTexture(s.TEXTURE_2D, c), s.texParameteri(s.TEXTURE_2D, s.TEXTURE_MIN_FILTER, h.linearSupport ? s.LINEAR : s.NEAREST), 
++            s.texParameteri(s.TEXTURE_2D, s.TEXTURE_MAG_FILTER, h.linearSupport ? s.LINEAR : s.NEAREST), 
++            s.texParameteri(s.TEXTURE_2D, s.TEXTURE_WRAP_S, s.CLAMP_TO_EDGE), s.texParameteri(s.TEXTURE_2D, s.TEXTURE_WRAP_T, s.CLAMP_TO_EDGE), 
++            s.texImage2D(s.TEXTURE_2D, 0, s.RGBA, this.resolution, this.resolution, 0, s.RGBA, h.type, u), 
++            s.framebufferTexture2D(s.FRAMEBUFFER, s.COLOR_ATTACHMENT0, s.TEXTURE_2D, c, 0), 
++            this.textures.push(c), this.framebuffers.push(f);
++        }
++        this.quad = s.createBuffer(), s.bindBuffer(s.ARRAY_BUFFER, this.quad), s.bufferData(s.ARRAY_BUFFER, new Float32Array([ -1, -1, 1, -1, 1, 1, -1, 1 ]), s.STATIC_DRAW), 
++        this.initShaders(), this.initTexture(), this.setTransparentTexture(), this.loadImage(), 
++        s.clearColor(0, 0, 0, 0), s.blendFunc(s.SRC_ALPHA, s.ONE_MINUS_SRC_ALPHA), this.visible = !0, 
++        this.running = !0, this.inited = !0, this.destroyed = !1, this.setupPointerEvents(), 
++        requestAnimationFrame(i);
++    };
++    c.DEFAULTS = {
++        imageUrl: null,
++        resolution: 256,
++        dropRadius: 20,
++        perturbance: .03,
++        interactive: !0,
++        crossOrigin: ""
++    }, c.prototype = {
++        setupPointerEvents: function() {
++            function e() {
++                return r.visible && r.running && r.interactive;
++            }
++            function t(t, i) {
++                e() && r.dropAtPointer(t, r.dropRadius * (i ? 1.5 : 1), i ? .14 : .01);
++            }
++            var r = this;
++            this.$el.on("mousemove.ripples", function(e) {
++                t(e);
++            }).on("touchmove.ripples touchstart.ripples", function(e) {
++                for (var r = e.originalEvent.changedTouches, i = 0; i < r.length; i++) t(r[i]);
++            }).on("mousedown.ripples", function(e) {
++                t(e, !0);
++            });
++        },
++        loadImage: function() {
++            var e = this;
++            s = this.context;
++            var t = this.imageUrl || n(this.originalCssBackgroundImage) || n(this.$el.css("backgroundImage"));
++            if (t != this.imageSource) if (this.imageSource = t, this.imageSource) {
++                var r = new Image;
++                r.onload = function() {
++                    function t(e) {
++                        return 0 == (e & e - 1);
++                    }
++                    s = e.context;
++                    e.boundariesReady = false;
++                    var i = t(r.width) && t(r.height) ? s.REPEAT : s.CLAMP_TO_EDGE;
++                    s.bindTexture(s.TEXTURE_2D, e.backgroundTexture), s.texParameteri(s.TEXTURE_2D, s.TEXTURE_WRAP_S, i), 
++                    s.texParameteri(s.TEXTURE_2D, s.TEXTURE_WRAP_T, i), s.texImage2D(s.TEXTURE_2D, 0, s.RGBA, s.RGBA, s.UNSIGNED_BYTE, r), 
++                    e.backgroundWidth = r.width, e.backgroundHeight = r.height; if (e.visible !== false) e.hideCssBackground();
++                }, r.onerror = function() {
++                    s = e.context, e.setTransparentTexture();
++                }, r.crossOrigin = a(this.imageSource) ? null : this.crossOrigin, r.src = this.imageSource;
++            } else this.setTransparentTexture();
++        },
++        step: function() {
++            s = this.context, this.visible && (this.computeTextureBoundaries(), this.running && this.update(), 
++            this.render());
++        },
++        drawQuad: function() {
++            s.bindBuffer(s.ARRAY_BUFFER, this.quad), s.vertexAttribPointer(0, 2, s.FLOAT, !1, 0, 0), 
++            s.drawArrays(s.TRIANGLE_FAN, 0, 4);
++        },
++        render: function() {
++            s.bindFramebuffer(s.FRAMEBUFFER, null), s.viewport(0, 0, this.canvas.width, this.canvas.height), 
++            s.enable(s.BLEND), s.clear(s.COLOR_BUFFER_BIT | s.DEPTH_BUFFER_BIT), s.useProgram(this.renderProgram.id), 
++            o(this.backgroundTexture, 0), o(this.textures[0], 1), s.uniform1f(this.renderProgram.locations.perturbance, this.perturbance), 
++            s.uniform2fv(this.renderProgram.locations.topLeft, this.renderProgram.uniforms.topLeft), 
++            s.uniform2fv(this.renderProgram.locations.bottomRight, this.renderProgram.uniforms.bottomRight), 
++            s.uniform2fv(this.renderProgram.locations.containerRatio, this.renderProgram.uniforms.containerRatio), 
++            s.uniform1i(this.renderProgram.locations.samplerBackground, 0), s.uniform1i(this.renderProgram.locations.samplerRipples, 1), 
++            this.drawQuad(), s.disable(s.BLEND);
++        },
++        update: function() {
++            s.viewport(0, 0, this.resolution, this.resolution), s.bindFramebuffer(s.FRAMEBUFFER, this.framebuffers[this.bufferWriteIndex]), 
++            o(this.textures[this.bufferReadIndex]), s.useProgram(this.updateProgram.id), this.drawQuad(), 
++            this.swapBufferIndices();
++        },
++        swapBufferIndices: function() {
++            this.bufferWriteIndex = 1 - this.bufferWriteIndex, this.bufferReadIndex = 1 - this.bufferReadIndex;
++        },
++        computeTextureBoundaries: function() {
++            if (this.boundariesReady) return;
++            this.boundariesReady = true;
++            var e, i = this.$el.css("background-size"), o = this.$el.css("background-attachment"), n = r(this.$el.css("background-position"));
++            if ("fixed" == o ? ((e = {
++                left: window.pageXOffset,
++                top: window.pageYOffset
++            }).width = u.width(), e.height = u.height()) : ((e = this.$el.offset()).width = this.$el.innerWidth(), 
++            e.height = this.$el.innerHeight()), "cover" == i) var a = Math.max(e.width / this.backgroundWidth, e.height / this.backgroundHeight), s = this.backgroundWidth * a, h = this.backgroundHeight * a; else if ("contain" == i) var a = Math.min(e.width / this.backgroundWidth, e.height / this.backgroundHeight), s = this.backgroundWidth * a, h = this.backgroundHeight * a; else {
++                var s = (i = i.split(" "))[0] || "", h = i[1] || s;
++                t(s) ? s = e.width * parseFloat(s) / 100 : "auto" != s && (s = parseFloat(s)), t(h) ? h = e.height * parseFloat(h) / 100 : "auto" != h && (h = parseFloat(h)), 
++                "auto" == s && "auto" == h ? (s = this.backgroundWidth, h = this.backgroundHeight) : ("auto" == s && (s = this.backgroundWidth * (h / this.backgroundHeight)), 
++                "auto" == h && (h = this.backgroundHeight * (s / this.backgroundWidth)));
++            }
++            var d = n[0], c = n[1];
++            d = t(d) ? e.left + (e.width - s) * parseFloat(d) / 100 : e.left + parseFloat(d), 
++            c = t(c) ? e.top + (e.height - h) * parseFloat(c) / 100 : e.top + parseFloat(c);
++            var f = this.$el.offset();
++            this.renderProgram.uniforms.topLeft = new Float32Array([ (f.left - d) / s, (f.top - c) / h ]), 
++            this.renderProgram.uniforms.bottomRight = new Float32Array([ this.renderProgram.uniforms.topLeft[0] + this.$el.innerWidth() / s, this.renderProgram.uniforms.topLeft[1] + this.$el.innerHeight() / h ]);
++            var l = Math.max(this.canvas.width, this.canvas.height);
++            this.renderProgram.uniforms.containerRatio = new Float32Array([ this.canvas.width / l, this.canvas.height / l ]);
++        },
++        initShaders: function() {
++            var e = [ "attribute vec2 vertex;", "varying vec2 coord;", "void main() {", "coord = vertex * 0.5 + 0.5;", "gl_Position = vec4(vertex, 0.0, 1.0);", "}" ].join("\n");
++            this.dropProgram = i(e, [ "precision highp float;", "const float PI = 3.141592653589793;", "uniform sampler2D texture;", "uniform vec2 center;", "uniform float radius;", "uniform float strength;", "varying vec2 coord;", "void main() {", "vec4 info = texture2D(texture, coord);", "float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - coord) / radius);", "drop = 0.5 - cos(drop * PI) * 0.5;", "info.r += drop * strength;", "gl_FragColor = info;", "}" ].join("\n")), 
++            this.updateProgram = i(e, [ "precision highp float;", "uniform sampler2D texture;", "uniform vec2 delta;", "varying vec2 coord;", "void main() {", "vec4 info = texture2D(texture, coord);", "vec2 dx = vec2(delta.x, 0.0);", "vec2 dy = vec2(0.0, delta.y);", "float average = (", "texture2D(texture, coord - dx).r +", "texture2D(texture, coord - dy).r +", "texture2D(texture, coord + dx).r +", "texture2D(texture, coord + dy).r", ") * 0.25;", "info.g += (average - info.r) * 2.0;", "info.g *= 0.995;", "info.r += info.g;", "gl_FragColor = info;", "}" ].join("\n")), 
++            s.uniform2fv(this.updateProgram.locations.delta, this.textureDelta), this.renderProgram = i([ "precision highp float;", "attribute vec2 vertex;", "uniform vec2 topLeft;", "uniform vec2 bottomRight;", "uniform vec2 containerRatio;", "varying vec2 ripplesCoord;", "varying vec2 backgroundCoord;", "void main() {", "backgroundCoord = mix(topLeft, bottomRight, vertex * 0.5 + 0.5);", "backgroundCoord.y = 1.0 - backgroundCoord.y;", "ripplesCoord = vec2(vertex.x, -vertex.y) * containerRatio * 0.5 + 0.5;", "gl_Position = vec4(vertex.x, -vertex.y, 0.0, 1.0);", "}" ].join("\n"), [ "precision highp float;", "uniform sampler2D samplerBackground;", "uniform sampler2D samplerRipples;", "uniform vec2 delta;", "uniform float perturbance;", "varying vec2 ripplesCoord;", "varying vec2 backgroundCoord;", "void main() {", "float height = texture2D(samplerRipples, ripplesCoord).r;", "float heightX = texture2D(samplerRipples, vec2(ripplesCoord.x + delta.x, ripplesCoord.y)).r;", "float heightY = texture2D(samplerRipples, vec2(ripplesCoord.x, ripplesCoord.y + delta.y)).r;", "vec3 dx = vec3(delta.x, heightX - height, 0.0);", "vec3 dy = vec3(0.0, heightY - height, delta.y);", "vec2 offset = -normalize(cross(dy, dx)).xz;", "float specular = pow(max(0.0, dot(offset, normalize(vec2(-0.6, 1.0)))), 4.0);", "gl_FragColor = texture2D(samplerBackground, backgroundCoord + offset * perturbance) + specular;", "}" ].join("\n")), 
++            s.uniform2fv(this.renderProgram.locations.delta, this.textureDelta);
++        },
++        initTexture: function() {
++            this.backgroundTexture = s.createTexture(), s.bindTexture(s.TEXTURE_2D, this.backgroundTexture), 
++            s.pixelStorei(s.UNPACK_FLIP_Y_WEBGL, 1), s.texParameteri(s.TEXTURE_2D, s.TEXTURE_MAG_FILTER, s.LINEAR), 
++            s.texParameteri(s.TEXTURE_2D, s.TEXTURE_MIN_FILTER, s.LINEAR);
++        },
++        setTransparentTexture: function() {
++            s.bindTexture(s.TEXTURE_2D, this.backgroundTexture), s.texImage2D(s.TEXTURE_2D, 0, s.RGBA, s.RGBA, s.UNSIGNED_BYTE, d);
++        },
++        hideCssBackground: function() {
++            var e = this.$el[0].style.backgroundImage;
++            "none" != e && (this.originalInlineCss = e, this.originalCssBackgroundImage = this.$el.css("backgroundImage"), 
++            this.$el.css("backgroundImage", "none"));
++        },
++        restoreCssBackground: function() {
++            this.$el.css("backgroundImage", this.originalInlineCss || "");
++        },
++        dropAtPointer: function(e, t, r) {
++            var i = parseInt(this.$el.css("border-left-width")) || 0, o = parseInt(this.$el.css("border-top-width")) || 0;
++            this.drop(e.pageX - this.$el.offset().left - i, e.pageY - this.$el.offset().top - o, t, r);
++        },
++        drop: function(e, t, r, i) {
++            s = this.context;
++            var n = this.canvas.width, a = this.canvas.height, u = Math.max(n, a);
++            r /= u;
++            var h = new Float32Array([ (2 * e - n) / u, (a - 2 * t) / u ]);
++            s.viewport(0, 0, this.resolution, this.resolution), s.bindFramebuffer(s.FRAMEBUFFER, this.framebuffers[this.bufferWriteIndex]), 
++            o(this.textures[this.bufferReadIndex]), s.useProgram(this.dropProgram.id), s.uniform2fv(this.dropProgram.locations.center, h), 
++            s.uniform1f(this.dropProgram.locations.radius, r), s.uniform1f(this.dropProgram.locations.strength, i), 
++            this.drawQuad(), this.swapBufferIndices();
++        },
++        updateSize: function() {
++            this.boundariesReady = false;
++            var e = this.$el.innerWidth(), t = this.$el.innerHeight();
++            e == this.canvas.width && t == this.canvas.height || (this.canvas.width = e, this.canvas.height = t);
++        },
++        destroy: function() {
++            this.$el.off(".ripples").removeClass("jquery-ripples").removeData("ripples"), s = null, 
++            e(window).off("resize", this.onResize), clearTimeout(this.resizeTimer), this.$canvas.remove(), this.restoreCssBackground(), 
++            this.destroyed = !0;
++        },
++        show: function() {
++            this.visible = !0, this.$canvas.show(), this.hideCssBackground();
++        },
++        hide: function() {
++            this.visible = !1, this.$canvas.hide(), this.restoreCssBackground();
++        },
++        pause: function() {
++            this.running = !1;
++        },
++        play: function() {
++            this.running = !0;
++        },
++        set: function(e, t) {
++            switch (e) {
++              case "dropRadius":
++              case "perturbance":
++              case "interactive":
++              case "crossOrigin":
++                this[e] = t;
++                break;
++
++              case "imageUrl":
++                this.imageUrl = t, this.loadImage();
++            }
++        }
++    };
++    var f = e.fn.ripples;
++    e.fn.ripples = function(t) {
++        if (!h) throw new Error("Your browser does not support WebGL, the OES_texture_float extension or rendering to floating point textures.");
++        var r = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : void 0;
++        return this.each(function() {
++            var i = e(this), o = i.data("ripples"), n = e.extend({}, c.DEFAULTS, i.data(), "object" == typeof t && t);
++            (o || "string" != typeof t) && (o ? "string" == typeof t && c.prototype[t].apply(o, r) : i.data("ripples", o = new c(this, n)));
++        });
++    }, e.fn.ripples.Constructor = c, e.fn.ripples.noConflict = function() {
++        return e.fn.ripples = f, this;
++    };
++});--- before/assets/js/jquery.ripples.min.js
++++ after/assets/js/jquery.ripples.min.js
+@@ -1,7 +1,6 @@
+ /**
+  * jQuery Ripples plugin v0.6.3 / https://github.com/sirxemic/jquery.ripples
+- * MIT License
+- * @author sirxemic / https://sirxemic.com/
++ * MIT License; @author sirxemic / https://sirxemic.com/
++ * Theme patch: cached texture bounds and debounced resize.
+  */
+-
+-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(require("jquery")):"function"==typeof define&&define.amd?define(["jquery"],t):t(e.jQuery||e.$)}(this,function(e){"use strict";function t(e){return"%"==e[e.length-1]}function r(e){var t=e.split(" ");if(1!==t.length)return t.map(function(t){switch(e){case"center":return"50%";case"top":case"left":return"0";case"right":case"bottom":return"100%";default:return t}});switch(e){case"center":return["50%","50%"];case"top":return["50%","0"];case"bottom":return["50%","100%"];case"left":return["0","50%"];case"right":return["100%","50%"];default:return[e,"50%"]}}function i(e,t,r){function i(e,t){var r=s.createShader(e);if(s.shaderSource(r,t),s.compileShader(r),!s.getShaderParameter(r,s.COMPILE_STATUS))throw new Error("compile error: "+s.getShaderInfoLog(r));return r}var o={};if(o.id=s.createProgram(),s.attachShader(o.id,i(s.VERTEX_SHADER,e)),s.attachShader(o.id,i(s.FRAGMENT_SHADER,t)),s.linkProgram(o.id),!s.getProgramParameter(o.id,s.LINK_STATUS))throw new Error("link error: "+s.getProgramInfoLog(o.id));o.uniforms={},o.locations={},s.useProgram(o.id),s.enableVertexAttribArray(0);for(var n,a,u=/uniform (\w+) (\w+)/g,h=e+t;null!=(n=u.exec(h));)a=n[2],o.locations[a]=s.getUniformLocation(o.id,a);return o}function o(e,t){s.activeTexture(s.TEXTURE0+(t||0)),s.bindTexture(s.TEXTURE_2D,e)}function n(e){var t=/url\(["']?([^"']*)["']?\)/.exec(e);return null==t?null:t[1]}function a(e){return e.match(/^data:/)}var s,u=(e=e&&"default"in e?e.default:e)(window),h=function(){function e(e,t,i){var o="OES_texture_"+e,n=o+"_linear",a=n in r,s=[o];return a&&s.push(n),{type:t,arrayType:i,linearSupport:a,extensions:s}}var t=document.createElement("canvas");if(!(s=t.getContext("webgl")||t.getContext("experimental-webgl")))return null;var r={};if(["OES_texture_float","OES_texture_half_float","OES_texture_float_linear","OES_texture_half_float_linear"].forEach(function(e){var t=s.getExtension(e);t&&(r[e]=t)}),!r.OES_texture_float)return null;var i=[];i.push(e("float",s.FLOAT,Float32Array)),r.OES_texture_half_float&&i.push(e("half_float",r.OES_texture_half_float.HALF_FLOAT_OES,null));var o=s.createTexture(),n=s.createFramebuffer();s.bindFramebuffer(s.FRAMEBUFFER,n),s.bindTexture(s.TEXTURE_2D,o),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_MIN_FILTER,s.NEAREST),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_MAG_FILTER,s.NEAREST),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_WRAP_S,s.CLAMP_TO_EDGE),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_WRAP_T,s.CLAMP_TO_EDGE);for(var a=null,u=0;u<i.length;u++)if(s.texImage2D(s.TEXTURE_2D,0,s.RGBA,32,32,0,s.RGBA,i[u].type,null),s.framebufferTexture2D(s.FRAMEBUFFER,s.COLOR_ATTACHMENT0,s.TEXTURE_2D,o,0),s.checkFramebufferStatus(s.FRAMEBUFFER)===s.FRAMEBUFFER_COMPLETE){a=i[u];break}return a}(),d=function(e,t){try{return new ImageData(e,t)}catch(r){return document.createElement("canvas").getContext("2d").createImageData(e,t)}}(32,32);e("head").prepend("<style>.jquery-ripples { position: relative; z-index: 0; }</style>");var c=function(t,r){function i(){o.destroyed||(o.step(),requestAnimationFrame(i))}var o=this;this.$el=e(t),this.interactive=r.interactive,this.resolution=r.resolution,this.textureDelta=new Float32Array([1/this.resolution,1/this.resolution]),this.perturbance=r.perturbance,this.dropRadius=r.dropRadius,this.crossOrigin=r.crossOrigin,this.imageUrl=r.imageUrl;var n=document.createElement("canvas");n.width=this.$el.innerWidth(),n.height=this.$el.innerHeight(),this.canvas=n,this.$canvas=e(n),this.$canvas.css({position:"absolute",left:0,top:0,right:0,bottom:0,zIndex:-1}),this.$el.addClass("jquery-ripples").append(n),this.context=s=n.getContext("webgl")||n.getContext("experimental-webgl"),h.extensions.forEach(function(e){s.getExtension(e)}),this.updateSize=this.updateSize.bind(this),e(window).on("resize",this.updateSize),this.textures=[],this.framebuffers=[],this.bufferWriteIndex=0,this.bufferReadIndex=1;for(var a=h.arrayType,u=a?new a(this.resolution*this.resolution*4):null,d=0;d<2;d++){var c=s.createTexture(),f=s.createFramebuffer();s.bindFramebuffer(s.FRAMEBUFFER,f),s.bindTexture(s.TEXTURE_2D,c),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_MIN_FILTER,h.linearSupport?s.LINEAR:s.NEAREST),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_MAG_FILTER,h.linearSupport?s.LINEAR:s.NEAREST),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_WRAP_S,s.CLAMP_TO_EDGE),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_WRAP_T,s.CLAMP_TO_EDGE),s.texImage2D(s.TEXTURE_2D,0,s.RGBA,this.resolution,this.resolution,0,s.RGBA,h.type,u),s.framebufferTexture2D(s.FRAMEBUFFER,s.COLOR_ATTACHMENT0,s.TEXTURE_2D,c,0),this.textures.push(c),this.framebuffers.push(f)}this.quad=s.createBuffer(),s.bindBuffer(s.ARRAY_BUFFER,this.quad),s.bufferData(s.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,1,1,-1,1]),s.STATIC_DRAW),this.initShaders(),this.initTexture(),this.setTransparentTexture(),this.loadImage(),s.clearColor(0,0,0,0),s.blendFunc(s.SRC_ALPHA,s.ONE_MINUS_SRC_ALPHA),this.visible=!0,this.running=!0,this.inited=!0,this.destroyed=!1,this.setupPointerEvents(),requestAnimationFrame(i)};c.DEFAULTS={imageUrl:null,resolution:256,dropRadius:20,perturbance:.03,interactive:!0,crossOrigin:""},c.prototype={setupPointerEvents:function(){function e(){return r.visible&&r.running&&r.interactive}function t(t,i){e()&&r.dropAtPointer(t,r.dropRadius*(i?1.5:1),i?.14:.01)}var r=this;this.$el.on("mousemove.ripples",function(e){t(e)}).on("touchmove.ripples touchstart.ripples",function(e){for(var r=e.originalEvent.changedTouches,i=0;i<r.length;i++)t(r[i])}).on("mousedown.ripples",function(e){t(e,!0)})},loadImage:function(){var e=this;s=this.context;var t=this.imageUrl||n(this.originalCssBackgroundImage)||n(this.$el.css("backgroundImage"));if(t!=this.imageSource)if(this.imageSource=t,this.imageSource){var r=new Image;r.onload=function(){function t(e){return 0==(e&e-1)}s=e.context;var i=t(r.width)&&t(r.height)?s.REPEAT:s.CLAMP_TO_EDGE;s.bindTexture(s.TEXTURE_2D,e.backgroundTexture),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_WRAP_S,i),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_WRAP_T,i),s.texImage2D(s.TEXTURE_2D,0,s.RGBA,s.RGBA,s.UNSIGNED_BYTE,r),e.backgroundWidth=r.width,e.backgroundHeight=r.height,e.hideCssBackground()},r.onerror=function(){s=e.context,e.setTransparentTexture()},r.crossOrigin=a(this.imageSource)?null:this.crossOrigin,r.src=this.imageSource}else this.setTransparentTexture()},step:function(){s=this.context,this.visible&&(this.computeTextureBoundaries(),this.running&&this.update(),this.render())},drawQuad:function(){s.bindBuffer(s.ARRAY_BUFFER,this.quad),s.vertexAttribPointer(0,2,s.FLOAT,!1,0,0),s.drawArrays(s.TRIANGLE_FAN,0,4)},render:function(){s.bindFramebuffer(s.FRAMEBUFFER,null),s.viewport(0,0,this.canvas.width,this.canvas.height),s.enable(s.BLEND),s.clear(s.COLOR_BUFFER_BIT|s.DEPTH_BUFFER_BIT),s.useProgram(this.renderProgram.id),o(this.backgroundTexture,0),o(this.textures[0],1),s.uniform1f(this.renderProgram.locations.perturbance,this.perturbance),s.uniform2fv(this.renderProgram.locations.topLeft,this.renderProgram.uniforms.topLeft),s.uniform2fv(this.renderProgram.locations.bottomRight,this.renderProgram.uniforms.bottomRight),s.uniform2fv(this.renderProgram.locations.containerRatio,this.renderProgram.uniforms.containerRatio),s.uniform1i(this.renderProgram.locations.samplerBackground,0),s.uniform1i(this.renderProgram.locations.samplerRipples,1),this.drawQuad(),s.disable(s.BLEND)},update:function(){s.viewport(0,0,this.resolution,this.resolution),s.bindFramebuffer(s.FRAMEBUFFER,this.framebuffers[this.bufferWriteIndex]),o(this.textures[this.bufferReadIndex]),s.useProgram(this.updateProgram.id),this.drawQuad(),this.swapBufferIndices()},swapBufferIndices:function(){this.bufferWriteIndex=1-this.bufferWriteIndex,this.bufferReadIndex=1-this.bufferReadIndex},computeTextureBoundaries:function(){var e,i=this.$el.css("background-size"),o=this.$el.css("background-attachment"),n=r(this.$el.css("background-position"));if("fixed"==o?((e={left:window.pageXOffset,top:window.pageYOffset}).width=u.width(),e.height=u.height()):((e=this.$el.offset()).width=this.$el.innerWidth(),e.height=this.$el.innerHeight()),"cover"==i)var a=Math.max(e.width/this.backgroundWidth,e.height/this.backgroundHeight),s=this.backgroundWidth*a,h=this.backgroundHeight*a;else if("contain"==i)var a=Math.min(e.width/this.backgroundWidth,e.height/this.backgroundHeight),s=this.backgroundWidth*a,h=this.backgroundHeight*a;else{var s=(i=i.split(" "))[0]||"",h=i[1]||s;t(s)?s=e.width*parseFloat(s)/100:"auto"!=s&&(s=parseFloat(s)),t(h)?h=e.height*parseFloat(h)/100:"auto"!=h&&(h=parseFloat(h)),"auto"==s&&"auto"==h?(s=this.backgroundWidth,h=this.backgroundHeight):("auto"==s&&(s=this.backgroundWidth*(h/this.backgroundHeight)),"auto"==h&&(h=this.backgroundHeight*(s/this.backgroundWidth)))}var d=n[0],c=n[1];d=t(d)?e.left+(e.width-s)*parseFloat(d)/100:e.left+parseFloat(d),c=t(c)?e.top+(e.height-h)*parseFloat(c)/100:e.top+parseFloat(c);var f=this.$el.offset();this.renderProgram.uniforms.topLeft=new Float32Array([(f.left-d)/s,(f.top-c)/h]),this.renderProgram.uniforms.bottomRight=new Float32Array([this.renderProgram.uniforms.topLeft[0]+this.$el.innerWidth()/s,this.renderProgram.uniforms.topLeft[1]+this.$el.innerHeight()/h]);var l=Math.max(this.canvas.width,this.canvas.height);this.renderProgram.uniforms.containerRatio=new Float32Array([this.canvas.width/l,this.canvas.height/l])},initShaders:function(){var e=["attribute vec2 vertex;","varying vec2 coord;","void main() {","coord = vertex * 0.5 + 0.5;","gl_Position = vec4(vertex, 0.0, 1.0);","}"].join("\n");this.dropProgram=i(e,["precision highp float;","const float PI = 3.141592653589793;","uniform sampler2D texture;","uniform vec2 center;","uniform float radius;","uniform float strength;","varying vec2 coord;","void main() {","vec4 info = texture2D(texture, coord);","float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - coord) / radius);","drop = 0.5 - cos(drop * PI) * 0.5;","info.r += drop * strength;","gl_FragColor = info;","}"].join("\n")),this.updateProgram=i(e,["precision highp float;","uniform sampler2D texture;","uniform vec2 delta;","varying vec2 coord;","void main() {","vec4 info = texture2D(texture, coord);","vec2 dx = vec2(delta.x, 0.0);","vec2 dy = vec2(0.0, delta.y);","float average = (","texture2D(texture, coord - dx).r +","texture2D(texture, coord - dy).r +","texture2D(texture, coord + dx).r +","texture2D(texture, coord + dy).r",") * 0.25;","info.g += (average - info.r) * 2.0;","info.g *= 0.995;","info.r += info.g;","gl_FragColor = info;","}"].join("\n")),s.uniform2fv(this.updateProgram.locations.delta,this.textureDelta),this.renderProgram=i(["precision highp float;","attribute vec2 vertex;","uniform vec2 topLeft;","uniform vec2 bottomRight;","uniform vec2 containerRatio;","varying vec2 ripplesCoord;","varying vec2 backgroundCoord;","void main() {","backgroundCoord = mix(topLeft, bottomRight, vertex * 0.5 + 0.5);","backgroundCoord.y = 1.0 - backgroundCoord.y;","ripplesCoord = vec2(vertex.x, -vertex.y) * containerRatio * 0.5 + 0.5;","gl_Position = vec4(vertex.x, -vertex.y, 0.0, 1.0);","}"].join("\n"),["precision highp float;","uniform sampler2D samplerBackground;","uniform sampler2D samplerRipples;","uniform vec2 delta;","uniform float perturbance;","varying vec2 ripplesCoord;","varying vec2 backgroundCoord;","void main() {","float height = texture2D(samplerRipples, ripplesCoord).r;","float heightX = texture2D(samplerRipples, vec2(ripplesCoord.x + delta.x, ripplesCoord.y)).r;","float heightY = texture2D(samplerRipples, vec2(ripplesCoord.x, ripplesCoord.y + delta.y)).r;","vec3 dx = vec3(delta.x, heightX - height, 0.0);","vec3 dy = vec3(0.0, heightY - height, delta.y);","vec2 offset = -normalize(cross(dy, dx)).xz;","float specular = pow(max(0.0, dot(offset, normalize(vec2(-0.6, 1.0)))), 4.0);","gl_FragColor = texture2D(samplerBackground, backgroundCoord + offset * perturbance) + specular;","}"].join("\n")),s.uniform2fv(this.renderProgram.locations.delta,this.textureDelta)},initTexture:function(){this.backgroundTexture=s.createTexture(),s.bindTexture(s.TEXTURE_2D,this.backgroundTexture),s.pixelStorei(s.UNPACK_FLIP_Y_WEBGL,1),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_MAG_FILTER,s.LINEAR),s.texParameteri(s.TEXTURE_2D,s.TEXTURE_MIN_FILTER,s.LINEAR)},setTransparentTexture:function(){s.bindTexture(s.TEXTURE_2D,this.backgroundTexture),s.texImage2D(s.TEXTURE_2D,0,s.RGBA,s.RGBA,s.UNSIGNED_BYTE,d)},hideCssBackground:function(){var e=this.$el[0].style.backgroundImage;"none"!=e&&(this.originalInlineCss=e,this.originalCssBackgroundImage=this.$el.css("backgroundImage"),this.$el.css("backgroundImage","none"))},restoreCssBackground:function(){this.$el.css("backgroundImage",this.originalInlineCss||"")},dropAtPointer:function(e,t,r){var i=parseInt(this.$el.css("border-left-width"))||0,o=parseInt(this.$el.css("border-top-width"))||0;this.drop(e.pageX-this.$el.offset().left-i,e.pageY-this.$el.offset().top-o,t,r)},drop:function(e,t,r,i){s=this.context;var n=this.$el.innerWidth(),a=this.$el.innerHeight(),u=Math.max(n,a);r/=u;var h=new Float32Array([(2*e-n)/u,(a-2*t)/u]);s.viewport(0,0,this.resolution,this.resolution),s.bindFramebuffer(s.FRAMEBUFFER,this.framebuffers[this.bufferWriteIndex]),o(this.textures[this.bufferReadIndex]),s.useProgram(this.dropProgram.id),s.uniform2fv(this.dropProgram.locations.center,h),s.uniform1f(this.dropProgram.locations.radius,r),s.uniform1f(this.dropProgram.locations.strength,i),this.drawQuad(),this.swapBufferIndices()},updateSize:function(){var e=this.$el.innerWidth(),t=this.$el.innerHeight();e==this.canvas.width&&t==this.canvas.height||(this.canvas.width=e,this.canvas.height=t)},destroy:function(){this.$el.off(".ripples").removeClass("jquery-ripples").removeData("ripples"),s=null,e(window).off("resize",this.updateSize),this.$canvas.remove(),this.restoreCssBackground(),this.destroyed=!0},show:function(){this.visible=!0,this.$canvas.show(),this.hideCssBackground()},hide:function(){this.visible=!1,this.$canvas.hide(),this.restoreCssBackground()},pause:function(){this.running=!1},play:function(){this.running=!0},set:function(e,t){switch(e){case"dropRadius":case"perturbance":case"interactive":case"crossOrigin":this[e]=t;break;case"imageUrl":this.imageUrl=t,this.loadImage()}}};var f=e.fn.ripples;e.fn.ripples=function(t){if(!h)throw new Error("Your browser does not support WebGL, the OES_texture_float extension or rendering to floating point textures.");var r=arguments.length>1?Array.prototype.slice.call(arguments,1):void 0;return this.each(function(){var i=e(this),o=i.data("ripples"),n=e.extend({},c.DEFAULTS,i.data(),"object"==typeof t&&t);(o||"string"!=typeof t)&&(o?"string"==typeof t&&c.prototype[t].apply(o,r):i.data("ripples",o=new c(this,n)))})},e.fn.ripples.Constructor=c,e.fn.ripples.noConflict=function(){return e.fn.ripples=f,this}});
++!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(require("jquery")):"function"==typeof define&&define.amd?define(["jquery"],t):t(e.jQuery||e.$)}(this,function(e){"use strict";function t(e){return"%"==e[e.length-1]}function r(e,t,r){function i(e,t){var r=n.createShader(e);if(n.shaderSource(r,t),n.compileShader(r),!n.getShaderParameter(r,n.COMPILE_STATUS))throw new Error("compile error: "+n.getShaderInfoLog(r));return r}var o={};if(o.id=n.createProgram(),n.attachShader(o.id,i(n.VERTEX_SHADER,e)),n.attachShader(o.id,i(n.FRAGMENT_SHADER,t)),n.linkProgram(o.id),!n.getProgramParameter(o.id,n.LINK_STATUS))throw new Error("link error: "+n.getProgramInfoLog(o.id));o.uniforms={},o.locations={},n.useProgram(o.id),n.enableVertexAttribArray(0);for(var a,s,u=/uniform (\w+) (\w+)/g,h=e+t;null!=(a=u.exec(h));)s=a[2],o.locations[s]=n.getUniformLocation(o.id,s);return o}function i(e,t){n.activeTexture(n.TEXTURE0+(t||0)),n.bindTexture(n.TEXTURE_2D,e)}function o(e){var t=/url\(["']?([^"']*)["']?\)/.exec(e);return null==t?null:t[1]}var n,a=(e=e&&"default"in e?e.default:e)(window),s=function(){function e(e,t,i){var o="OES_texture_"+e,n=o+"_linear",a=n in r,s=[o];return a&&s.push(n),{type:t,arrayType:i,linearSupport:a,extensions:s}}var t=document.createElement("canvas");if(!(n=t.getContext("webgl")||t.getContext("experimental-webgl")))return null;var r={};if(["OES_texture_float","OES_texture_half_float","OES_texture_float_linear","OES_texture_half_float_linear"].forEach(function(e){var t=n.getExtension(e);t&&(r[e]=t)}),!r.OES_texture_float)return null;var i=[];i.push(e("float",n.FLOAT,Float32Array)),r.OES_texture_half_float&&i.push(e("half_float",r.OES_texture_half_float.HALF_FLOAT_OES,null));var o=n.createTexture(),a=n.createFramebuffer();n.bindFramebuffer(n.FRAMEBUFFER,a),n.bindTexture(n.TEXTURE_2D,o),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_MIN_FILTER,n.NEAREST),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_MAG_FILTER,n.NEAREST),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_WRAP_S,n.CLAMP_TO_EDGE),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_WRAP_T,n.CLAMP_TO_EDGE);for(var s=null,u=0;u<i.length;u++)if(n.texImage2D(n.TEXTURE_2D,0,n.RGBA,32,32,0,n.RGBA,i[u].type,null),n.framebufferTexture2D(n.FRAMEBUFFER,n.COLOR_ATTACHMENT0,n.TEXTURE_2D,o,0),n.checkFramebufferStatus(n.FRAMEBUFFER)===n.FRAMEBUFFER_COMPLETE){s=i[u];break}return s}(),u=function(){try{return new ImageData(32,32)}catch(e){return document.createElement("canvas").getContext("2d").createImageData(32,32)}}();e("head").prepend("<style>.jquery-ripples { position: relative; z-index: 0; }</style>");var h=function(t,r){var i=this;this.$el=e(t),this.interactive=r.interactive,this.resolution=r.resolution,this.textureDelta=new Float32Array([1/this.resolution,1/this.resolution]),this.perturbance=r.perturbance,this.dropRadius=r.dropRadius,this.crossOrigin=r.crossOrigin,this.imageUrl=r.imageUrl;var o=document.createElement("canvas");o.width=this.$el.innerWidth(),o.height=this.$el.innerHeight(),this.canvas=o,this.$canvas=e(o),this.$canvas.css({position:"absolute",left:0,top:0,right:0,bottom:0,zIndex:-1}),this.$el.addClass("jquery-ripples").append(o),this.context=n=o.getContext("webgl")||o.getContext("experimental-webgl"),s.extensions.forEach(function(e){n.getExtension(e)}),this.updateSize=this.updateSize.bind(this),this.onResize=function(){clearTimeout(i.resizeTimer),i.resizeTimer=setTimeout(i.updateSize,150)},e(window).on("resize",this.onResize),this.textures=[],this.framebuffers=[],this.bufferWriteIndex=0,this.bufferReadIndex=1;for(var a=s.arrayType,u=a?new a(this.resolution*this.resolution*4):null,h=0;h<2;h++){var d=n.createTexture(),c=n.createFramebuffer();n.bindFramebuffer(n.FRAMEBUFFER,c),n.bindTexture(n.TEXTURE_2D,d),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_MIN_FILTER,s.linearSupport?n.LINEAR:n.NEAREST),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_MAG_FILTER,s.linearSupport?n.LINEAR:n.NEAREST),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_WRAP_S,n.CLAMP_TO_EDGE),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_WRAP_T,n.CLAMP_TO_EDGE),n.texImage2D(n.TEXTURE_2D,0,n.RGBA,this.resolution,this.resolution,0,n.RGBA,s.type,u),n.framebufferTexture2D(n.FRAMEBUFFER,n.COLOR_ATTACHMENT0,n.TEXTURE_2D,d,0),this.textures.push(d),this.framebuffers.push(c)}this.quad=n.createBuffer(),n.bindBuffer(n.ARRAY_BUFFER,this.quad),n.bufferData(n.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,1,1,-1,1]),n.STATIC_DRAW),this.initShaders(),this.initTexture(),this.setTransparentTexture(),this.loadImage(),n.clearColor(0,0,0,0),n.blendFunc(n.SRC_ALPHA,n.ONE_MINUS_SRC_ALPHA),this.visible=!0,this.running=!0,this.inited=!0,this.destroyed=!1,this.setupPointerEvents(),requestAnimationFrame(function e(){i.destroyed||(i.step(),requestAnimationFrame(e))})};h.DEFAULTS={imageUrl:null,resolution:256,dropRadius:20,perturbance:.03,interactive:!0,crossOrigin:""},h.prototype={setupPointerEvents:function(){function e(e,r){t.visible&&t.running&&t.interactive&&t.dropAtPointer(e,t.dropRadius*(r?1.5:1),r?.14:.01)}var t=this;this.$el.on("mousemove.ripples",function(t){e(t)}).on("touchmove.ripples touchstart.ripples",function(t){for(var r=t.originalEvent.changedTouches,i=0;i<r.length;i++)e(r[i])}).on("mousedown.ripples",function(t){e(t,!0)})},loadImage:function(){var e=this;n=this.context;var t=this.imageUrl||o(this.originalCssBackgroundImage)||o(this.$el.css("backgroundImage"));if(t!=this.imageSource)if(this.imageSource=t,this.imageSource){var r=new Image;r.onload=function(){function t(e){return!(e&e-1)}n=e.context,e.boundariesReady=!1;var i=t(r.width)&&t(r.height)?n.REPEAT:n.CLAMP_TO_EDGE;n.bindTexture(n.TEXTURE_2D,e.backgroundTexture),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_WRAP_S,i),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_WRAP_T,i),n.texImage2D(n.TEXTURE_2D,0,n.RGBA,n.RGBA,n.UNSIGNED_BYTE,r),e.backgroundWidth=r.width,e.backgroundHeight=r.height,!1!==e.visible&&e.hideCssBackground()},r.onerror=function(){n=e.context,e.setTransparentTexture()},r.crossOrigin=function(e){return e.match(/^data:/)}(this.imageSource)?null:this.crossOrigin,r.src=this.imageSource}else this.setTransparentTexture()},step:function(){n=this.context,this.visible&&(this.computeTextureBoundaries(),this.running&&this.update(),this.render())},drawQuad:function(){n.bindBuffer(n.ARRAY_BUFFER,this.quad),n.vertexAttribPointer(0,2,n.FLOAT,!1,0,0),n.drawArrays(n.TRIANGLE_FAN,0,4)},render:function(){n.bindFramebuffer(n.FRAMEBUFFER,null),n.viewport(0,0,this.canvas.width,this.canvas.height),n.enable(n.BLEND),n.clear(n.COLOR_BUFFER_BIT|n.DEPTH_BUFFER_BIT),n.useProgram(this.renderProgram.id),i(this.backgroundTexture,0),i(this.textures[0],1),n.uniform1f(this.renderProgram.locations.perturbance,this.perturbance),n.uniform2fv(this.renderProgram.locations.topLeft,this.renderProgram.uniforms.topLeft),n.uniform2fv(this.renderProgram.locations.bottomRight,this.renderProgram.uniforms.bottomRight),n.uniform2fv(this.renderProgram.locations.containerRatio,this.renderProgram.uniforms.containerRatio),n.uniform1i(this.renderProgram.locations.samplerBackground,0),n.uniform1i(this.renderProgram.locations.samplerRipples,1),this.drawQuad(),n.disable(n.BLEND)},update:function(){n.viewport(0,0,this.resolution,this.resolution),n.bindFramebuffer(n.FRAMEBUFFER,this.framebuffers[this.bufferWriteIndex]),i(this.textures[this.bufferReadIndex]),n.useProgram(this.updateProgram.id),this.drawQuad(),this.swapBufferIndices()},swapBufferIndices:function(){this.bufferWriteIndex=1-this.bufferWriteIndex,this.bufferReadIndex=1-this.bufferReadIndex},computeTextureBoundaries:function(){if(!this.boundariesReady){this.boundariesReady=!0;var e,r=this.$el.css("background-size"),i=this.$el.css("background-attachment"),o=function(e){var t=e.split(" ");if(1!==t.length)return t.map(function(t){switch(e){case"center":return"50%";case"top":case"left":return"0";case"right":case"bottom":return"100%";default:return t}});switch(e){case"center":return["50%","50%"];case"top":return["50%","0"];case"bottom":return["50%","100%"];case"left":return["0","50%"];case"right":return["100%","50%"];default:return[e,"50%"]}}(this.$el.css("background-position"));if("fixed"==i?((e={left:window.pageXOffset,top:window.pageYOffset}).width=a.width(),e.height=a.height()):((e=this.$el.offset()).width=this.$el.innerWidth(),e.height=this.$el.innerHeight()),"cover"==r)var n=Math.max(e.width/this.backgroundWidth,e.height/this.backgroundHeight),s=this.backgroundWidth*n,u=this.backgroundHeight*n;else if("contain"==r)n=Math.min(e.width/this.backgroundWidth,e.height/this.backgroundHeight),s=this.backgroundWidth*n,u=this.backgroundHeight*n;else{s=(r=r.split(" "))[0]||"",u=r[1]||s;t(s)?s=e.width*parseFloat(s)/100:"auto"!=s&&(s=parseFloat(s)),t(u)?u=e.height*parseFloat(u)/100:"auto"!=u&&(u=parseFloat(u)),"auto"==s&&"auto"==u?(s=this.backgroundWidth,u=this.backgroundHeight):("auto"==s&&(s=this.backgroundWidth*(u/this.backgroundHeight)),"auto"==u&&(u=this.backgroundHeight*(s/this.backgroundWidth)))}var h=o[0],d=o[1];h=t(h)?e.left+(e.width-s)*parseFloat(h)/100:e.left+parseFloat(h),d=t(d)?e.top+(e.height-u)*parseFloat(d)/100:e.top+parseFloat(d);var c=this.$el.offset();this.renderProgram.uniforms.topLeft=new Float32Array([(c.left-h)/s,(c.top-d)/u]),this.renderProgram.uniforms.bottomRight=new Float32Array([this.renderProgram.uniforms.topLeft[0]+this.$el.innerWidth()/s,this.renderProgram.uniforms.topLeft[1]+this.$el.innerHeight()/u]);var f=Math.max(this.canvas.width,this.canvas.height);this.renderProgram.uniforms.containerRatio=new Float32Array([this.canvas.width/f,this.canvas.height/f])}},initShaders:function(){var e=["attribute vec2 vertex;","varying vec2 coord;","void main() {","coord = vertex * 0.5 + 0.5;","gl_Position = vec4(vertex, 0.0, 1.0);","}"].join("\n");this.dropProgram=r(e,["precision highp float;","const float PI = 3.141592653589793;","uniform sampler2D texture;","uniform vec2 center;","uniform float radius;","uniform float strength;","varying vec2 coord;","void main() {","vec4 info = texture2D(texture, coord);","float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - coord) / radius);","drop = 0.5 - cos(drop * PI) * 0.5;","info.r += drop * strength;","gl_FragColor = info;","}"].join("\n")),this.updateProgram=r(e,["precision highp float;","uniform sampler2D texture;","uniform vec2 delta;","varying vec2 coord;","void main() {","vec4 info = texture2D(texture, coord);","vec2 dx = vec2(delta.x, 0.0);","vec2 dy = vec2(0.0, delta.y);","float average = (","texture2D(texture, coord - dx).r +","texture2D(texture, coord - dy).r +","texture2D(texture, coord + dx).r +","texture2D(texture, coord + dy).r",") * 0.25;","info.g += (average - info.r) * 2.0;","info.g *= 0.995;","info.r += info.g;","gl_FragColor = info;","}"].join("\n")),n.uniform2fv(this.updateProgram.locations.delta,this.textureDelta),this.renderProgram=r(["precision highp float;","attribute vec2 vertex;","uniform vec2 topLeft;","uniform vec2 bottomRight;","uniform vec2 containerRatio;","varying vec2 ripplesCoord;","varying vec2 backgroundCoord;","void main() {","backgroundCoord = mix(topLeft, bottomRight, vertex * 0.5 + 0.5);","backgroundCoord.y = 1.0 - backgroundCoord.y;","ripplesCoord = vec2(vertex.x, -vertex.y) * containerRatio * 0.5 + 0.5;","gl_Position = vec4(vertex.x, -vertex.y, 0.0, 1.0);","}"].join("\n"),["precision highp float;","uniform sampler2D samplerBackground;","uniform sampler2D samplerRipples;","uniform vec2 delta;","uniform float perturbance;","varying vec2 ripplesCoord;","varying vec2 backgroundCoord;","void main() {","float height = texture2D(samplerRipples, ripplesCoord).r;","float heightX = texture2D(samplerRipples, vec2(ripplesCoord.x + delta.x, ripplesCoord.y)).r;","float heightY = texture2D(samplerRipples, vec2(ripplesCoord.x, ripplesCoord.y + delta.y)).r;","vec3 dx = vec3(delta.x, heightX - height, 0.0);","vec3 dy = vec3(0.0, heightY - height, delta.y);","vec2 offset = -normalize(cross(dy, dx)).xz;","float specular = pow(max(0.0, dot(offset, normalize(vec2(-0.6, 1.0)))), 4.0);","gl_FragColor = texture2D(samplerBackground, backgroundCoord + offset * perturbance) + specular;","}"].join("\n")),n.uniform2fv(this.renderProgram.locations.delta,this.textureDelta)},initTexture:function(){this.backgroundTexture=n.createTexture(),n.bindTexture(n.TEXTURE_2D,this.backgroundTexture),n.pixelStorei(n.UNPACK_FLIP_Y_WEBGL,1),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_MAG_FILTER,n.LINEAR),n.texParameteri(n.TEXTURE_2D,n.TEXTURE_MIN_FILTER,n.LINEAR)},setTransparentTexture:function(){n.bindTexture(n.TEXTURE_2D,this.backgroundTexture),n.texImage2D(n.TEXTURE_2D,0,n.RGBA,n.RGBA,n.UNSIGNED_BYTE,u)},hideCssBackground:function(){var e=this.$el[0].style.backgroundImage;"none"!=e&&(this.originalInlineCss=e,this.originalCssBackgroundImage=this.$el.css("backgroundImage"),this.$el.css("backgroundImage","none"))},restoreCssBackground:function(){this.$el.css("backgroundImage",this.originalInlineCss||"")},dropAtPointer:function(e,t,r){var i=parseInt(this.$el.css("border-left-width"))||0,o=parseInt(this.$el.css("border-top-width"))||0;this.drop(e.pageX-this.$el.offset().left-i,e.pageY-this.$el.offset().top-o,t,r)},drop:function(e,t,r,o){n=this.context;var a=this.canvas.width,s=this.canvas.height,u=Math.max(a,s);r/=u;var h=new Float32Array([(2*e-a)/u,(s-2*t)/u]);n.viewport(0,0,this.resolution,this.resolution),n.bindFramebuffer(n.FRAMEBUFFER,this.framebuffers[this.bufferWriteIndex]),i(this.textures[this.bufferReadIndex]),n.useProgram(this.dropProgram.id),n.uniform2fv(this.dropProgram.locations.center,h),n.uniform1f(this.dropProgram.locations.radius,r),n.uniform1f(this.dropProgram.locations.strength,o),this.drawQuad(),this.swapBufferIndices()},updateSize:function(){this.boundariesReady=!1;var e=this.$el.innerWidth(),t=this.$el.innerHeight();e==this.canvas.width&&t==this.canvas.height||(this.canvas.width=e,this.canvas.height=t)},destroy:function(){this.$el.off(".ripples").removeClass("jquery-ripples").removeData("ripples"),n=null,e(window).off("resize",this.onResize),clearTimeout(this.resizeTimer),this.$canvas.remove(),this.restoreCssBackground(),this.destroyed=!0},show:function(){this.visible=!0,this.$canvas.show(),this.hideCssBackground()},hide:function(){this.visible=!1,this.$canvas.hide(),this.restoreCssBackground()},pause:function(){this.running=!1},play:function(){this.running=!0},set:function(e,t){switch(e){case"dropRadius":case"perturbance":case"interactive":case"crossOrigin":this[e]=t;break;case"imageUrl":this.imageUrl=t,this.loadImage()}}};var d=e.fn.ripples;e.fn.ripples=function(t){if(!s)throw new Error("Your browser does not support WebGL, the OES_texture_float extension or rendering to floating point textures.");var r=arguments.length>1?Array.prototype.slice.call(arguments,1):void 0;return this.each(function(){var i=e(this),o=i.data("ripples"),n=e.extend({},h.DEFAULTS,i.data(),"object"==typeof t&&t);(o||"string"!=typeof t)&&(o?"string"==typeof t&&h.prototype[t].apply(o,r):i.data("ripples",o=new h(this,n)))})},e.fn.ripples.Constructor=h,e.fn.ripples.noConflict=function(){return e.fn.ripples=d,this}});--- before/assets/js/service-catalog.js
++++ after/assets/js/service-catalog.js
+@@ -48,7 +48,7 @@
+                 catch { /* Static slide image remains available without WebGL. */ }
+             }
+         }
+-        if (!ripple?.data('ripples')) hero.style.backgroundImage = `url("${image}")`;
++        if (!ripple?.data('ripples') || !ripple.data('ripples').visible) hero.style.backgroundImage = `url("${image}")`;
+     }
+     dots.forEach(button => button.addEventListener('click', () => showHero(Number(button.dataset.heroDot))));
+     hero.filterCategory = category => {
+--- before/assets/css/service-catalog.css
++++ after/assets/css/service-catalog.css
+@@ -139,3 +139,5 @@
+ 
+ html[dir=rtl] .nsp-catalog-hero article::after { background:linear-gradient(270deg,#103c2b 0%,#103c2b 39%,#103c2be6 46%,#103c2b25 72%,#103c2b05); }
+ @media(max-width:600px) { html[dir=rtl] .nsp-catalog-hero article::after { background:linear-gradient(0deg,#103c2b 8%,#103c2be0 38%,#103c2b15); } .nsp-offer-card { padding:18px; } .nsp-offer-top h3 { font-size:16px; } .nsp-offer-bottom>span { max-width:58%; } .nsp-specialized-card { gap:12px; } .nsp-how-steps li { flex-direction:row; align-items:center; } .nsp-featured-rail,.nsp-work-rail { gap:14px; } }
++
++.nsp-home-hero #clinox-banner-3.jquery-ripples.nsp-ripples-paused article>img{visibility:visible}
+--- before/inc/enqueue.php
++++ after/inc/enqueue.php
+@@ -68,9 +68,9 @@
+     if ( $features['slick'] ) wp_enqueue_style( 'nsp-slick-theme', $uri . '/assets/css/slick-theme.css', [], nsp_asset_version( '/assets/css/slick-theme.css' ) );
+     if ( $features['gallery'] || $features['video'] ) wp_enqueue_style( 'nsp-magnific', $uri . '/assets/css/magnific-popup.css', [], nsp_asset_version( '/assets/css/magnific-popup.css' ) );
+     wp_enqueue_style( 'nsp-reset',        $uri . '/assets/css/reset.css',           [], nsp_asset_version( '/assets/css/reset.css' ) );
+-    $main_css_file = NSP_THEME_DIR . '/assets/css/style.css';
++    $main_css_file = NSP_THEME_DIR . '/assets/css/style.min.css';
+     $main_css_ver  = file_exists( $main_css_file ) ? filemtime( $main_css_file ) : $v;
+-    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-fonts' ], $main_css_ver );
++    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.min.css', [ 'nsp-fonts' ], $main_css_ver );
+ 
+     // ---------- Arabic font + RTL stylesheet (must come after nsp-main and Bootstrap) ----------
+     // Enqueueing rtl BEFORE Bootstrap caused WordPress to pull nsp-main early via the
+@@ -115,7 +115,7 @@
+     $scripts = [ 'nsp-wow'=>[ 'wow.min.js', [ 'jquery' ] ] ];
+     if ( $features['bootstrap'] ) {
+         // The rendered Bootstrap feature is Collapse; it does not use Popper.
+-        $scripts['nsp-bootstrap'] = [ 'bootstrap.min.js', [ 'jquery' ] ];
++        $scripts['nsp-bootstrap'] = [ 'collapse.min.js', [] ];
+     }
+     if ( $features['slick'] ) $scripts['nsp-slick'] = [ 'slick.min.js', [ 'jquery' ] ];
+     if ( $features['gallery'] || $features['video'] ) $scripts['nsp-magnific'] = [ 'jquery.magnific-popup.min.js', [ 'jquery' ] ];
+@@ -129,17 +129,17 @@
+         $scripts['nsp-filterizr'] = [ 'jquery.filterizr.js', [ 'jquery', 'nsp-imagesloaded' ] ];
+     }
+     if ( $features['quantity'] ) $scripts['nsp-inputarrow'] = [ 'jquery.inputarrow.js', [ 'jquery' ] ];
+-    if ( $features['ripples'] ) $scripts['nsp-ripples'] = [ 'jquery.ripples.min.js', [ 'jquery' ] ];
++    // The hero requests Ripples after load/idle only on capable desktop devices.
+     // Contact uses a lazy iframe: no gmap3 or Maps JavaScript API is required.
+     foreach ( $scripts as $handle => $script ) {
+         $path = '/assets/js/' . $script[0];
+         wp_enqueue_script( $handle, $uri . $path, $script[1], nsp_asset_version( $path ), nsp_script_args() );
+         $main_dependencies[] = $handle;
+     }
+-    wp_enqueue_script( 'nsp-main', $uri . '/assets/js/script.js', array_unique( $main_dependencies ), nsp_asset_version( '/assets/js/script.js' ), nsp_script_args() );
+-    wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.js', [ 'jquery' ], nsp_asset_version( '/assets/js/nsp-dropdowns.js' ), nsp_script_args() );
++    wp_enqueue_script( 'nsp-main', $uri . '/assets/js/script.min.js', array_unique( $main_dependencies ), nsp_asset_version( '/assets/js/script.min.js' ), nsp_script_args() );
++    wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.min.js', [ 'jquery' ], nsp_asset_version( '/assets/js/nsp-dropdowns.min.js' ), nsp_script_args() );
+     if ( is_front_page() ) {
+-        foreach ( [ 'nsp-about-services'=>'about-services.js', 'nsp-home-booking'=>'home-booking.js' ] as $handle=>$file ) {
++        foreach ( [ 'nsp-about-services'=>'about-services.min.js', 'nsp-home-booking'=>'home-booking.min.js' ] as $handle=>$file ) {
+             wp_enqueue_script( $handle, $uri . '/assets/js/' . $file, [ 'jquery' ], nsp_asset_version( '/assets/js/' . $file ), nsp_script_args() );
+         }
+     }
+@@ -150,6 +150,7 @@
+         'themeUri'  => $uri,
+         'nonce'     => wp_create_nonce( 'nsp_nonce' ),
+         'isRtl'     => nsp_is_arabic(),
++        'ripplesUrl'=> $features['ripples'] ? $uri . '/assets/js/jquery.ripples.min.js?ver=' . nsp_asset_version( '/assets/js/jquery.ripples.min.js' ) : '',
+     ] );
+ }
+ add_action( 'wp_enqueue_scripts', 'nsp_enqueue_assets' );

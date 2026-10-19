@@ -68,9 +68,9 @@ function nsp_enqueue_assets() {
     if ( $features['slick'] ) wp_enqueue_style( 'nsp-slick-theme', $uri . '/assets/css/slick-theme.css', [], nsp_asset_version( '/assets/css/slick-theme.css' ) );
     if ( $features['gallery'] || $features['video'] ) wp_enqueue_style( 'nsp-magnific', $uri . '/assets/css/magnific-popup.css', [], nsp_asset_version( '/assets/css/magnific-popup.css' ) );
     wp_enqueue_style( 'nsp-reset',        $uri . '/assets/css/reset.css',           [], nsp_asset_version( '/assets/css/reset.css' ) );
-    $main_css_file = NSP_THEME_DIR . '/assets/css/style.css';
+    $main_css_file = NSP_THEME_DIR . '/assets/css/style.min.css';
     $main_css_ver  = file_exists( $main_css_file ) ? filemtime( $main_css_file ) : $v;
-    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-fonts' ], $main_css_ver );
+    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.min.css', [ 'nsp-fonts' ], $main_css_ver );
 
     // ---------- Arabic font + RTL stylesheet (must come after nsp-main and Bootstrap) ----------
     // Enqueueing rtl BEFORE Bootstrap caused WordPress to pull nsp-main early via the
@@ -115,7 +115,7 @@ function nsp_enqueue_assets() {
     $scripts = [ 'nsp-wow'=>[ 'wow.min.js', [ 'jquery' ] ] ];
     if ( $features['bootstrap'] ) {
         // The rendered Bootstrap feature is Collapse; it does not use Popper.
-        $scripts['nsp-bootstrap'] = [ 'bootstrap.min.js', [ 'jquery' ] ];
+        $scripts['nsp-bootstrap'] = [ 'collapse.min.js', [] ];
     }
     if ( $features['slick'] ) $scripts['nsp-slick'] = [ 'slick.min.js', [ 'jquery' ] ];
     if ( $features['gallery'] || $features['video'] ) $scripts['nsp-magnific'] = [ 'jquery.magnific-popup.min.js', [ 'jquery' ] ];
@@ -129,17 +129,17 @@ function nsp_enqueue_assets() {
         $scripts['nsp-filterizr'] = [ 'jquery.filterizr.js', [ 'jquery', 'nsp-imagesloaded' ] ];
     }
     if ( $features['quantity'] ) $scripts['nsp-inputarrow'] = [ 'jquery.inputarrow.js', [ 'jquery' ] ];
-    if ( $features['ripples'] ) $scripts['nsp-ripples'] = [ 'jquery.ripples.min.js', [ 'jquery' ] ];
+    // The hero requests Ripples after load/idle only on capable desktop devices.
     // Contact uses a lazy iframe: no gmap3 or Maps JavaScript API is required.
     foreach ( $scripts as $handle => $script ) {
         $path = '/assets/js/' . $script[0];
         wp_enqueue_script( $handle, $uri . $path, $script[1], nsp_asset_version( $path ), nsp_script_args() );
         $main_dependencies[] = $handle;
     }
-    wp_enqueue_script( 'nsp-main', $uri . '/assets/js/script.js', array_unique( $main_dependencies ), nsp_asset_version( '/assets/js/script.js' ), nsp_script_args() );
-    wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.js', [ 'jquery' ], nsp_asset_version( '/assets/js/nsp-dropdowns.js' ), nsp_script_args() );
+    wp_enqueue_script( 'nsp-main', $uri . '/assets/js/script.min.js', array_unique( $main_dependencies ), nsp_asset_version( '/assets/js/script.min.js' ), nsp_script_args() );
+    wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.min.js', [ 'jquery' ], nsp_asset_version( '/assets/js/nsp-dropdowns.min.js' ), nsp_script_args() );
     if ( is_front_page() ) {
-        foreach ( [ 'nsp-about-services'=>'about-services.js', 'nsp-home-booking'=>'home-booking.js' ] as $handle=>$file ) {
+        foreach ( [ 'nsp-about-services'=>'about-services.min.js', 'nsp-home-booking'=>'home-booking.min.js' ] as $handle=>$file ) {
             wp_enqueue_script( $handle, $uri . '/assets/js/' . $file, [ 'jquery' ], nsp_asset_version( '/assets/js/' . $file ), nsp_script_args() );
         }
     }
@@ -150,6 +150,7 @@ function nsp_enqueue_assets() {
         'themeUri'  => $uri,
         'nonce'     => wp_create_nonce( 'nsp_nonce' ),
         'isRtl'     => nsp_is_arabic(),
+        'ripplesUrl'=> $features['ripples'] ? $uri . '/assets/js/jquery.ripples.min.js?ver=' . nsp_asset_version( '/assets/js/jquery.ripples.min.js' ) : '',
     ] );
 }
 add_action( 'wp_enqueue_scripts', 'nsp_enqueue_assets' );

@@ -26,7 +26,7 @@ get_header();
 							<span class="ab-shape3 position-absolute"><img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/shape/dot-sh1.png' ) ); ?>" alt=""></span>
 							<span class="ab-shape4 position-absolute"><img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/shape/dot-sh2.png' ) ); ?>" alt=""></span>
 							<div class="inner-img-wrap position-relative wow fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
-								<img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1.jpg' ) ); ?>" alt="">
+								<img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1.jpg' ) ); ?>" srcset="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1-465.jpg' ) ); ?> 465w, <?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1.jpg' ) ); ?> 501w" sizes="(min-width: 1200px) 465px, (min-width: 992px) 40vw, (min-width: 600px) 480px, calc(100vw - 56px)" width="501" height="591" alt="">
 							</div>
 							<div class="inner-bottom-img position-absolute wow fadeInUp" data-wow-delay="400ms" data-wow-duration="1500ms">
 								<img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab2.jpg' ) ); ?>" alt="">

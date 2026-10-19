@@ -1,0 +1,9 @@
+{
+  "url": "http://localhost/newsuperprime-wordpress/?lang=en",
+  "chrome": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+  "performance": 70,
+  "accessibility": 100,
+  "TBT": 101.00000000000091,
+  "LCP": 6945.159960627476,
+  "CLS": 0
+}

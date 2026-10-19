@@ -8,7 +8,7 @@ function nsp_is_service_catalog(): bool {
 add_action( 'wp_enqueue_scripts', function () {
     if ( ! nsp_is_service_catalog() && ! is_front_page() ) return;
     foreach ( [ 'css', 'js' ] as $ext ) {
-        $file = '/assets/' . $ext . '/service-catalog.' . $ext;
+        $file = '/assets/' . $ext . '/service-catalog' . ( 'js' === $ext ? '.min' : '' ) . '.' . $ext;
         if ( 'css' === $ext ) wp_enqueue_style( 'nsp-service-catalog', NSP_THEME_URI . $file, [ 'nsp-main' ], filemtime( NSP_THEME_DIR . $file ) );
         else wp_enqueue_script( 'nsp-service-catalog', NSP_THEME_URI . $file, [ 'jquery' ], filemtime( NSP_THEME_DIR . $file ), nsp_script_args() );
     }

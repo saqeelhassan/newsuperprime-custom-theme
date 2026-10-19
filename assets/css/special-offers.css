@@ -46,4 +46,9 @@ html[dir=rtl] #nsp-special-offers,html[dir=rtl] #nsp-special-offers h2,html[dir=
  #nsp-special-offers .nsp-offer-price { font-size:28px; margin:5px 0 10px; }
  #nsp-special-offers .nsp-offer-terms { padding:12px 0; }
  #nsp-special-offers .nsp-offers-navigation { padding:12px 20px; }
+ #nsp-special-offers [data-offers-counter] { color:#607067; }
+ #nsp-special-offers .nsp-offers-dots { gap:0; }
+ #nsp-special-offers [data-offer-dot],#nsp-special-offers [data-offer-dot][aria-pressed=true] { width:24px; height:24px; background:transparent; }
+ #nsp-special-offers [data-offer-dot]::after { inset:8px; width:8px; height:8px; border-radius:8px; background:#d4e2d8; }
+ #nsp-special-offers [data-offer-dot][aria-pressed=true]::after { inset:8px 0; width:24px; background:#147d32; }
 }

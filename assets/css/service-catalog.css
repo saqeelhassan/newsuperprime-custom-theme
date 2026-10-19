@@ -139,3 +139,5 @@ html[dir=rtl] .nsp-catalog h1,html[dir=rtl] .nsp-catalog h2,html[dir=rtl] .nsp-c
 
 html[dir=rtl] .nsp-catalog-hero article::after { background:linear-gradient(270deg,#103c2b 0%,#103c2b 39%,#103c2be6 46%,#103c2b25 72%,#103c2b05); }
 @media(max-width:600px) { html[dir=rtl] .nsp-catalog-hero article::after { background:linear-gradient(0deg,#103c2b 8%,#103c2be0 38%,#103c2b15); } .nsp-offer-card { padding:18px; } .nsp-offer-top h3 { font-size:16px; } .nsp-offer-bottom>span { max-width:58%; } .nsp-specialized-card { gap:12px; } .nsp-how-steps li { flex-direction:row; align-items:center; } .nsp-featured-rail,.nsp-work-rail { gap:14px; } }
+
+.nsp-home-hero #clinox-banner-3.jquery-ripples.nsp-ripples-paused article>img{visibility:visible}

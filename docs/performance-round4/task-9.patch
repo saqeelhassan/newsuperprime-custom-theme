@@ -1,0 +1,175 @@
+--- before/assets/css/special-offers.css
++++ after/assets/css/special-offers.css
+@@ -46,4 +46,9 @@
+  #nsp-special-offers .nsp-offer-price { font-size:28px; margin:5px 0 10px; }
+  #nsp-special-offers .nsp-offer-terms { padding:12px 0; }
+  #nsp-special-offers .nsp-offers-navigation { padding:12px 20px; }
++ #nsp-special-offers [data-offers-counter] { color:#607067; }
++ #nsp-special-offers .nsp-offers-dots { gap:0; }
++ #nsp-special-offers [data-offer-dot],#nsp-special-offers [data-offer-dot][aria-pressed=true] { width:24px; height:24px; background:transparent; }
++ #nsp-special-offers [data-offer-dot]::after { inset:8px; width:8px; height:8px; border-radius:8px; background:#d4e2d8; }
++ #nsp-special-offers [data-offer-dot][aria-pressed=true]::after { inset:8px 0; width:24px; background:#147d32; }
+ }
+--- before/tests/performance-round2.cjs
++++ after/tests/performance-round2.cjs
+@@ -13,7 +13,8 @@
+             const scripts = await page.locator('script[src]').evaluateAll(scripts => scripts.map(s=>s.src));
+             assert(scripts.some(src=>src.includes('/slick.min.js?')));
+             assert(!scripts.some(src=>src.includes('/popper.min.js')));
+-            assert(scripts.some(src=>src.includes('/bootstrap.min.js')));
++            assert(!scripts.some(src=>src.includes('/bootstrap.min.js')));
++            assert(scripts.some(src=>src.includes('/collapse.min.js')));
+             const images = await page.locator('img[src]').evaluateAll(images=>images.map(i=>({src:i.src,w:i.getAttribute('width'),h:i.getAttribute('height'),decoding:i.decoding,loading:i.loading})));
+             for (const image of images.filter(i=>i.src.includes('/assets/img/'))) {
+                 assert(Number(image.w)>0 && Number(image.h)>0, image.src+' dimensions');
+@@ -33,12 +34,14 @@
+         }),iconNames);
+         assert(rendered.every(content=>content && content!=='none' && content!=='normal'));
+         const fontCSS=fs.readFileSync('assets/css/fontawesome-all.css','utf8');
++        const fontFaces=fs.readFileSync('assets/css/fonts.css','utf8');
+         const animations=fs.readFileSync('assets/css/animate.css','utf8');
+         for (const name of ['fadeInUp','fadeInRight','fadeInDown','bounceInLeft','slideOutLeft','bounce','spin']) assert(animations.includes('@keyframes '+name));
+-        assert.equal((fontCSS.match(/@font-face/g)||[]).length,4);
+-        assert.equal((fontCSS.match(/font-display: swap/g)||[]).length,4);
++        assert.equal((fontCSS.match(/@font-face/g)||[]).length,0);
++        assert.equal((fontFaces.match(/font-family:\s*['\"]Font Awesome/g)||[]).length,4);
++        assert((fontFaces.match(/font-display:\s*swap/g)||[]).length>=4);
+         assert(!fontCSS.includes('fa-duotone') && !fontCSS.includes('.ttf'));
+         assert.deepEqual(errors,[]);
+-        console.log('PASS: reduced icons, minified Slick, no Popper, retained Bootstrap, intrinsic image sizes, async/lazy images, eager logos/hero, RTL and mobile.');
++        console.log('PASS: reduced icons, minified Slick, no Popper, native Collapse, intrinsic image sizes, async/lazy images, eager logos/hero, RTL and mobile.');
+     } finally { await browser.close(); }
+ })().catch(e=>{console.error(e);process.exit(1)});
+--- before/tests/performance.cjs
++++ after/tests/performance.cjs
+@@ -28,7 +28,8 @@
+                 assert(/[?&]ver=\d+/.test(script.src), script.id + ' filemtime version');
+             }
+             const has = id => assets.scripts.some(s => s.id === id + '-js');
+-            assert.equal(has('nsp-ripples'), route === '');
++            assert.equal(await page.evaluate(() => Boolean(nspData.ripplesUrl)), route === '');
++            if (has('nsp-ripples')) assert.equal(route, '');
+             assert.equal(has('nsp-service-catalog'), ['', 'services/'].includes(route));
+             assert.equal(has('nsp-slick'), ['', 'about/'].includes(route));
+             assert.equal(has('nsp-counterup'), ['', 'about/'].includes(route));
+--- before/tests/special-offers.cjs
++++ after/tests/special-offers.cjs
+@@ -31,6 +31,8 @@
+         assert.equal(await page.locator('#nsp-booking input[name=package]:checked').inputValue(), chosen);
+         assert.match(await page.locator('#nsp-booking input[name=package]:checked').locator('..').innerText(), /5 Seater Sofa/);
+         await page.keyboard.press('Escape');
++        // Native dialog close events are queued after the Escape key event.
++        await page.waitForFunction(() => !['nsp-offers-open', 'nsp-preview-open', 'nsp-booking-open'].some(name => document.documentElement.classList.contains(name)));
+         assert.equal(await page.locator('html').evaluate(el => el.classList.contains('nsp-offers-open') || el.classList.contains('nsp-preview-open') || el.classList.contains('nsp-booking-open')), false);
+         // Returning visitors must not see the popup on other pages or reloads.
+         await page.goto(`http://localhost/newsuperprime-wordpress/about/?lang=en&offer_check=${Date.now()}`, { waitUntil: 'networkidle' });
+--- before/tests/performance-round4.cjs
++++ after/tests/performance-round4.cjs
+@@ -0,0 +1,66 @@
++const {chromium}=require('playwright');
++const assert=require('node:assert/strict');
++const fs=require('node:fs');
++const base=process.env.WP_TEST_URL||'http://localhost/newsuperprime-wordpress/';
++(async()=>{
++ const browser=await chromium.launch({channel:'msedge',args:['--enable-unsafe-swiftshader']});
++ try{
++  const scenarios=[{name:'mobile',width:390},{name:'tablet',width:991},{name:'coarse',width:1440,touch:true},{name:'four cores',width:1440,cores:4},{name:'save data',width:1440,saveData:true},{name:'reduced motion',width:1440,reduce:true}];
++  for(const scenario of scenarios){
++   const context=await browser.newContext({viewport:{width:scenario.width,height:900},hasTouch:!!scenario.touch,reducedMotion:scenario.reduce?'reduce':'no-preference'});
++   const page=await context.newPage();await require('./hide-offers.cjs')(page);
++   await page.addInitScript(({cores,saveData})=>{
++    Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>cores||8});
++    Object.defineProperty(navigator,'connection',{get:()=>({saveData:!!saveData,addEventListener(){}})});
++   },scenario);
++   await page.goto(base+'?lang=en',{waitUntil:'networkidle'});
++   await page.waitForTimeout(600);
++   assert.equal(await page.locator('#clinox-banner-3 canvas').count(),0,scenario.name);
++   assert.equal(await page.locator('script[src*="jquery.ripples"]').count(),0,scenario.name+' must not download/probe WebGL');
++   await page.locator('[data-hero-dot="1"]').click();
++   assert(await page.locator('[data-hero-slide]').nth(1).isVisible());
++   await context.close();
++  }
++  const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'no-preference'});
++  const page=await context.newPage();await require('./hide-offers.cjs')(page);
++  await page.addInitScript(()=>Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>8}));
++  await page.goto(base+'?lang=en',{waitUntil:'networkidle'});
++  await page.waitForFunction(()=>Boolean(jQuery('#clinox-banner-3').data('ripples')));
++  await page.evaluate(()=>scrollTo(0,2000));
++  await page.waitForFunction(()=>jQuery('#clinox-banner-3').data('ripples').visible===false);
++  assert.equal(await page.evaluate(()=>jQuery('#clinox-banner-3').data('ripples').running),false);
++  await page.evaluate(()=>scrollTo(0,0));
++  await page.waitForFunction(()=>jQuery('#clinox-banner-3').data('ripples').running);
++  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{get:()=>true,configurable:true});document.dispatchEvent(new Event('visibilitychange'));});
++  assert.equal(await page.evaluate(()=>jQuery('#clinox-banner-3').data('ripples').visible),false);
++  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{get:()=>false,configurable:true});document.dispatchEvent(new Event('visibilitychange'));});
++  assert.equal(await page.evaluate(()=>jQuery('#clinox-banner-3').data('ripples').running),true);
++  await page.setViewportSize({width:390,height:844});
++  await page.waitForTimeout(250);
++  await page.locator('[data-hero-dot="2"]').click();
++  assert.equal(await page.locator('[data-hero-slide]').nth(2).locator('img').evaluate(el=>getComputedStyle(el).visibility),'visible');
++  assert(await page.locator('#clinox-banner-3').evaluate(el=>el.style.backgroundImage.includes(el.dataset.background)));
++  const inline=await page.locator('#nsp-critical-css').textContent();
++  assert(Buffer.byteLength(inline)<14*1024);
++  assert(!inline.includes('@font-face')&&!/data:.*font/.test(inline));
++  assert(await page.locator('link[href*="style.min.css"]').count());
++  assert(await page.locator('img[srcset*="ab1-465.jpg"]').count());
++  await context.close();
++  const tracking=await browser.newContext();let loads=0;
++  await tracking.route('https://www.googletagmanager.com/**',route=>{loads++;return route.fulfill({contentType:'application/javascript',body:''});});
++  const tracked=await tracking.newPage();await require('./hide-offers.cjs')(tracked);
++  await tracked.goto(base+'?lang=en',{waitUntil:'domcontentloaded'});
++   await tracked.evaluate(()=>{
++    const tag=document.createElement('script');tag.type='text/plain';
++    tag.dataset.nspTrackingSrc='https://www.googletagmanager.com/gtag/js?id=GT-EXAMPLE';
++    document.head.append(tag);gtag('config','GT-EXAMPLE');
++   });
++  await tracked.waitForTimeout(500);assert.equal(loads,0);
++   await tracked.keyboard.press('Tab');await tracked.waitForTimeout(200);assert.equal(loads,2);
++   await tracked.keyboard.press('Tab');await tracked.waitForTimeout(200);assert.equal(loads,2);
++   await tracked.reload({waitUntil:'domcontentloaded'});await tracked.waitForTimeout(4300);assert.equal(loads,3);
++  assert(!fs.readFileSync('assets/css/fonts.css','utf8').includes('data:'));
++  await tracking.close();
++  console.log('PASS: all six ripple gates; lazy desktop WebGL; offscreen/hidden pause and resume; resized static slides; inline CSS budget; minified CSS and responsive image; GTM interaction/timer gate and no duplicate load.');
++ }finally{await browser.close()}
++})().catch(error=>{console.error(error);process.exitCode=1});
+--- before/tests/tracking-delay.php
++++ after/tests/tracking-delay.php
+@@ -0,0 +1,16 @@
++<?php
++/** Read-only check of the script filter using the live WordPress hook stack. */
++require dirname( __DIR__, 4 ) . '/wp-load.php';
++$src = 'https://www.googletagmanager.com/gtag/js?id=GT-EXAMPLE';
++$html = '<script id="google_gtagjs-js" src="' . esc_url( $src ) . '" async></script>';
++$filtered = apply_filters( 'script_loader_tag', $html, 'google_gtagjs', $src );
++$tag = new WP_HTML_Tag_Processor( $filtered );
++$tag->next_tag( 'SCRIPT' );
++if ( null !== $tag->get_attribute( 'src' ) || 'text/plain' !== $tag->get_attribute( 'type' ) || $src !== $tag->get_attribute( 'data-nsp-tracking-src' ) ) {
++    throw new RuntimeException( 'The Site Kit Google tag must remain inert until interaction or timeout.' );
++}
++$local = '<script id="example" src="/local.js"></script>';
++if ( apply_filters( 'script_loader_tag', $local, 'local', '/local.js' ) !== $local ) {
++    throw new RuntimeException( 'The tracking gate must not alter normal scripts.' );
++}
++echo "PASS: Site Kit markup is delayed; inline queue configuration and other scripts remain intact.\n";
+--- before/tools/lighthouse-mobile.cjs
++++ after/tools/lighthouse-mobile.cjs
+@@ -0,0 +1,19 @@
++const fs=require('node:fs');
++const path=require('node:path');
++(async()=>{
++ const lighthouse=(await import('lighthouse')).default;
++ const {launch}=await import('chrome-launcher');
++ const profile=path.resolve('.booking-build-cache/lighthouse-'+Date.now());
++ fs.mkdirSync(profile,{recursive:true});
++ const chrome=await launch({chromePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',userDataDir:profile,chromeFlags:['--headless=new','--disable-extensions','--no-first-run','--disable-default-apps']});
++ try{
++  const url=process.env.WP_TEST_URL||'http://localhost/newsuperprime-wordpress/?lang=en';
++  const result=await lighthouse(url,{port:chrome.port,output:['json','html'],onlyCategories:['performance','accessibility'],formFactor:'mobile',throttlingMethod:'simulate',logLevel:'error'});
++  fs.mkdirSync('docs/performance-round4',{recursive:true});
++  fs.writeFileSync('docs/performance-round4/lighthouse-mobile.json',result.report[0]);
++  fs.writeFileSync('docs/performance-round4/lighthouse-mobile.html',result.report[1]);
++  const lhr=result.lhr;
++  const metrics={url:lhr.finalDisplayedUrl,chrome:lhr.environment.hostUserAgent,performance:lhr.categories.performance.score*100,accessibility:lhr.categories.accessibility.score*100,TBT:lhr.audits['total-blocking-time'].numericValue,LCP:lhr.audits['largest-contentful-paint'].numericValue,CLS:lhr.audits['cumulative-layout-shift'].numericValue};
++  fs.writeFileSync('docs/performance-round4/lighthouse-metrics.json',JSON.stringify(metrics,null,2));console.log(metrics);
++ }finally{await chrome.kill()}
++})().catch(error=>{console.error(error);process.exitCode=1});

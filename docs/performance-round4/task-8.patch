@@ -1,0 +1,32 @@
+--- before/front-page.php
++++ after/front-page.php
+@@ -26,7 +26,7 @@
+ 							<span class="ab-shape3 position-absolute"><img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/shape/dot-sh1.png' ) ); ?>" alt=""></span>
+ 							<span class="ab-shape4 position-absolute"><img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/shape/dot-sh2.png' ) ); ?>" alt=""></span>
+ 							<div class="inner-img-wrap position-relative wow fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+-								<img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1.jpg' ) ); ?>" alt="">
++								<img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1.jpg' ) ); ?>" srcset="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1-465.jpg' ) ); ?> 465w, <?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab1.jpg' ) ); ?> 501w" sizes="(min-width: 1200px) 465px, (min-width: 992px) 40vw, (min-width: 600px) 480px, calc(100vw - 56px)" width="501" height="591" alt="">
+ 							</div>
+ 							<div class="inner-bottom-img position-absolute wow fadeInUp" data-wow-delay="400ms" data-wow-duration="1500ms">
+ 								<img src="<?php echo esc_url( nsp_asset( 'assets/img/img-5/about/ab2.jpg' ) ); ?>" alt="">
+--- before/tools/optimize-images.cjs
++++ after/tools/optimize-images.cjs
+@@ -43,6 +43,7 @@
+ }
+ 
+ function maxWidthFor(rel) {
++  if (rel.split(path.sep).join('/') === 'img-5/about/ab1.jpg') return 930;
+   const folders = rel.split(path.sep).slice(0, -1);
+   // Also cover nested template folders such as img-5/project and img-5/about.
+   const folder = folders.find(name => name === 'project' || name === 'about') || folders[0];
+@@ -89,6 +90,9 @@
+     console.log(`${rel.padEnd(45)} ${kb(input.length)} -> ${kb(best.length)}  (-${pct}%)`);
+   }
+ 
++  const aboutSource = path.join(BACKUP, 'img-5/about/ab1.jpg');
++  if (fs.existsSync(aboutSource)) await sharp(aboutSource).resize({width:465, withoutEnlargement:true}).jpeg({quality:JPEG_QUALITY, mozjpeg:true, progressive:true}).toFile(path.join(IMG, 'img-5/about/ab1-465.jpg'));
++
+   console.log(`\nTotal: ${kb(before)} -> ${kb(after)}  (-${Math.round((1 - after / before) * 100)}%)`);
+ }
+ 
+Binary asset: assets/img/img-5/about/ab1-465.jpg, 36926 bytes

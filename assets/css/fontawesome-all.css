@@ -107,49 +107,25 @@
 
 .fa-whatsapp:before {
   content: "\f232"; }
-@font-face {
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  font-family: 'Font Awesome 5 Brands';
-  src: url("../fonts/fa-brands-400.woff2?v=614e6a2e67") format("woff2");
-}
+
 
 .fab {
   font-weight: 400;
   font-family: 'Font Awesome 5 Brands';
 }
-@font-face {
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-  font-family: 'Font Awesome 5 Pro';
-  src: url("../fonts/fa-light-300.woff2?v=db76126fd7") format("woff2");
-}
+
 
 .fal {
   font-weight: 300;
   font-family: 'Font Awesome 5 Pro';
 }
-@font-face {
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  font-family: 'Font Awesome 5 Pro';
-  src: url("../fonts/fa-regular-400.woff2?v=6e2150ad12") format("woff2");
-}
+
 
 .far {
   font-weight: 400;
   font-family: 'Font Awesome 5 Pro';
 }
-@font-face {
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-  font-family: 'Font Awesome 5 Pro';
-  src: url("../fonts/fa-solid-900.woff2?v=d7f22f13e5") format("woff2");
-}
+
 
 .fa,
 .fas {

@@ -1,0 +1,20 @@
+{
+  "name": "newsuperprime-theme-build",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build-assets.cjs",
+    "build:critical": "node tools/build-critical-css.cjs",
+    "test:mobile": "node tests/mobile.cjs",
+    "test:accessibility": "node tests/accessibility.cjs"
+  },
+  "devDependencies": {
+    "sharp": "0.35.5",
+    "terser": "5.51.2",
+    "postcss": "8.5.31",
+    "purgecss": "8.0.0",
+    "axe-core": "4.14.0",
+    "cssnano": "8.0.10",
+    "lighthouse": "13.5.0",
+    "playwright": "1.64.1"
+  }
+}

@@ -34,7 +34,7 @@ function nsp_special_offer_items(): array {
 add_action( 'wp_enqueue_scripts', function () {
     if ( ! nsp_special_offer_items() ) return;
     wp_enqueue_style( 'nsp-special-offers', NSP_THEME_URI . '/assets/css/special-offers.css', [], filemtime( NSP_THEME_DIR . '/assets/css/special-offers.css' ) );
-    wp_enqueue_script( 'nsp-special-offers', NSP_THEME_URI . '/assets/js/special-offers.js', [ 'jquery', 'nsp-service-preview' ], filemtime( NSP_THEME_DIR . '/assets/js/special-offers.js' ), nsp_script_args() );
+    wp_enqueue_script( 'nsp-special-offers', NSP_THEME_URI . '/assets/js/special-offers.min.js', [ 'jquery', 'nsp-service-preview' ], filemtime( NSP_THEME_DIR . '/assets/js/special-offers.min.js' ), nsp_script_args() );
 }, 20 );
 add_action( 'wp_footer', function () {
     if ( nsp_special_offer_items() ) get_template_part( 'template-parts/booking/special-offers', null, [ 'offers'=>nsp_special_offer_items() ] );

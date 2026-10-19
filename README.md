@@ -457,3 +457,11 @@ with a 44px close-control hit area and independent menu scrolling. Run
 `node tests/mobile.cjs` for English/Arabic checks at 320px, 375px and 430px on
 Home, Services and Contact. `node tests/accessibility.cjs` runs axe WCAG A/AA
 checks; install axe-core locally alongside the existing Playwright setup.
+
+
+### Round 4 mobile performance
+
+See [the Round 4 report](docs/performance-round4/README.md) for ripple device gates,
+centralized WOFF2 fonts, delayed tracking, native FAQ Collapse, minified production
+assets, responsive About images, per-task diffs, Lighthouse results and upload list.
+Run `npm ci` then `npm run build` after editing theme JS or the main CSS source.

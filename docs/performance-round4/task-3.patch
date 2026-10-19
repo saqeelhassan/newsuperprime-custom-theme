@@ -1,0 +1,78 @@
+--- before/header.php
++++ after/header.php
+@@ -1,13 +1,8 @@
+ <!DOCTYPE html>
+ <html <?php language_attributes(); ?>>
+ <head>
+-	<!-- Google Tag Manager -->
+-	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+-	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+-	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+-	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+-	})(window,document,'script','dataLayer','GTM-5Z27DP4H');</script>
+-	<!-- End Google Tag Manager -->
++    <script>window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments);};</script>
++    <script src="<?php echo esc_url( nsp_asset( 'assets/js/tracking-delay.min.js' ) ); ?>?ver=<?php echo esc_attr( nsp_asset_version( '/assets/js/tracking-delay.min.js' ) ); ?>" defer></script>
+ 	<meta charset="<?php bloginfo( 'charset' ); ?>">
+ 	<meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<link rel="icon" href="<?php echo esc_url( nsp_asset( 'assets/img/logo/logo.png' ) ); ?>" type="image/png">
+--- before/inc/performance.php
++++ after/inc/performance.php
+@@ -78,3 +78,16 @@
+ remove_action( 'wp_head', 'wlwmanifest_link' );
+ remove_action( 'wp_head', 'rsd_link' );
+ remove_action( 'wp_head', 'wp_shortlink_wp_head' );
++
++/** Delay Site Kit's Google tag without losing its inline configuration queue. */
++add_filter( 'script_loader_tag', function ( $html, $handle, $src ) {
++    if ( is_admin() || ! preg_match( '~^https://www\.googletagmanager\.com/(?:gtag/js|gtm\.js)~', $src ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) return $html;
++    $tag = new WP_HTML_Tag_Processor( $html );
++    if ( ! $tag->next_tag( 'SCRIPT' ) ) return $html;
++    $tag->remove_attribute( 'src' );
++    $tag->remove_attribute( 'async' );
++    $tag->remove_attribute( 'defer' );
++    $tag->set_attribute( 'type', 'text/plain' );
++    $tag->set_attribute( 'data-nsp-tracking-src', $src );
++    return $tag->get_updated_html();
++}, 20, 3 );
+--- before/assets/js/tracking-delay.js
++++ after/assets/js/tracking-delay.js
+@@ -0,0 +1,38 @@
++/* Keep analytics events queued while delaying third-party execution. */
++(() => {
++    const layer = window.dataLayer = window.dataLayer || [];
++    window.gtag = window.gtag || function () { layer.push(arguments); };
++    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
++    const loaded = new Set();
++    let started = false;
++    const load = (src, id) => {
++        const url = new URL(src, location.href);
++        const key = url.origin + url.pathname + '?id=' + url.searchParams.get('id');
++        if (loaded.has(key) || [...document.scripts].some(script => script.src && new URL(script.src, location.href).href === url.href)) return;
++        loaded.add(key);
++        const script = document.createElement('script');
++        script.src = url.href;
++        script.async = true;
++        if (id) script.id = id;
++        document.head.append(script);
++    };
++    const flush = () => {
++        if (!started) return;
++        document.querySelectorAll('script[data-nsp-tracking-src]').forEach(script => {
++            load(script.dataset.nspTrackingSrc, script.id + '-delayed');
++            script.remove();
++        });
++    };
++    const start = () => {
++        if (started) return;
++        started = true;
++        events.forEach(event => window.removeEventListener(event, start));
++        clearTimeout(timer);
++        layer.push({'gtm.start': Date.now(), event: 'gtm.js'});
++        load('https://www.googletagmanager.com/gtm.js?id=GTM-5Z27DP4H', 'google-tag-manager-delayed');
++        flush();
++    };
++    const timer = setTimeout(start, 4000);
++    events.forEach(event => window.addEventListener(event, start, {once:true, passive:true}));
++    new MutationObserver(flush).observe(document.head, {childList:true});
++})();

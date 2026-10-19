@@ -43,6 +43,7 @@ function walk(dir) {
 }
 
 function maxWidthFor(rel) {
+  if (rel.split(path.sep).join('/') === 'img-5/about/ab1.jpg') return 930;
   const folders = rel.split(path.sep).slice(0, -1);
   // Also cover nested template folders such as img-5/project and img-5/about.
   const folder = folders.find(name => name === 'project' || name === 'about') || folders[0];
@@ -88,6 +89,9 @@ async function main() {
     const pct = Math.round((1 - best.length / input.length) * 100);
     console.log(`${rel.padEnd(45)} ${kb(input.length)} -> ${kb(best.length)}  (-${pct}%)`);
   }
+
+  const aboutSource = path.join(BACKUP, 'img-5/about/ab1.jpg');
+  if (fs.existsSync(aboutSource)) await sharp(aboutSource).resize({width:465, withoutEnlargement:true}).jpeg({quality:JPEG_QUALITY, mozjpeg:true, progressive:true}).toFile(path.join(IMG, 'img-5/about/ab1-465.jpg'));
 
   console.log(`\nTotal: ${kb(before)} -> ${kb(after)}  (-${Math.round((1 - after / before) * 100)}%)`);
 }

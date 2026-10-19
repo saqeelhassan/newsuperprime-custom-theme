@@ -28,7 +28,8 @@ const base = process.env.WP_TEST_URL || 'http://localhost/newsuperprime-wordpres
                 assert(/[?&]ver=\d+/.test(script.src), script.id + ' filemtime version');
             }
             const has = id => assets.scripts.some(s => s.id === id + '-js');
-            assert.equal(has('nsp-ripples'), route === '');
+            assert.equal(await page.evaluate(() => Boolean(nspData.ripplesUrl)), route === '');
+            if (has('nsp-ripples')) assert.equal(route, '');
             assert.equal(has('nsp-service-catalog'), ['', 'services/'].includes(route));
             assert.equal(has('nsp-slick'), ['', 'about/'].includes(route));
             assert.equal(has('nsp-counterup'), ['', 'about/'].includes(route));

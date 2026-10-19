@@ -13,7 +13,8 @@ const fs = require('node:fs');
             const scripts = await page.locator('script[src]').evaluateAll(scripts => scripts.map(s=>s.src));
             assert(scripts.some(src=>src.includes('/slick.min.js?')));
             assert(!scripts.some(src=>src.includes('/popper.min.js')));
-            assert(scripts.some(src=>src.includes('/bootstrap.min.js')));
+            assert(!scripts.some(src=>src.includes('/bootstrap.min.js')));
+            assert(scripts.some(src=>src.includes('/collapse.min.js')));
             const images = await page.locator('img[src]').evaluateAll(images=>images.map(i=>({src:i.src,w:i.getAttribute('width'),h:i.getAttribute('height'),decoding:i.decoding,loading:i.loading})));
             for (const image of images.filter(i=>i.src.includes('/assets/img/'))) {
                 assert(Number(image.w)>0 && Number(image.h)>0, image.src+' dimensions');
@@ -33,12 +34,14 @@ const fs = require('node:fs');
         }),iconNames);
         assert(rendered.every(content=>content && content!=='none' && content!=='normal'));
         const fontCSS=fs.readFileSync('assets/css/fontawesome-all.css','utf8');
+        const fontFaces=fs.readFileSync('assets/css/fonts.css','utf8');
         const animations=fs.readFileSync('assets/css/animate.css','utf8');
         for (const name of ['fadeInUp','fadeInRight','fadeInDown','bounceInLeft','slideOutLeft','bounce','spin']) assert(animations.includes('@keyframes '+name));
-        assert.equal((fontCSS.match(/@font-face/g)||[]).length,4);
-        assert.equal((fontCSS.match(/font-display: swap/g)||[]).length,4);
+        assert.equal((fontCSS.match(/@font-face/g)||[]).length,0);
+        assert.equal((fontFaces.match(/font-family:\s*['\"]Font Awesome/g)||[]).length,4);
+        assert((fontFaces.match(/font-display:\s*swap/g)||[]).length>=4);
         assert(!fontCSS.includes('fa-duotone') && !fontCSS.includes('.ttf'));
         assert.deepEqual(errors,[]);
-        console.log('PASS: reduced icons, minified Slick, no Popper, retained Bootstrap, intrinsic image sizes, async/lazy images, eager logos/hero, RTL and mobile.');
+        console.log('PASS: reduced icons, minified Slick, no Popper, native Collapse, intrinsic image sizes, async/lazy images, eager logos/hero, RTL and mobile.');
     } finally { await browser.close(); }
 })().catch(e=>{console.error(e);process.exit(1)});

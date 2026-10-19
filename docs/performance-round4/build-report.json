@@ -1,0 +1,90 @@
+{
+  "safelist": {
+    "standard": [
+      "/^(h[1-6]|blockquote|table|thead|tbody|tr|td|th|code|pre|dropdown-toggle)$/",
+      "/^(slick-|wow$|animated$|active$|show$|open$|is-|nsp-|rtl$|mfp-|modal|collaps|fade$)/",
+      "/^(wp-|wpcf7|screen-reader|menu-|current-|page-|post-|type-|attachment-|size-|logged-in$|admin-bar$|hentry$)/",
+      "/^(col-|row$|container|g-|gx-|gy-|d-|align-|justify-|order-|offset-)/",
+      "/^(sticky-on|search-active|mobile_menu|dropdown-btn|toggle-open|filtr-|custom-|jquery-ripples|appeared$|view-on$|tw-)/"
+    ],
+    "deep": [
+      "/^(nsp-|slick-|mfp-|modal|collaps|wpcf7|wp-block-|mobile_menu|tw-)/"
+    ],
+    "greedy": [
+      "/\\[data-/",
+      "/\\[aria-/",
+      "/\\[hidden\\]/",
+      "/:root/"
+    ]
+  },
+  "css": {
+    "source": 157968,
+    "purged": 157923,
+    "minified": 113758,
+    "removedSelectors": [
+      ".progress-wrap svg path"
+    ]
+  },
+  "js": [
+    {
+      "source": "assets/js/script.js",
+      "dest": "assets/js/script.min.js",
+      "before": 29503,
+      "after": 15110
+    },
+    {
+      "source": "assets/js/booking.js",
+      "dest": "assets/js/booking.min.js",
+      "before": 14205,
+      "after": 9085
+    },
+    {
+      "source": "assets/js/service-preview.js",
+      "dest": "assets/js/service-preview.min.js",
+      "before": 8282,
+      "after": 4641
+    },
+    {
+      "source": "assets/js/service-catalog.js",
+      "dest": "assets/js/service-catalog.min.js",
+      "before": 5203,
+      "after": 3196
+    },
+    {
+      "source": "assets/js/special-offers.js",
+      "dest": "assets/js/special-offers.min.js",
+      "before": 4057,
+      "after": 2445
+    },
+    {
+      "source": "assets/js/home-booking.js",
+      "dest": "assets/js/home-booking.min.js",
+      "before": 925,
+      "after": 594
+    },
+    {
+      "source": "assets/js/about-services.js",
+      "dest": "assets/js/about-services.min.js",
+      "before": 537,
+      "after": 348
+    },
+    {
+      "source": "assets/js/nsp-dropdowns.js",
+      "dest": "assets/js/nsp-dropdowns.min.js",
+      "before": 2620,
+      "after": 1370
+    },
+    {
+      "source": "assets/js/collapse.js",
+      "dest": "assets/js/collapse.min.js",
+      "before": 2166,
+      "after": 1262
+    },
+    {
+      "source": "assets/js/tracking-delay.js",
+      "dest": "assets/js/tracking-delay.min.js",
+      "before": 1766,
+      "after": 1008
+    }
+  ]
+}
