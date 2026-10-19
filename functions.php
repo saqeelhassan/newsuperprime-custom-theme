@@ -24,6 +24,7 @@ require_once NSP_THEME_DIR . '/inc/setup-demo-content.php';
 require_once NSP_THEME_DIR . '/inc/booking.php';
 require_once NSP_THEME_DIR . '/inc/service-catalog.php';
 require_once NSP_THEME_DIR . '/inc/special-offers.php';
+require_once NSP_THEME_DIR . '/inc/service-catalog-migration.php';
 
 /**
  * Defines all service pages: title, URL slug, and which page template to use.

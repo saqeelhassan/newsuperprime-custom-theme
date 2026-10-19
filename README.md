@@ -438,7 +438,31 @@ newsuperprime-theme/
 
 Push/deploy the theme normally. On the first WordPress request, `inc/service-category-migration.php` creates Cleaning, Pest Control, AC Services, Commercial, Relocation and Maintenance, then assigns matching existing service posts (including older service names). All remains the catalog-wide filter, not a taxonomy term.
 
-The migration preserves content, prices and manually assigned categories. A version marker prevents repeated database work; changes to the service directory trigger another pass. Failures are logged and retried. This migration does not create missing service posts or import the local database. Purge the server/page cache after deployment to show the new filters.
+The category migration preserves content, prices and manually assigned categories. A version marker prevents repeated database work; changes to the service directory trigger another pass. Failures are logged and retried. Purge the server/page cache after deployment to show the new filters.
+
+### Add the local service catalog after a manual push
+
+The theme includes a snapshot of all **25 published local services** in
+`inc/service-catalog-seed.php`. Include that new file,
+`inc/service-catalog-migration.php`, and the updated `functions.php` in your push.
+The first WordPress request after deployment creates missing services and assigns
+their categories, descriptions, pricing modes and saved booking packages. Known
+legacy service names are matched instead of creating duplicates; matching old
+drafts are restored to the catalog while retaining their URLs.
+
+Existing server content, saved packages/prices, intentionally empty quote-only
+package lists, and manually assigned categories are preserved. Missing package
+metadata is filled from the local snapshot. Private/pending/future services are
+not modified. A version marker and migration lock prevent repeated writes and
+duplicate imports. Later manual edits to already imported services are retained.
+No local database IDs, customer information or localhost URLs are transferred.
+
+After future local catalog edits, run `php tools/export-service-catalog.php` and
+include the regenerated snapshot in your next push. This seeds additions and
+missing fields; it does not replace existing server prices. After pushing, open
+the website or WP Admin once, then purge the page cache. Run
+`php tests/service-catalog-deployment.php` locally to verify creation, legacy
+matching, preserved prices/URLs, quote mode and repeat safety.
 
 
 ### Frontend performance deployment
