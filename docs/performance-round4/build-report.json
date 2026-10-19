@@ -35,14 +35,14 @@
     {
       "source": "assets/js/booking.js",
       "dest": "assets/js/booking.min.js",
-      "before": 14205,
-      "after": 9085
+      "before": 14910,
+      "after": 9377
     },
     {
       "source": "assets/js/service-preview.js",
       "dest": "assets/js/service-preview.min.js",
-      "before": 8282,
-      "after": 4641
+      "before": 8738,
+      "after": 4871
     },
     {
       "source": "assets/js/service-catalog.js",

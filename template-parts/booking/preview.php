@@ -17,12 +17,12 @@
             <p data-preview-overview></p>
             <div class="nsp-preview-package-heading"><h3><?php nsp_te( 'SELECT PACKAGE', 'اختر الباقة' ); ?></h3><span><?php nsp_te( 'Clear pricing', 'أسعار واضحة' ); ?></span></div>
             <fieldset class="nsp-preview-packages"><legend class="screen-reader-text"><?php nsp_te( 'Choose a service package', 'اختر باقة الخدمة' ); ?></legend><div data-preview-packages></div></fieldset>
-            <p data-preview-empty hidden><?php nsp_te( 'Packages for this service are not available yet. Contact our team for a tailored quote.', 'باقات هذه الخدمة غير متاحة حالياً. تواصل مع فريقنا للحصول على عرض سعر مخصص.' ); ?></p>
+            <p data-preview-empty hidden><?php echo esc_html( nsp_t( __( 'Complete the booking steps to share your details. Our team will confirm the price on WhatsApp.', 'newsuperprime' ), __( 'أكمل خطوات الحجز لإرسال بياناتك. سيؤكد فريقنا السعر عبر واتساب.', 'newsuperprime' ) ) ); ?></p>
         </div>
         <footer class="nsp-preview-footer">
             <div><span><?php nsp_te( 'SELECTED PACKAGE', 'الباقة المختارة' ); ?></span><strong data-preview-price></strong></div>
             <button type="button" class="nsp-preview-book" data-preview-continue data-nsp-booking><?php nsp_te( 'Book Service', 'احجز الخدمة' ); ?> <span aria-hidden="true">→</span></button>
-            <a class="nsp-preview-book" data-preview-quote hidden href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php nsp_te( 'Request a quote', 'اطلب عرض سعر' ); ?> <span aria-hidden="true">→</span></a>
+            <button type="button" class="nsp-preview-book" data-preview-quote data-nsp-booking hidden><?php echo esc_html( nsp_t( __( 'Request a quote', 'newsuperprime' ), __( 'اطلب عرض سعر', 'newsuperprime' ) ) ); ?> <span aria-hidden="true">→</span></button>
         </footer>
     </div>
 </dialog>

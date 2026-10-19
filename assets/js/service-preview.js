@@ -8,6 +8,7 @@
     const text = (en, ar) => arabic ? ar : en;
     const formatPrice = value => `${new Intl.NumberFormat(arabic ? 'ar-SA' : 'en-SA', { maximumFractionDigits: 2 }).format(value)} ${text('SAR', 'ر.س')}`;
     const continueButton = find('[data-preview-continue]');
+    const quoteButton = find('[data-preview-quote]');
     let source;
     let returnFocus;
     let handingOff = false;
@@ -46,6 +47,12 @@
         packages = Array.isArray(packages) ? packages.filter(pkg => pkg && typeof pkg.package_name === 'string' && pkg.package_name.trim() && typeof pkg.package_price === 'number' && Number.isFinite(pkg.package_price) && pkg.package_price >= 0 && pkg.package_price <= Number.MAX_SAFE_INTEGER / 100) : [];
         // Keep package indices identical to the normalized data sent to the wizard.
         continueButton.dataset.packages = JSON.stringify(packages);
+        for (const key of Object.keys(quoteButton.dataset)) {
+            if (key !== 'previewQuote' && key !== 'nspBooking') delete quoteButton.dataset[key];
+        }
+        for (const [key, value] of Object.entries(continueButton.dataset)) {
+            if (key !== 'previewContinue' && key !== 'packageIndex') quoteButton.dataset[key] = value;
+        }
         const selected = packages[Number(trigger.dataset.packageIndex)] ? Number(trigger.dataset.packageIndex) : 0;
         const list = find('[data-preview-packages]');
         list.replaceChildren();
@@ -69,7 +76,8 @@
         find('[data-preview-quote]').hidden = !!packages.length;
         find('[data-preview-empty]').hidden = !!packages.length;
         if (packages.length) choose(selected, packages);
-        else find('[data-preview-price]').textContent = trigger.dataset.priceLabel || text('Price on request', 'السعر عند الطلب');
+        else find('[data-preview-price]').textContent = '';
+        find('[data-preview-price]').parentElement.hidden = !packages.length;
         if (!switching) previousLock = document.documentElement.classList.contains('nsp-preview-open');
         document.documentElement.classList.add('nsp-preview-open');
         if (!switching) modal.showModal();
@@ -108,11 +116,11 @@
         open(trigger, event.target);
     }, true);
     find('[data-preview-close]').addEventListener('click', () => modal.close());
-    continueButton.addEventListener('click', () => {
+    [continueButton, quoteButton].forEach(button => button.addEventListener('click', () => {
         handingOff = true;
         modal.close();
         // The original booking handler receives this click after the preview closes.
-    });
+    }));
     modal.addEventListener('close', () => {
         if (!previousLock) document.documentElement.classList.remove('nsp-preview-open');
         if (handingOff) {

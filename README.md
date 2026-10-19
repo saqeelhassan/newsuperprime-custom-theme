@@ -49,7 +49,10 @@ Without package prices, cards show **Price on request** and quote links.
 Clicking a service image, title, card, or booking button opens a service-details
 popup with its image, overview, selectable packages, perks, and a fixed price /
 **Book Service** footer. The footer continues into the existing five-step wizard
-with the selected package. Services without packages offer a contact quote link.
+with the selected package. Services without packages use the same five-step
+wizard through **Request a quote**. The first step confirms the service; location,
+schedule and customer details are still required. Price fields stay blank and the
+WhatsApp message includes all details so the team can confirm the price there.
 Package buttons preselect that package in the popup, and selecting a
 service area prefills the booking city. Project cards use **Projects** content;
 add featured images there to replace the illustrative service-image fallbacks.
@@ -129,7 +132,9 @@ ACF `service_packages` repeater, when available. After saving the native editor,
 it becomes the source for this service; removing all rows keeps the package list
 empty instead of restoring old ACF packages. Invalid package submissions preserve
 the previously saved list and display an admin notice.
-Missing packages displays an unavailable message without inventing prices.
+Missing packages use quote mode without inventing a package, zero price or discount.
+Run `node tests/quote-booking.cjs` to check quote requests with typed addresses and
+GPS/map links in English and Arabic at mobile and desktop widths.
 The dedicated service page templates resolve packages from their matching service
 CPT entry through the existing service URL mapping. A new `single-service.php`
 also supports direct CPT detail URLs.

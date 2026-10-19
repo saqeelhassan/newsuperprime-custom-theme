@@ -37,7 +37,7 @@
     }
     function validate(step) {
         capture();
-        if (step === 1 && !state.package) return error('Choose a package to continue.', 'input[name="package"]');
+        if (step === 1 && !state.quote && !state.package) return error('Choose a package to continue.', 'input[name="package"]');
         if (step === 2) {
             if (!state.city) return error('Select your city.', 'input[name="city"]');
             if (!state.gps && !state.street) return error('Capture your GPS location or enter your street address.', '[name="street"]');
@@ -57,6 +57,7 @@
         return error();
     }
     function totals() {
+        if (state.quote) return null;
         const regular = Math.round(state.package.package_price * 100);
         const discount = Math.round(regular * 0.10);
         return { regular, discount, final: regular - discount };
@@ -66,8 +67,8 @@
     }
     function summaryRows() {
         return [
-            ['Service', state.service.title], ['Package', state.package.package_name],
-            ['Package description', state.package.package_description || '—'], ['Package perk', state.package.package_perk || '—'],
+            ['Service', state.service.title], ...(state.quote ? [] : [['Package', state.package.package_name],
+            ['Package description', state.package.package_description || '—'], ['Package perk', state.package.package_perk || '—']]),
             ['City', state.city], ['Location', locationText()], ['Date', state.date],
             ['Time (Saudi Arabia)', state.time], ['Full name', state.fullName], ['Mobile', state.mobile],
             ['Preferred contact', state.contactMethod], ['Special instructions', state.instructions || 'None'],
@@ -91,9 +92,10 @@
             list.append(row);
         });
         const prices = totals();
-        find('[data-regular]').textContent = money(prices.regular);
-        find('[data-discount]').textContent = `−${money(prices.discount)}`;
-        find('[data-total]').textContent = money(prices.final);
+        find('[data-pricing]').hidden = state.quote;
+        find('[data-regular]').textContent = prices ? money(prices.regular) : '';
+        find('[data-discount]').textContent = prices ? `−${money(prices.discount)}` : '';
+        find('[data-total]').textContent = prices ? money(prices.final) : '';
     }
     function goTo(step, focus = true) {
         state.step = Math.max(1, Math.min(5, step));
@@ -101,9 +103,9 @@
         modal.querySelectorAll('[data-step]').forEach(panel => { panel.hidden = Number(panel.dataset.step) !== state.step; });
         find('[data-back]').hidden = state.step === 1;
         find('[data-next]').textContent = state.step === 5 ? 'Send Booking Request on WhatsApp' : 'Continue →';
-        find('[data-next]').disabled = state.step === 1 && !state.packages.length;
+        find('[data-next]').disabled = state.step === 1 && !state.quote && !state.packages.length;
         find('[data-step-count]').textContent = `STEP ${state.step} OF 5`;
-        find('#nsp-booking-title').textContent = titles[state.step - 1];
+        find('#nsp-booking-title').textContent = state.step === 1 && state.quote ? modal.dataset.quoteServiceLabel : titles[state.step - 1];
         modal.querySelectorAll('[data-dot]').forEach((dot, index) => {
             dot.classList.toggle('tw-bg-prime', index < state.step);
             dot.classList.toggle('tw-bg-slate-200', index >= state.step);
@@ -136,7 +138,8 @@
             label.append(radio, content);
             list.append(label);
         });
-        if (!state.packages.length) list.textContent = 'Packages are not available for this service yet. Please contact our team for a quote.';
+        find('[data-package-legend]').textContent = state.quote ? modal.dataset.quoteServiceLabel : 'Choose your package';
+        if (state.quote) list.textContent = modal.dataset.quoteDescription;
     }
     function open(trigger) {
         if (modal.open) return;
@@ -151,6 +154,7 @@
             service: { title: trigger.dataset.serviceTitle || 'Cleaning service', category: trigger.dataset.serviceCategory || 'Services', image: trigger.dataset.serviceImage || '' },
             packages: Array.isArray(packages) ? packages.filter(pkg => pkg && typeof pkg.package_name === 'string' && pkg.package_name.trim() && typeof pkg.package_price === 'number' && Number.isFinite(pkg.package_price) && pkg.package_price >= 0 && pkg.package_price <= Number.MAX_SAFE_INTEGER / 100) : [],
         });
+        state.quote = state.packages.length === 0;
         find('[data-service-title]').textContent = state.service.title;
         find('[data-service-category]').textContent = state.service.category;
         const img = find('[data-service-image]');
@@ -199,7 +203,7 @@
         }
         renderReview();
         const prices = totals();
-        const message = ['*New Super Prime — Booking Request*', `Reference: ${state.reference}`, '', ...summaryRows().map(([label, value]) => `${label}: ${value}`), '', `Regular price: ${money(prices.regular)}`, `First Booking Benefit (10%): -${money(prices.discount)}`, `Final price: ${money(prices.final)}`, '', 'Please confirm availability and my booking.'].join('\n');
+        const message = ['*New Super Prime — Booking Request*', `Reference: ${state.reference}`, '', ...summaryRows().map(([label, value]) => `${label}: ${value}`), '', ...(state.quote ? [`${modal.dataset.quotePriceLabel}: `, '', modal.dataset.quoteConfirmation] : [`Regular price: ${money(prices.regular)}`, `First Booking Benefit (10%): -${money(prices.discount)}`, `Final price: ${money(prices.final)}`, '', 'Please confirm availability and my booking.'])].join('\n');
         const url = `https://api.whatsapp.com/send?phone=966559357772&text=${encodeURIComponent(message)}`;
         // Stay inside the user click so browsers permit opening WhatsApp.
         window.open(url, '_blank', 'noopener,noreferrer');

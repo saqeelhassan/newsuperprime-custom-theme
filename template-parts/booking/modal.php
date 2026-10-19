@@ -1,5 +1,9 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
-<dialog id="nsp-booking" aria-labelledby="nsp-booking-title" aria-describedby="nsp-step-count" lang="en" dir="ltr">
+<dialog id="nsp-booking" aria-labelledby="nsp-booking-title" aria-describedby="nsp-step-count" lang="en" dir="ltr"
+    data-quote-description="<?php echo esc_attr( nsp_t( __( 'Share your location, preferred schedule and contact details. Our team will confirm the price on WhatsApp.', 'newsuperprime' ), __( 'شارك موقعك والموعد المفضل وبيانات التواصل. سيؤكد فريقنا السعر عبر واتساب.', 'newsuperprime' ) ) ); ?>"
+    data-quote-service-label="<?php echo esc_attr( nsp_t( __( 'Confirm your service', 'newsuperprime' ), __( 'تأكيد الخدمة', 'newsuperprime' ) ) ); ?>"
+    data-quote-price-label="<?php echo esc_attr( nsp_t( __( 'Price', 'newsuperprime' ), __( 'السعر', 'newsuperprime' ) ) ); ?>"
+    data-quote-confirmation="<?php echo esc_attr( nsp_t( __( 'Please confirm the price and availability on WhatsApp.', 'newsuperprime' ), __( 'يرجى تأكيد السعر والتوفر عبر واتساب.', 'newsuperprime' ) ) ); ?>">
     <form id="nsp-booking-form" novalidate class="tw-flex tw-max-h-[92dvh] tw-flex-col">
         <header class="tw-shrink-0 tw-border-0 tw-border-b tw-border-solid tw-border-slate-200 tw-p-6">
             <div class="tw-flex tw-items-start tw-gap-4">
@@ -22,7 +26,7 @@
                     <img data-service-image alt="" width="80" height="80" decoding="async" loading="lazy" class="tw-h-20 tw-w-20 tw-rounded-lg tw-object-cover">
                     <div><span data-service-category class="tw-text-xs tw-font-bold tw-uppercase tw-tracking-wide tw-text-prime"></span><h3 data-service-title></h3></div>
                 </div>
-                <fieldset class="tw-m-0 tw-min-w-0 tw-border-0 tw-p-0"><legend class="tw-mb-3 tw-text-base tw-font-bold">Choose your package</legend><div data-packages class="tw-space-y-3"></div></fieldset>
+                <fieldset class="tw-m-0 tw-min-w-0 tw-border-0 tw-p-0"><legend data-package-legend class="tw-mb-3 tw-text-base tw-font-bold">Choose your package</legend><div data-packages class="tw-space-y-3"></div></fieldset>
             </section>
             <section data-step="2" hidden class="tw-space-y-5">
                 <fieldset class="tw-m-0 tw-border-0 tw-p-0"><legend class="tw-mb-3 tw-font-bold">Select your city</legend><div class="tw-flex tw-flex-wrap tw-gap-2">
@@ -64,7 +68,7 @@
             <section data-step="5" hidden class="tw-space-y-5">
                 <div class="tw-rounded-xl tw-bg-mist tw-p-4"><p class="tw-text-xs tw-font-bold tw-uppercase tw-tracking-widest">Your booking reference</p><p data-reference class="tw-font-mono tw-text-xl tw-font-bold tw-text-prime"></p></div>
                 <dl data-summary class="tw-m-0 tw-space-y-3"></dl>
-                <div class="tw-space-y-3 tw-rounded-xl tw-bg-mist tw-p-4">
+                <div data-pricing class="tw-space-y-3 tw-rounded-xl tw-bg-mist tw-p-4">
                     <div class="tw-flex tw-justify-between"><span>Regular price</span><span data-regular></span></div>
                     <div class="tw-flex tw-justify-between tw-gap-3 tw-text-prime"><span>First Booking Benefit (10%)</span><span data-discount></span></div>
                     <div class="tw-flex tw-justify-between tw-text-xl tw-font-bold"><span>Final price</span><span data-total></span></div>

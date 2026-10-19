@@ -46,6 +46,10 @@ const base = process.env.WP_TEST_URL || 'http://localhost/newsuperprime-wordpres
         await trigger.click();
         assert.equal(await preview.locator('[data-preview-quote]').isVisible(), true);
         assert.equal(await preview.locator('[data-preview-continue]').isVisible(), false);
+        assert.equal(await preview.locator('[data-preview-price]').textContent(), '');
+        await preview.locator('[data-preview-quote]').click();
+        assert.equal(await page.locator('#nsp-booking').evaluate(el=>el.open), true);
+        assert.equal(await page.locator('#nsp-booking [data-next]').isDisabled(), false);
         await page.keyboard.press('Escape');
         await page.locator('.nsp-specialized-card h3 a').first().click();
         assert.equal(await preview.evaluate(el => el.open), true);
