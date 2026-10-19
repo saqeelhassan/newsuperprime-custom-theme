@@ -11,6 +11,7 @@ require_once NSP_THEME_DIR . '/inc/theme-setup.php';
 require_once NSP_THEME_DIR . '/inc/enqueue.php';
 require_once NSP_THEME_DIR . '/inc/post-types.php';
 require_once NSP_THEME_DIR . '/inc/taxonomies.php';
+require_once NSP_THEME_DIR . '/inc/service-category-migration.php';
 require_once NSP_THEME_DIR . '/inc/meta-boxes.php';
 require_once NSP_THEME_DIR . '/inc/customizer.php';
 require_once NSP_THEME_DIR . '/inc/widgets.php';

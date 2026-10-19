@@ -427,3 +427,10 @@ newsuperprime-theme/
 │   └── newsuperprime.pot              Translation template placeholder
 └── screenshot.png                     1200×900 placeholder (replace with real screenshot)
 ```
+
+
+### Automatic service categories after deployment
+
+Push/deploy the theme normally. On the first WordPress request, `inc/service-category-migration.php` creates Cleaning, Pest Control, AC Services, Commercial, Relocation and Maintenance, then assigns matching existing service posts (including older service names). All remains the catalog-wide filter, not a taxonomy term.
+
+The migration preserves content, prices and manually assigned categories. A version marker prevents repeated database work; changes to the service directory trigger another pass. Failures are logged and retried. This migration does not create missing service posts or import the local database. Purge the server/page cache after deployment to show the new filters.
