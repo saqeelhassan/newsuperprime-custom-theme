@@ -7,12 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function nsp_post_meta() {
     echo '<div class="post-meta ul-li">';
     echo '<ul>';
-    echo '<li><i class="fal fa-calendar-alt"></i>' . esc_html( nsp_get_the_date() ) . '</li>';
-    echo '<li><i class="fal fa-user"></i>' . esc_html( get_the_author() ) . '</li>';
+    echo '<li><i class="fal fa-calendar-alt" aria-hidden="true"></i>' . esc_html( nsp_get_the_date() ) . '</li>';
+    echo '<li><i class="fal fa-user" aria-hidden="true"></i>' . esc_html( get_the_author() ) . '</li>';
     $cats = get_the_category();
     if ( $cats ) {
         $cat_name = nsp_cat_ar( $cats[0]->name ) ?: $cats[0]->name;
-        echo '<li><i class="fal fa-tag"></i><a href="' . esc_url( get_category_link( $cats[0]->term_id ) ) . '">' . esc_html( $cat_name ) . '</a></li>';
+        echo '<li><i class="fal fa-tag" aria-hidden="true"></i><a href="' . esc_url( get_category_link( $cats[0]->term_id ) ) . '">' . esc_html( $cat_name ) . '</a></li>';
     }
     echo '</ul>';
     echo '</div>';

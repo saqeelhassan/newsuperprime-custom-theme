@@ -68,7 +68,7 @@
 				<div class="header-cart-btn-search align-items-center d-flex">
 					<?php nsp_language_switcher(); ?>
 					<div class="h-search">
-						<button class="search-box-outer"><i class="far fa-search"></i></button>
+						<button type="button" class="search-box-outer" aria-label="<?php echo esc_attr( nsp_t( __( 'Search', 'newsuperprime' ), __( 'بحث', 'newsuperprime' ) ) ); ?>"><i class="far fa-search" aria-hidden="true"></i></button>
 					</div>
 					<div class="h-cta-btn">
                         <?php nsp_header_booking_button( nsp_t( 'Book Service', 'احجز خدمة' ) ); ?>
@@ -78,15 +78,15 @@
 		</div>
 	</div>
 	<div class="mobile_menu">
-		<div class="mobile_menu_button open_mobile_menu">
-			<i class="fal fa-bars"></i>
-		</div>
+		<button type="button" class="mobile_menu_button open_mobile_menu" aria-label="<?php echo esc_attr( nsp_t( __( 'Open menu', 'newsuperprime' ), __( 'فتح القائمة', 'newsuperprime' ) ) ); ?>">
+			<i class="fal fa-bars" aria-hidden="true"></i>
+		</button>
 		<div class="mobile_menu_wrap">
 			<div class="mobile_menu_overlay open_mobile_menu"></div>
 			<div class="mobile_menu_content">
-				<div class="mobile_menu_close open_mobile_menu">
-					<i class="fal fa-times"></i>
-				</div>
+				<button type="button" class="mobile_menu_close open_mobile_menu" aria-label="<?php echo esc_attr( nsp_t( __( 'Close menu', 'newsuperprime' ), __( 'إغلاق القائمة', 'newsuperprime' ) ) ); ?>">
+					<i class="fal fa-times" aria-hidden="true"></i>
+				</button>
 				<div class="m-brand-logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php nsp_site_logo(); ?></a>
 				</div>
@@ -110,8 +110,8 @@
 </header>
 <!-- Search PopUp -->
 <div class="search-popup">
-	<button class="close-search style-two"><span class="fal fa-times"></span></button>
-	<button class="close-search"><span class="fa fa-arrow-up"></span></button>
+	<button type="button" class="close-search style-two" aria-label="<?php echo esc_attr( nsp_t( __( 'Close search', 'newsuperprime' ), __( 'إغلاق البحث', 'newsuperprime' ) ) ); ?>"><span class="fal fa-times" aria-hidden="true"></span></button>
+	<button type="button" class="close-search" aria-label="<?php echo esc_attr( nsp_t( __( 'Close search', 'newsuperprime' ), __( 'إغلاق البحث', 'newsuperprime' ) ) ); ?>"><span class="fa fa-arrow-up" aria-hidden="true"></span></button>
 	<?php get_search_form(); ?>
 </div>
 <!-- End of header section

@@ -1,0 +1,40 @@
+booking-admin.cjs: PASS
+PASS: admin editor renders saved packages; add, remove, required inputs, unique rows, and empty state.
+
+booking-admin.php: PASS
+PASS: admin save, sanitization, frontend payload, invalid price/shape, nonce, permissions, and empty packages.
+
+booking.cjs: PASS
+PASS: five-step flow, validation, totals, safe rendering, WhatsApp encoding, mobile layout, reset, GPS, stale callbacks, empty data.
+
+home-hero.cjs: PASS
+PASS: real ripple canvas, slide image updates without replacing canvas, drop effect, booking popup, mobile, and reduced-motion fallback.
+
+performance-round2.cjs: PASS
+PASS: reduced icons, minified Slick, no Popper, retained Bootstrap, intrinsic image sizes, async/lazy images, eager logos/hero, RTL and mobile.
+
+performance.cjs: PASS
+PASS: core jQuery + Migrate, footer/defer/versioning, conditional assets, no emoji, Slick, Filterizr, FAQ, Magnific, Inputarrow, WOFF2 and RTL/mobile.
+
+service-catalog.cjs: PASS
+PASS: 25 live services; filters, hero, package/city preselection, booking, mobile overflow, and Arabic RTL.
+
+service-categories.cjs: PASS
+PASS: All six category counts, related packages and hero, category switching, mobile booking, and Arabic RTL.
+
+service-category-migration.php: PASS
+PASS: legacy service assignment, unchanged pricing, completion marker and repeat-safe terms.
+
+service-directory.cjs: PASS
+PASS: 25 catalog services, direct Services navigation, packages, readable ampersands, service detail URL, and Arabic labels.
+
+service-preview.cjs: PASS
+PASS: card/image/title clicks, package selection, safe text, wizard handoff, focus, scroll unlock, mobile, empty packages, specialized services, and homepage carousel.
+
+special-offers.cjs: PASS
+PASS: automatic offers on home/other pages, all four exact prices, dots/arrows/keyboard, offer package handoff, scroll unlock, first-visitor persistence, repeat-visit suppression, and mobile Arabic layout.
+
+
+performance-round3.cjs: PASS
+16 delayed-CSS page checks; first-screen geometry/paint styles, local fonts, hero preload/fallback, mobile WOW, live intercepted WhatsApp booking and four offer/viewport/language handoffs.
+JavaScript-disabled noscript fallback: PASS.

@@ -1,0 +1,5 @@
+assets/fonts/fa-duotone-900.eot
+assets/fonts/fa-duotone-900.svg
+assets/fonts/fa-duotone-900.ttf
+assets/fonts/fa-duotone-900.woff
+assets/fonts/fa-duotone-900.woff2

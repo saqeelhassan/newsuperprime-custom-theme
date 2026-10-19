@@ -62,7 +62,7 @@ get_header();
 								<div class="clinox-about-cta-btn-grp wow fadeInUp" data-wow-delay="600ms" data-wow-duration="1500ms">
 									<div class="about-cta-btn-wrapper d-flex align-items-center">
 										<div class="about-cta d-flex align-items-center">
-											<i class="far fa-phone-alt"></i>
+											<i class="far fa-phone-alt" aria-hidden="true"></i>
 											<div class="about-cta-text">
 												<span><?php nsp_te( 'Emergency Services', 'خدمات الطوارئ' ); ?></span>
 												<div class="nsp-emergency-phones" dir="ltr">
@@ -234,7 +234,7 @@ get_header();
 									<div class="inner-text headline">
 										<span><a href="#"><?php echo esc_html( $_loc_display ); ?></a></span>
 										<h3><a href="<?php the_permalink(); ?>"><?php echo esc_html( $_proj_ar_title ?: $_proj_title ); ?></a></h3>
-										<a class="read-more-btn d-flex align-items-center justify-content-center" href="<?php the_permalink(); ?>"><i class="fal fa-long-arrow-right nsp-flip-rtl"></i></a>
+										<a aria-label="<?php echo esc_attr( sprintf( nsp_t( __( 'Read more: %s', 'newsuperprime' ), __( 'اقرأ المزيد: %s', 'newsuperprime' ) ), $_proj_ar_title ?: $_proj_title ) ); ?>" class="read-more-btn d-flex align-items-center justify-content-center" href="<?php the_permalink(); ?>"><i class="fal fa-long-arrow-right nsp-flip-rtl" aria-hidden="true"></i></a>
 									</div>
 								</div>
 							</div>
@@ -265,7 +265,7 @@ get_header();
 								<div class="inner-text headline">
 									<span><a href="#"><?php nsp_te( 'Eastern Province, KSA', 'المنطقة الشرقية، المملكة العربية السعودية' ); ?></a></span>
 									<h3><a href="<?php echo esc_url( nsp_post_type_archive_url( 'project', 'projects' ) ); ?>"><?php echo esc_html( $p[2] ); ?></a></h3>
-									<a class="read-more-btn d-flex align-items-center justify-content-center" href="<?php echo esc_url( nsp_post_type_archive_url( 'project', 'projects' ) ); ?>"><i class="fal fa-long-arrow-right nsp-flip-rtl"></i></a>
+									<a aria-label="<?php echo esc_attr( nsp_t( __( 'View all projects', 'newsuperprime' ), __( 'عرض جميع المشاريع', 'newsuperprime' ) ) ); ?>" class="read-more-btn d-flex align-items-center justify-content-center" href="<?php echo esc_url( nsp_post_type_archive_url( 'project', 'projects' ) ); ?>"><i class="fal fa-long-arrow-right nsp-flip-rtl" aria-hidden="true"></i></a>
 								</div>
 							</div>
 						</div>
@@ -414,8 +414,8 @@ get_header();
 									<div class="inner-text headline">
 										<h3><a href="<?php the_permalink(); ?>"><?php echo esc_html( $_blog_label ); ?></a></h3>
 										<div class="blog-meta">
-											<a href="<?php the_permalink(); ?>"><i class="fal fa-calendar-check"></i> <?php echo esc_html( nsp_get_the_date() ); ?></a>
-											<a href="<?php the_permalink(); ?>"><i class="far fa-user"></i> <?php echo esc_html( get_the_author() ); ?></a>
+											<a href="<?php the_permalink(); ?>"><i class="fal fa-calendar-check" aria-hidden="true"></i> <?php echo esc_html( nsp_get_the_date() ); ?></a>
+											<a href="<?php the_permalink(); ?>"><i class="far fa-user" aria-hidden="true"></i> <?php echo esc_html( get_the_author() ); ?></a>
 										</div>
 										<div class="read-more-btn">
 											<a class="d-flex justify-content-center align-items-center" href="<?php the_permalink(); ?>"><?php nsp_te( 'Read More', 'اقرأ المزيد' ); ?></a>

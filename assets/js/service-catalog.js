@@ -1,5 +1,6 @@
 (() => {
     'use strict';
+    const initialize = () => {
     const root = document.querySelector('#nsp-catalog,[data-home-services]');
     if (!root) return;
     const arabic = document.documentElement.lang.startsWith('ar');
@@ -38,15 +39,16 @@
     function showHero(index) {
         slides.forEach((slide, i) => { slide.hidden = i !== index; });
         dots.forEach((dot, i) => dot.setAttribute('aria-pressed', String(i === index)));
+        const image = slides[index].querySelector('img').src;
+        const ripple = window.jQuery?.(hero);
         if (hero.id === 'clinox-banner-3') {
-            const image = slides[index].querySelector('img').src;
             hero.dataset.background = image;
-            const ripple = window.jQuery?.(hero);
             if (ripple?.data('ripples')) {
                 try { ripple.ripples('set', 'imageUrl', image); }
                 catch { /* Static slide image remains available without WebGL. */ }
             }
         }
+        if (!ripple?.data('ripples')) hero.style.backgroundImage = `url("${image}")`;
     }
     dots.forEach(button => button.addEventListener('click', () => showHero(Number(button.dataset.heroDot))));
     hero.filterCategory = category => {
@@ -74,4 +76,7 @@
     const selectedCity = cityButtons.find(button => button.getAttribute('aria-pressed') === 'true');
     if (selectedCity) setCity(selectedCity);
     updateResults();
+    };
+    if (window.nspStylesReady) window.nspStylesReady.then(initialize);
+    else initialize();
 })();

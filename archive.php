@@ -62,8 +62,8 @@ $_bi = 0;
 								<?php endif; ?>
 								<div class="inner-meta ul-li">
 									<ul>
-										<li><a href="<?php the_permalink(); ?>"><i class="fal fa-user"></i><?php echo esc_html( get_the_author() ); ?></a></li>
-										<li><a href="<?php the_permalink(); ?>"><i class="fal fa-calendar-alt"></i><?php echo esc_html( nsp_get_the_date() ); ?></a></li>
+										<li><a href="<?php the_permalink(); ?>"><i class="fal fa-user" aria-hidden="true"></i><?php echo esc_html( get_the_author() ); ?></a></li>
+										<li><a href="<?php the_permalink(); ?>"><i class="fal fa-calendar-alt" aria-hidden="true"></i><?php echo esc_html( nsp_get_the_date() ); ?></a></li>
 									</ul>
 								</div>
 							</div>

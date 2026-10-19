@@ -434,3 +434,26 @@ newsuperprime-theme/
 Push/deploy the theme normally. On the first WordPress request, `inc/service-category-migration.php` creates Cleaning, Pest Control, AC Services, Commercial, Relocation and Maintenance, then assigns matching existing service posts (including older service names). All remains the catalog-wide filter, not a taxonomy term.
 
 The migration preserves content, prices and manually assigned categories. A version marker prevents repeated database work; changes to the service directory trigger another pass. Failures are logged and retried. This migration does not create missing service posts or import the local database. Purge the server/page cache after deployment to show the new filters.
+
+
+### Frontend performance deployment
+
+See [the performance report](docs/performance/README.md) for asset-loading decisions, per-task diffs, image sizes, CSS audit, passing tests and exact upload/exclusion lists. It describes the current conditional asset loading and supersedes the older all-libraries-on-every-page implementation notes.
+
+
+### Round 2 performance review
+
+See [the Round 2 report](docs/performance-round2/README.md) for exact icon usage, per-task diffs, Bootstrap/Popper decisions, reduced animation coverage, image handling, tests and the 14-file upload list. The proposed main stylesheet cleanup is not applied and requires confirmation.
+
+
+### Round 3 performance deployment
+
+See [the Round 3 report](docs/performance-round3/README.md) for icon font subsets, self-hosted text fonts, hero preload, jQuery audit, PurgeCSS safelist, critical CSS, mobile WOW behavior, test evidence and the complete 29-file runtime upload list. Original `*.full.woff2` fonts are local backups and must not be deployed.
+
+### Mobile navigation checks
+
+Mobile menus support Escape dismissal, keyboard focus containment and focus return,
+with a 44px close-control hit area and independent menu scrolling. Run
+`node tests/mobile.cjs` for English/Arabic checks at 320px, 375px and 430px on
+Home, Services and Contact. `node tests/accessibility.cjs` runs axe WCAG A/AA
+checks; install axe-core locally alongside the existing Playwright setup.

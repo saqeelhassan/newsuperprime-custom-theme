@@ -88,7 +88,7 @@
 <!-- End of Footer section
 ============================================= -->
 <a href="https://wa.me/966593657772" class="nsp-whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( nsp_t( 'Chat on WhatsApp', 'تواصل عبر واتساب' ) ); ?>">
-	<i class="fab fa-whatsapp"></i>
+	<i class="fab fa-whatsapp" aria-hidden="true"></i>
 </a>
 <?php wp_footer(); ?>
 </body>

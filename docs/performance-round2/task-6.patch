@@ -1,0 +1,125 @@
+--- before/tools/optimize-images.cjs
++++ after/tools/optimize-images.cjs
+@@ -27,6 +27,8 @@
+   icon: 160,
+   shape: 800,
+   blog: 800,
++  project: 900,
++  about: 900,
+   default: 1920,
+ };
+ 
+@@ -41,7 +43,9 @@
+ }
+ 
+ function maxWidthFor(rel) {
+-  const folder = rel.split(path.sep)[0];
++  const folders = rel.split(path.sep).slice(0, -1);
++  // Also cover nested template folders such as img-5/project and img-5/about.
++  const folder = folders.find(name => name === 'project' || name === 'about') || folders[0];
+   return MAX_WIDTH[folder] || MAX_WIDTH.default;
+ }
+ 
+--- before/inc/performance.php
++++ after/inc/performance.php
+@@ -10,6 +10,7 @@
+  */
+ 
+ defined( 'ABSPATH' ) || exit;
++require_once __DIR__ . '/image-performance.php';
+ 
+ /**
+  * 1. Remove the WordPress emoji script and styles (wp-emoji-release.min.js).
+--- before/inc/image-performance.php
++++ after/inc/image-performance.php
+@@ -0,0 +1,68 @@
++<?php
++/** Add intrinsic dimensions and defer offscreen static theme images. */
++if ( ! defined('ABSPATH') ) exit;
++
++function nsp_static_image_dimensions( string $url ): array {
++    static $cache = [];
++    $path = rawurldecode((string)wp_parse_url($url, PHP_URL_PATH));
++    if (isset($cache[$path])) return $cache[$path];
++    $prefix = rtrim((string)wp_parse_url(NSP_THEME_URI, PHP_URL_PATH), '/') . '/assets/img/';
++    if (0 !== strpos($path, $prefix)) return $cache[$path] = [];
++    $root = realpath(NSP_THEME_DIR . '/assets/img');
++    $file = realpath(NSP_THEME_DIR . '/assets/img/' . substr($path, strlen($prefix)));
++    if (!$root || !$file || 0 !== strpos($file, $root . DIRECTORY_SEPARATOR) || !is_file($file)) return $cache[$path] = [];
++    $size = @getimagesize($file);
++    return $cache[$path] = $size ? [(int)$size[0], (int)$size[1]] : [];
++}
++
++function nsp_image_performance_markup( string $html ): string {
++    if (!class_exists('WP_HTML_Tag_Processor') || false === stripos($html, '<html')) return $html;
++    $processor = new WP_HTML_Tag_Processor($html);
++    $stack = [];
++    $first_content_image = !is_front_page();
++    $void = ['AREA','BASE','BR','COL','EMBED','HR','IMG','INPUT','LINK','META','PARAM','SOURCE','TRACK','WBR'];
++    while ($processor->next_tag(['tag_closers'=>'visit'])) {
++        $tag = $processor->get_tag();
++        if ($processor->is_tag_closer()) {
++            while ($stack) {
++                $entry = array_pop($stack);
++                if ($entry[0] === $tag) break;
++            }
++            continue;
++        }
++        $parent_eager = $stack ? $stack[count($stack)-1][1] : false;
++        $classes = (string)$processor->get_attribute('class');
++        $eager = $parent_eager || 'clinox-header' === $processor->get_attribute('id') || (bool)preg_match('/\bnsp-(?:home-hero|catalog-hero)\b/', $classes);
++        if ('IMG' === $tag) {
++            $src = (string)$processor->get_attribute('src');
++            $is_logo = (bool)preg_match('~/logo/|logo[._-]~i', $src);
++            $is_decoration = (bool)preg_match('~/(?:shape|icon)/~', $src);
++            $first = !$eager && !$is_logo && !$is_decoration && $src && $first_content_image;
++            if ($first) $first_content_image = false;
++            // Preserve explicit loading choices and never lazy-load logos/hero.
++            if (!$eager && !$is_logo && !$first && null === $processor->get_attribute('loading')) $processor->set_attribute('loading', 'lazy');
++            if (null === $processor->get_attribute('decoding')) $processor->set_attribute('decoding', 'async');
++            $dimensions = nsp_static_image_dimensions($src);
++            if ($dimensions) {
++                [$width, $height] = $dimensions;
++                $existing_width = $processor->get_attribute('width');
++                $existing_height = $processor->get_attribute('height');
++                if (null === $existing_width && null === $existing_height) {
++                    $processor->set_attribute('width', $width);
++                    $processor->set_attribute('height', $height);
++                } elseif (null === $existing_height && is_numeric($existing_width)) {
++                    $processor->set_attribute('height', (int)round($height * (float)$existing_width / $width));
++                } elseif (null === $existing_width && is_numeric($existing_height)) {
++                    $processor->set_attribute('width', (int)round($width * (float)$existing_height / $height));
++                }
++            }
++        }
++        if (!in_array($tag, $void, true)) $stack[] = [$tag, $eager];
++    }
++    return $processor->get_updated_html();
++}
++
++add_action('template_redirect', function () {
++    if (is_feed() || is_trackback() || is_embed() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) return;
++    ob_start('nsp_image_performance_markup');
++});
+--- before/template-parts/booking/modal.php
++++ after/template-parts/booking/modal.php
+@@ -19,7 +19,7 @@
+         <div class="tw-overflow-y-auto tw-p-6" data-body>
+             <section data-step="1" class="tw-space-y-5">
+                 <div class="tw-flex tw-items-center tw-gap-4 tw-rounded-xl tw-bg-mist tw-p-4">
+-                    <img data-service-image alt="" class="tw-h-20 tw-w-20 tw-rounded-lg tw-object-cover">
++                    <img data-service-image alt="" width="80" height="80" decoding="async" loading="lazy" class="tw-h-20 tw-w-20 tw-rounded-lg tw-object-cover">
+                     <div><span data-service-category class="tw-text-xs tw-font-bold tw-uppercase tw-tracking-wide tw-text-prime"></span><h3 data-service-title></h3></div>
+                 </div>
+                 <fieldset class="tw-m-0 tw-min-w-0 tw-border-0 tw-p-0"><legend class="tw-mb-3 tw-text-base tw-font-bold">Choose your package</legend><div data-packages class="tw-space-y-3"></div></fieldset>
+--- before/template-parts/booking/preview.php
++++ after/template-parts/booking/preview.php
+@@ -2,7 +2,7 @@
+ <dialog id="nsp-service-preview" aria-labelledby="nsp-preview-title" dir="<?php echo nsp_is_arabic() ? 'rtl' : 'ltr'; ?>">
+     <div class="nsp-preview-layout">
+         <header class="nsp-preview-hero">
+-            <img data-preview-image alt="">
++            <img data-preview-image alt="" width="1200" height="675" decoding="async" loading="lazy">
+             <button type="button" data-preview-close aria-label="<?php nsp_ta( 'Close service details', 'إغلاق تفاصيل الخدمة' ); ?>">×</button>
+             <div class="nsp-preview-heading"><span data-preview-category></span><h2 id="nsp-preview-title" tabindex="-1"></h2><p data-preview-subtitle></p></div>
+         </header>

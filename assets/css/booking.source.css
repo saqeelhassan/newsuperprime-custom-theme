@@ -11,9 +11,9 @@
 #nsp-booking button, #nsp-booking input, #nsp-booking textarea { font: inherit; }
 #nsp-booking button { cursor: pointer; }
 #nsp-booking input:not([type=radio]), #nsp-booking textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: white; color: #16354a; height: auto; }
-#nsp-booking input[type=radio] { accent-color: #188c3a; width: 18px; height: 18px; flex-shrink: 0; }
+#nsp-booking input[type=radio] { accent-color: #147d32; width: 18px; height: 18px; flex-shrink: 0; }
 #nsp-booking :focus-visible, .nsp-booking-trigger:focus-visible { outline: 3px solid #0c6fb6; outline-offset: 3px; }
-#nsp-booking label:has(input[type=radio]:checked) { border-color: #188c3a; background: #edf9f0; }
+#nsp-booking label:has(input[type=radio]:checked) { border-color: #147d32; background: #edf9f0; }
 #nsp-booking button:disabled { cursor: wait; opacity: .65; }
-.nsp-booking-trigger { border: 0; border-radius: 8px; padding: 14px 26px; margin-block: 20px; background: #188c3a; color: white; font-weight: 700; cursor: pointer; }
+.nsp-booking-trigger { border: 0; border-radius: 8px; padding: 14px 26px; margin-block: 20px; background: #147d32; color: white; font-weight: 700; cursor: pointer; }
 html.nsp-booking-open { overflow: hidden; }

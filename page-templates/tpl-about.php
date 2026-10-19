@@ -45,7 +45,7 @@ nsp_breadcrumb( esc_url( nsp_asset( 'assets/img/banner/breadcrumb-about.jpg' ) )
 						<div class="about-signature-cta-wrap d-flex">
 							<div class="about-cta-btn d-flex">
 								<div class="banener-cta d-flex align-items-center">
-									<i class="far fa-phone-alt"></i>
+									<i class="far fa-phone-alt" aria-hidden="true"></i>
 									<div class="banener-cta-text">
 										<span><?php nsp_te( 'Emergency Call', 'اتصال طوارئ' ); ?></span>
 										<span dir="ltr" class="banener-cta-phones">
@@ -157,8 +157,8 @@ nsp_breadcrumb( esc_url( nsp_asset( 'assets/img/banner/breadcrumb-about.jpg' ) )
 					<?php endfor; endif; ?>
 			</div>
 			<div class="carousel_nav">
-				<button type="button" class="team_left_arrow"><i class="far fa-long-arrow-left"></i></button>
-				<button type="button" class="team_right_arrow"><i class="far fa-long-arrow-right"></i></button>
+				<button type="button" class="team_left_arrow" aria-label="<?php echo esc_attr( nsp_t( __( 'Previous team member', 'newsuperprime' ), __( 'عضو الفريق السابق', 'newsuperprime' ) ) ); ?>"><i class="far fa-long-arrow-left" aria-hidden="true"></i></button>
+				<button type="button" class="team_right_arrow" aria-label="<?php echo esc_attr( nsp_t( __( 'Next team member', 'newsuperprime' ), __( 'عضو الفريق التالي', 'newsuperprime' ) ) ); ?>"><i class="far fa-long-arrow-right" aria-hidden="true"></i></button>
 			</div>
 		</div>
 	</div>

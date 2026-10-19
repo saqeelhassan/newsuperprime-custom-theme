@@ -4,7 +4,7 @@ const { execFileSync } = require('node:child_process');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
-const markup = execFileSync('php', ['-r', `define('ABSPATH', true); function esc_attr($v) { return htmlspecialchars($v, ENT_QUOTES); } function esc_html($v) { return htmlspecialchars($v, ENT_QUOTES); } function checked($a,$b) { if ($a === $b) echo 'checked'; } include 'template-parts/booking/modal.php';`], { cwd: root, encoding: 'utf8' });
+const markup = execFileSync('php', ['-r', `define('ABSPATH', true); function esc_attr($v) { return htmlspecialchars($v, ENT_QUOTES); } function esc_html($v) { return htmlspecialchars($v, ENT_QUOTES); } function __($v,$domain) { return $v; } function nsp_t($en,$ar) { return $en; } function checked($a,$b) { if ($a === $b) echo 'checked'; } include 'template-parts/booking/modal.php';`], { cwd: root, encoding: 'utf8' });
 (async () => {
     const browser = await chromium.launch({ channel: 'msedge', headless: true });
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });

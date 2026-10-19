@@ -1,0 +1,46 @@
+--- before/.gitignore
++++ after/.gitignore
+@@ -3,3 +3,5 @@
+ /playwright-report/
+ /assets/img-original/
+ /node_modules/
++
++/assets/fonts/*.full.woff2
+--- before/assets/css/fontawesome-all.css
++++ after/assets/css/fontawesome-all.css
+@@ -112,7 +112,7 @@
+   font-style: normal;
+   font-display: swap;
+   font-family: 'Font Awesome 5 Brands';
+-  src: url("../fonts/fa-brands-400.woff2") format("woff2");
++  src: url("../fonts/fa-brands-400.woff2?v=614e6a2e67") format("woff2");
+ }
+ 
+ .fab {
+@@ -124,7 +124,7 @@
+   font-style: normal;
+   font-display: swap;
+   font-family: 'Font Awesome 5 Pro';
+-  src: url("../fonts/fa-light-300.woff2") format("woff2");
++  src: url("../fonts/fa-light-300.woff2?v=db76126fd7") format("woff2");
+ }
+ 
+ .fal {
+@@ -136,7 +136,7 @@
+   font-style: normal;
+   font-display: swap;
+   font-family: 'Font Awesome 5 Pro';
+-  src: url("../fonts/fa-regular-400.woff2") format("woff2");
++  src: url("../fonts/fa-regular-400.woff2?v=6e2150ad12") format("woff2");
+ }
+ 
+ .far {
+@@ -148,7 +148,7 @@
+   font-style: normal;
+   font-display: swap;
+   font-family: 'Font Awesome 5 Pro';
+-  src: url("../fonts/fa-solid-900.woff2") format("woff2");
++  src: url("../fonts/fa-solid-900.woff2?v=d7f22f13e5") format("woff2");
+ }
+ 
+ .fa,

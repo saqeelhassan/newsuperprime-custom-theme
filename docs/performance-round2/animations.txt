@@ -1,0 +1,7 @@
+bounce
+bounceInLeft
+fadeInDown
+fadeInRight
+fadeInUp
+slideOutLeft
+spin

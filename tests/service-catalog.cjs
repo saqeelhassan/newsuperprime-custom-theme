@@ -17,7 +17,7 @@ const base = process.env.WP_TEST_URL || 'http://localhost/newsuperprime-wordpres
         const count = await cards.count();
         assert.ok(count > 0, 'Publish a service before running this check');
         await root.locator('[data-catalog-filter]').nth(1).click();
-        assert.equal(await root.locator('.nsp-service-card:not([hidden])').count(), 9);
+        assert.equal(await root.locator('.nsp-service-card:not([hidden])').count(), 11);
         await root.locator('[data-catalog-filter=all]').click();
         if (await root.locator('[data-hero-dot]').count() > 1) {
             await root.locator('[data-hero-dot]').nth(1).click();

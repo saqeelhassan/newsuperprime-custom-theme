@@ -47,15 +47,15 @@ $_bi = 0;
 									<?php endif; ?>
 									<div class="inner-meta ul-li">
 										<ul>
-											<li><a href="<?php the_permalink(); ?>"><i class="fal fa-user"></i><?php echo esc_html( get_the_author() ); ?></a></li>
-											<li><a href="<?php the_permalink(); ?>"><i class="fal fa-calendar-alt"></i><?php echo esc_html( nsp_get_the_date() ); ?></a></li>
+											<li><a href="<?php the_permalink(); ?>"><i class="fal fa-user" aria-hidden="true"></i><?php echo esc_html( get_the_author() ); ?></a></li>
+											<li><a href="<?php the_permalink(); ?>"><i class="fal fa-calendar-alt" aria-hidden="true"></i><?php echo esc_html( nsp_get_the_date() ); ?></a></li>
 										</ul>
 									</div>
 								</div>
 								<h3><a href="<?php the_permalink(); ?>"><?php echo esc_html( $_post_title ); ?></a></h3>
 								<p><?php echo esc_html( wp_trim_words( $_excerpt, 25 ) ); ?></p>
 								<div class="read-more">
-									<a href="<?php the_permalink(); ?>"><?php nsp_te( 'Read More', 'اقرأ المزيد' ); ?> <i class="fal fa-long-arrow-right nsp-flip-rtl"></i></a>
+									<a href="<?php the_permalink(); ?>"><?php nsp_te( 'Read More', 'اقرأ المزيد' ); ?> <i class="fal fa-long-arrow-right nsp-flip-rtl" aria-hidden="true"></i></a>
 								</div>
 							</div>
 						</div>

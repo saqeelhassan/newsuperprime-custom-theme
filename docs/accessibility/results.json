@@ -1,0 +1,117 @@
+[
+  {
+    "name": "en/375/home",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/375/services/",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/375/services/home-cleaning/",
+    "url": "http://localhost/newsuperprime-wordpress/services/home-cleaning/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/1440/home",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/home/hover",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/1440/services/",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/preview",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/booking",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/services//hover",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/1440/services/home-cleaning/",
+    "url": "http://localhost/newsuperprime-wordpress/services/home-cleaning/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "en/services/home-cleaning//hover",
+    "url": "http://localhost/newsuperprime-wordpress/services/home-cleaning/?lang=en",
+    "violations": []
+  },
+  {
+    "name": "ar/375/home",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/375/services/",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/375/services/home-cleaning/",
+    "url": "http://localhost/newsuperprime-wordpress/services/home-cleaning/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/1440/home",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/home/hover",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/1440/services/",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/preview",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/booking",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/services//hover",
+    "url": "http://localhost/newsuperprime-wordpress/services/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/1440/services/home-cleaning/",
+    "url": "http://localhost/newsuperprime-wordpress/services/home-cleaning/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "ar/services/home-cleaning//hover",
+    "url": "http://localhost/newsuperprime-wordpress/services/home-cleaning/?lang=ar",
+    "violations": []
+  },
+  {
+    "name": "special-offers",
+    "url": "http://localhost/newsuperprime-wordpress/?lang=en",
+    "violations": []
+  }
+]

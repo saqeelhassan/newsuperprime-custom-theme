@@ -4,6 +4,7 @@ get_header();
 nsp_breadcrumb( '', nsp_t( 'Our Projects', 'مشاريعنا' ) );
 
 $filter_terms = get_terms( [ 'taxonomy' => 'project_category', 'hide_empty' => true ] );
+$uncategorized_filter = ! is_wp_error( $filter_terms ) && $filter_terms ? max( wp_list_pluck( $filter_terms, 'term_id' ) ) + 1 : 1;
 ?>
 
 <!-- Start of project feed section
@@ -14,7 +15,7 @@ $filter_terms = get_terms( [ 'taxonomy' => 'project_category', 'hide_empty' => t
 			<ul id="filters" class="nav-gallery text-center">
 				<li class="filtr-button filtr-active" data-filter="all"><?php nsp_te( 'All Projects', 'الكل' ); ?></li>
 				<?php if ( ! is_wp_error( $filter_terms ) ) : foreach ( $filter_terms as $t ) : ?>
-				<li class="filtr-button" data-filter="<?php echo esc_attr( $t->slug ); ?>"><?php echo esc_html( $t->name ); ?></li>
+				<li class="filtr-button" data-filter="<?php echo (int) $t->term_id; ?>"><?php echo esc_html( $t->name ); ?></li>
 				<?php endforeach; endif; ?>
 			</ul>
 		</div>
@@ -25,13 +26,13 @@ $filter_terms = get_terms( [ 'taxonomy' => 'project_category', 'hide_empty' => t
 					the_post();
 					$_proj_title    = get_the_title();
 					$_proj_ar_title = nsp_project_ar( $_proj_title, 'title' );
-					$assigned = wp_get_post_terms( get_the_ID(), 'project_category', [ 'fields' => 'slugs' ] );
-					$data_cat = is_array( $assigned ) && ! is_wp_error( $assigned ) ? implode( ', ', $assigned ) : 'all';
+					$assigned = wp_get_post_terms( get_the_ID(), 'project_category', [ 'fields' => 'ids' ] );
+					$data_cat = is_array( $assigned ) && ! is_wp_error( $assigned ) && $assigned ? implode( ', ', array_map( 'absint', $assigned ) ) : (string) $uncategorized_filter;
 					?>
 					<div class="col-lg-4 col-sm-6 filtr-item" data-category="<?php echo esc_attr( $data_cat ); ?>" data-sort="<?php the_title_attribute(); ?>">
 						<div class="clinox-project-item position-relative">
 							<div class="read-more position-absolute">
-								<a class="d-flex justify-content-center align-items-center" href="<?php the_permalink(); ?>"><i class="fal fa-arrow-right"></i></a>
+								<a aria-label="<?php echo esc_attr( sprintf( nsp_t( __( 'Read more: %s', 'newsuperprime' ), __( 'اقرأ المزيد: %s', 'newsuperprime' ) ), $_proj_ar_title ?: $_proj_title ) ); ?>" class="d-flex justify-content-center align-items-center" href="<?php the_permalink(); ?>"><i class="fal fa-arrow-right" aria-hidden="true"></i></a>
 							</div>
 							<div class="inner-img">
 								<?php if ( has_post_thumbnail() ) : the_post_thumbnail( 'nsp-project', [ 'alt' => $_proj_title ] );

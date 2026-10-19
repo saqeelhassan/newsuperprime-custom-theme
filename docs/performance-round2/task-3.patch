@@ -1,0 +1,16 @@
+--- before/inc/enqueue.php
++++ after/inc/enqueue.php
+@@ -119,10 +119,10 @@
+     $main_dependencies = [ 'jquery', 'nsp-wow' ];
+     $scripts = [ 'nsp-wow'=>[ 'wow.min.js', [ 'jquery' ] ] ];
+     if ( $features['bootstrap'] ) {
+-        $scripts['nsp-popper'] = [ 'popper.min.js', [ 'jquery' ] ];
+-        $scripts['nsp-bootstrap'] = [ 'bootstrap.min.js', [ 'jquery', 'nsp-popper' ] ];
++        // The rendered Bootstrap feature is Collapse; it does not use Popper.
++        $scripts['nsp-bootstrap'] = [ 'bootstrap.min.js', [ 'jquery' ] ];
+     }
+-    if ( $features['slick'] ) $scripts['nsp-slick'] = [ 'slick.js', [ 'jquery' ] ];
++    if ( $features['slick'] ) $scripts['nsp-slick'] = [ 'slick.min.js', [ 'jquery' ] ];
+     if ( $features['gallery'] || $features['video'] ) $scripts['nsp-magnific'] = [ 'jquery.magnific-popup.min.js', [ 'jquery' ] ];
+     if ( $features['progress'] ) $scripts['nsp-appear'] = [ 'appear.js', [ 'jquery' ] ];
+     if ( $features['counters'] ) {

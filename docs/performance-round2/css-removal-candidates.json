@@ -1,0 +1,76 @@
+{
+  "originalBytes": 325659,
+  "proposedBytes": 322629,
+  "saving": 3030,
+  "groups": [
+    {
+      "name": "Legacy blog variant 2",
+      "bytes": 1612,
+      "selectors": [
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a:after",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a:hover",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a:hover:after",
+        ".clinox-blog-inner-item-2",
+        ".clinox-blog-inner-item-2 .inner-img",
+        ".clinox-blog-inner-item-2 .inner-img img",
+        ".clinox-blog-inner-item-2 .blog-cat",
+        ".clinox-blog-inner-item-2 .inner-text",
+        ".clinox-blog-inner-item-2 .inner-text h3",
+        ".clinox-blog-inner-item-2 .inner-text h3:hover",
+        ".clinox-blog-inner-item-2 .inner-text .inner-meta",
+        ".clinox-blog-inner-item-2 .inner-text .inner-meta a",
+        ".clinox-blog-inner-item-2 .inner-text .inner-meta a i",
+        ".clinox-blog-inner-item-2 .inner-text .inner-meta a:last-child",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a:hover",
+        ".clinox-blog-inner-item-2:hover .inner-img img",
+        ".clinox-blog-inner-item-2",
+        ".clinox-blog-inner-item-2 .blog-cat",
+        ".clinox-blog-inner-item-2 .inner-text",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a",
+        ".clinox-blog-inner-item-2 .inner-text .more-btn a:hover",
+        ".clinox-blog-inner-item-2"
+      ]
+    },
+    {
+      "name": "Legacy service variant 2",
+      "bytes": 419,
+      "selectors": [
+        ".clinox-service-section-2",
+        ".clinox-service-content-2 .slick-dots",
+        ".clinox-service-content-2 .slick-dots li",
+        ".clinox-service-content-2 .slick-dots li button",
+        ".clinox-service-content-2 .slick-dots li.slick-active",
+        ".clinox-service-content-2",
+        ".clinox-service-section-2"
+      ]
+    },
+    {
+      "name": "Legacy testimonial variant 2",
+      "bytes": 659,
+      "selectors": [
+        ".clinox-testimonial-slider-2 .slick-dots",
+        ".clinox-testimonial-slider-2 .slick-dots li",
+        ".clinox-testimonial-slider-2 .slick-dots li button",
+        ".clinox-testimonial-slider-2 .slick-dots li.slick-active",
+        ".clinox-testimonial-section-2",
+        ".clinox-testimonial-section-2 .clinox-section-title-2",
+        ".clinox-testimonial-content-2",
+        ".clinox-testimonial-slider-2 .slick-list",
+        ".clinox-testimonial-slider-2 .slick-slide",
+        ".clinox-testimonial-slider-2 .slick-slide.slick-active.slick-center",
+        ".clinox-testimonial-section-2"
+      ]
+    },
+    {
+      "name": "Legacy cart close",
+      "bytes": 294,
+      "selectors": [
+        ".or-ofcanvas-cart-wrapper .title-area .cart-close button",
+        ".or-ofcanvas-cart-wrapper .title-area .cart-close button"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+booking: PASS
+PASS: five-step flow, validation, totals, safe rendering, WhatsApp encoding, mobile layout, reset, GPS, stale callbacks, empty data.
+
+service-catalog: PASS
+PASS: 25 live services; filters, hero, package/city preselection, booking, mobile overflow, and Arabic RTL.
+
+service-preview: PASS
+PASS: card/image/title clicks, package selection, safe text, wizard handoff, focus, scroll unlock, mobile, empty packages, specialized services, and homepage carousel.
+
+special-offers: PASS
+PASS: automatic offers on home/other pages, all four exact prices, dots/arrows/keyboard, offer package handoff, scroll unlock, first-visitor persistence, repeat-visit suppression, and mobile Arabic layout.
+
+home-hero: PASS
+PASS: real ripple canvas, slide image updates without replacing canvas, drop effect, booking popup, mobile, and reduced-motion fallback.
+
+service-categories: PASS
+PASS: All six category counts, related packages and hero, category switching, mobile booking, and Arabic RTL.
+
+service-directory: PASS
+PASS: 25 catalog services, direct Services navigation, packages, readable ampersands, service detail URL, and Arabic labels.
+
+performance: PASS
+PASS: core jQuery + Migrate, footer/defer/versioning, conditional assets, no emoji, Slick, Filterizr, FAQ, Magnific, Inputarrow, WOFF2 and RTL/mobile.
+

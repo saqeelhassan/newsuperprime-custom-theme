@@ -1,0 +1,51 @@
+--- before/template-parts/services/hero.php
++++ after/template-parts/services/hero.php
+@@ -5,10 +5,10 @@
+ $hero_services = $is_home_hero ? array_slice( $services, 0, 4 ) : $services;
+ ?>
+     <?php if ( $services ) : ?>
+-    <section id="<?php echo $is_home_hero ? 'clinox-banner-3' : 'nsp-catalog-highlights'; ?>" class="nsp-catalog-hero" data-service-hero <?php if ( $is_home_hero ) : ?>data-background="<?php echo esc_url( $services[0]['image'] ); ?>"<?php endif; ?> aria-roledescription="carousel" aria-label="<?php nsp_ta( 'Service highlights', 'أبرز الخدمات' ); ?>">
++    <section id="<?php echo $is_home_hero ? 'clinox-banner-3' : 'nsp-catalog-highlights'; ?>" class="nsp-catalog-hero" data-service-hero style="<?php echo esc_attr( 'background-image:url("' . esc_url( $services[0]['image'] ) . '")' ); ?>" <?php if ( $is_home_hero ) : ?>data-background="<?php echo esc_url( $services[0]['image'] ); ?>"<?php endif; ?> aria-roledescription="carousel" aria-label="<?php nsp_ta( 'Service highlights', 'أبرز الخدمات' ); ?>">
+         <?php foreach ( $hero_services as $index => $service ) : ?>
+         <article data-service-categories="<?php echo esc_attr( implode( ' ', $service['categories'] ?? [] ) ); ?>" data-hero-slide <?php if ( $index ) echo 'hidden'; ?> aria-label="<?php echo esc_attr( $service['title'] ); ?>">
+-            <img src="<?php echo esc_url( $service['image'] ); ?>" alt="" <?php if ( $index ) echo 'loading="lazy"'; ?>>
++            <img src="<?php echo esc_url( $service['image'] ); ?>" alt="" <?php echo $index ? 'loading="lazy"' : 'loading="eager" fetchpriority="high"'; ?>>
+             <span class="nsp-hero-quality"><i class="fas fa-check-circle" aria-hidden="true"></i> <?php nsp_te( 'Professional care. Every visit.', 'عناية احترافية في كل زيارة.' ); ?></span>
+             <div class="nsp-hero-copy"><div class="nsp-hero-meta"><span class="nsp-badge"><?php nsp_te( 'PROFESSIONAL SERVICE', 'خدمة احترافية' ); ?></span><span><?php echo esc_html( ( $service['price_label'] ?: nsp_catalog_price( $service['price'] ) ) ); ?></span></div><h2><?php echo esc_html( $service['title'] ); ?></h2><p><?php echo esc_html( wp_trim_words( $service['description'], 22 ) ); ?></p><div class="nsp-hero-actions"><?php nsp_booking_button( $service['id'], nsp_t( 'Book Service', 'احجز الخدمة' ), $service['image'] ); ?><?php if ( $is_home_hero ) : ?><a class="nsp-hero-all-services" href="<?php echo esc_url( nsp_post_type_archive_url( 'service', 'services' ) ); ?>"><?php nsp_te( 'View All Services', 'عرض جميع الخدمات' ); ?></a><?php endif; ?></div></div>
+         </article>
+--- before/assets/js/service-catalog.js
++++ after/assets/js/service-catalog.js
+@@ -1,5 +1,6 @@
+ (() => {
+     'use strict';
++    const initialize = () => {
+     const root = document.querySelector('#nsp-catalog,[data-home-services]');
+     if (!root) return;
+     const arabic = document.documentElement.lang.startsWith('ar');
+@@ -38,15 +39,16 @@
+     function showHero(index) {
+         slides.forEach((slide, i) => { slide.hidden = i !== index; });
+         dots.forEach((dot, i) => dot.setAttribute('aria-pressed', String(i === index)));
++        const image = slides[index].querySelector('img').src;
++        const ripple = window.jQuery?.(hero);
+         if (hero.id === 'clinox-banner-3') {
+-            const image = slides[index].querySelector('img').src;
+             hero.dataset.background = image;
+-            const ripple = window.jQuery?.(hero);
+             if (ripple?.data('ripples')) {
+                 try { ripple.ripples('set', 'imageUrl', image); }
+                 catch { /* Static slide image remains available without WebGL. */ }
+             }
+         }
++        if (!ripple?.data('ripples')) hero.style.backgroundImage = `url("${image}")`;
+     }
+     dots.forEach(button => button.addEventListener('click', () => showHero(Number(button.dataset.heroDot))));
+     hero.filterCategory = category => {
+@@ -74,4 +76,7 @@
+     const selectedCity = cityButtons.find(button => button.getAttribute('aria-pressed') === 'true');
+     if (selectedCity) setCity(selectedCity);
+     updateResults();
++    };
++    if (window.nspStylesReady) window.nspStylesReady.then(initialize);
++    else initialize();
+ })();

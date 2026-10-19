@@ -2,7 +2,7 @@
 <dialog id="nsp-service-preview" aria-labelledby="nsp-preview-title" dir="<?php echo nsp_is_arabic() ? 'rtl' : 'ltr'; ?>">
     <div class="nsp-preview-layout">
         <header class="nsp-preview-hero">
-            <img data-preview-image alt="">
+            <img data-preview-image alt="" width="1200" height="675" decoding="async" loading="lazy">
             <button type="button" data-preview-close aria-label="<?php nsp_ta( 'Close service details', 'إغلاق تفاصيل الخدمة' ); ?>">×</button>
             <div class="nsp-preview-heading"><span data-preview-category></span><h2 id="nsp-preview-title" tabindex="-1"></h2><p data-preview-subtitle></p></div>
         </header>

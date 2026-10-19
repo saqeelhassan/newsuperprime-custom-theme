@@ -1,0 +1,36 @@
+{
+  "before": 4298311,
+  "after": 4084087,
+  "changed": [
+    [
+      "assets/img/img-5/project/pro1-after.jpeg",
+      64561,
+      33342
+    ],
+    [
+      "assets/img/img-5/project/pro1-before.jpeg",
+      78226,
+      41941
+    ],
+    [
+      "assets/img/img-5/project/pro2-after.jpeg",
+      88013,
+      46491
+    ],
+    [
+      "assets/img/img-5/project/pro2-before.jpeg",
+      93234,
+      47222
+    ],
+    [
+      "assets/img/img-5/project/pro3-after.jpeg",
+      51867,
+      27899
+    ],
+    [
+      "assets/img/img-5/project/pro3-before.jpeg",
+      78246,
+      43028
+    ]
+  ]
+}

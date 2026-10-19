@@ -6,7 +6,7 @@ File:           JS Core
 Version:        1.0
 Last change:    00/00/00 
 -------------------------------------------------------------------------------- */
-(function() {
+(function($) {
 
 	"use strict";
 
@@ -48,6 +48,7 @@ Last change:    00/00/00
 
 				// Normal path: hide once every asset (images, fonts, embeds) has finished loading.
 				jQuery(window).on('load', hidePreloader);
+				if (document.readyState === 'complete') hidePreloader();
 
 				// Safety net: on a slow connection, a blocked/slow third-party resource
 				// (fonts, maps embed, large images) can delay or prevent the window "load"
@@ -64,13 +65,17 @@ Last change:    00/00/00
 				});
 			},
 			Animation: function (){
+				if (window.matchMedia('(max-width: 767px)').matches) {
+					$('.wow').css('visibility', 'visible');
+					return;
+				}
 				if($('.wow').length){
 					var wow = new WOW(
 					{
 						boxClass:     'wow',
 						animateClass: 'animated',
 						offset:       0,
-						mobile:       true,
+						mobile:       false,
 						live:         true
 					}
 					);
@@ -106,6 +111,7 @@ Last change:    00/00/00
 
 				try {
 					$hero.ripples({
+                        imageUrl: $hero.attr('data-background'),
 						// Use hero section background (set via data-background / CSS)
 						resolution: 256,
 						dropRadius: 18,
@@ -126,11 +132,26 @@ Last change:    00/00/00
 				};
 			},
 			MobileMenu: function (){
-				$('.open_mobile_menu').on("click", function() {
-					$('.mobile_menu_wrap').toggleClass("mobile_menu_on");
-				});
+				var menu = $('.mobile_menu_content'), opener = $('.mobile_menu_button');
+				opener.attr('aria-expanded', 'false');
+				function setMenu(open) {
+					$('.mobile_menu_wrap').toggleClass('mobile_menu_on', open);
+					$('body').toggleClass('mobile_menu_overlay_on', open);
+					opener.attr('aria-expanded', String(open));
+					if (open) menu.find('.mobile_menu_close').trigger('focus');
+					else opener.trigger('focus');
+				}
 				$('.open_mobile_menu').on('click', function () {
-					$('body').toggleClass('mobile_menu_overlay_on');
+					setMenu(!$('.mobile_menu_wrap').hasClass('mobile_menu_on'));
+				});
+				$(document).on('keydown.nspMobileMenu', function (event) {
+					if (!$('.mobile_menu_wrap').hasClass('mobile_menu_on')) return;
+					if (event.key === 'Escape') { event.preventDefault(); setMenu(false); }
+					if (event.key !== 'Tab') return;
+					var controls = menu.find('a,button,input,select,[tabindex="0"]').filter(':visible');
+					var first = controls[0], last = controls[controls.length - 1];
+					if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+					else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 				});
 				if($('.mobile_menu li.dropdown ul').length){
 					$('.mobile_menu li.dropdown').append('<div class="dropdown-btn"><span class="fas fa-caret-right"></span></div>');
@@ -206,7 +227,7 @@ Last change:    00/00/00
 					}, 800);
 					return false;
 				});
-				$('.zoom-gallery').magnificPopup({
+				if ($.fn.magnificPopup) $('.zoom-gallery').magnificPopup({
 					delegate: 'a',
 					type: 'image',
 					closeOnContentClick: false,
@@ -225,6 +246,7 @@ Last change:    00/00/00
 				});
 			},
 			CarouselSliderJS: function (){
+                if (!$.fn.slick) return;
 				$('.clinox-slider-content').slick({
 					arrow: true,
 					dots: false,
@@ -694,13 +716,14 @@ Last change:    00/00/00
 				});
 			},
 			CounterUp: function(){
+                if (!$.fn.counterUp) return;
 				$('.counter').counterUp({
 					delay: 10,
 					time: 1000
 				});
 			},
 			SkillProgress: function (){
-				if ($(".progress-bar").length) {
+				if ($.fn.appear && $(".progress-bar").length) {
 					var $progress_bar = $('.progress-bar');
 					$progress_bar.appear();
 					$(document.body).on('appear', '.progress-bar', function() {
@@ -752,7 +775,7 @@ Last change:    00/00/00
 				});
 			},
 			ProjectFilter:  function (){
-				jQuery(window).on('load', function(){
+				var initializeFilter = function(){
 					var filterizd = $('.filtr-container');
 
 					if(filterizd.length && $.fn.imagesLoaded && $.fn.filterizr) {
@@ -766,7 +789,9 @@ Last change:    00/00/00
 							$(this).addClass('filtr-active');
 						});
 					}
-				});
+				};
+				if (document.readyState === 'complete') initializeFilter();
+				else jQuery(window).one('load', initializeFilter);
 			},
 			ShapeScrollImg: function (){
 				(function($) {
@@ -803,7 +828,7 @@ Last change:    00/00/00
 						}
 					});
 				});
-				if($('.quantity-input-2').length) {
+				if($.fn.inputarrow && $('.quantity-input-2').length) {
 					$('.quantity-input-2').inputarrow({
 						renderNext: function(input) {
 							return $('<span class="custom-next">+</span>').insertAfter(input);
@@ -820,7 +845,7 @@ Last change:    00/00/00
 					return ('ontouchstart' in document.documentElement);
 				}
 				function init_gmap() {
-					if ( typeof google == 'undefined' ) return;
+					if ( typeof google == 'undefined' || !$.fn.gmap3 || !$('#googleMaps').length ) return;
 					var options = {
 						center: [40.712784,-74.005941],
 						zoom: 10,
@@ -1023,7 +1048,8 @@ Last change:    00/00/00
 		}
 	}
 	jQuery(document).ready(function (){
-		clinox.init();
+		if (window.nspStylesReady) window.nspStylesReady.then(function(){ clinox.init(); });
+		else clinox.init();
 	});
 
-})();
+})(jQuery);

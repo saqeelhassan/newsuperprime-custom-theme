@@ -2,17 +2,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Add preconnect resource hints for Google Fonts and Maps for performance.
+ * Keep DNS hints for the existing embedded Google map.
  *
  * @param array  $urls          URLs to print for resource hints.
  * @param string $relation_type The relation type the URLs are printed for.
  * @return array
  */
 function nsp_resource_hints( array $urls, string $relation_type ): array {
-	if ( 'preconnect' === $relation_type ) {
-		$urls[] = 'https://fonts.googleapis.com';
-		$urls[] = 'https://fonts.gstatic.com';
-	}
+
 	if ( 'dns-prefetch' === $relation_type ) {
 		$urls[] = 'https://maps.googleapis.com';
 		$urls[] = 'https://maps.google.com';
@@ -28,26 +25,52 @@ add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'nsp-home-design', NSP_THEME_URI . '/assets/css/home.css', $dependencies, filemtime( NSP_THEME_DIR . '/assets/css/home.css' ) );
 }, 30 );
 
+/** File-based versions invalidate long-lived browser caches after deployment. */
+function nsp_asset_version( string $path ) {
+    return is_file( NSP_THEME_DIR . $path ) ? filemtime( NSP_THEME_DIR . $path ) : NSP_THEME_VERSION;
+}
+
+function nsp_script_args() {
+    global $wp_version;
+    return version_compare( $wp_version, '6.3', '>=' ) ? [ 'strategy'=>'defer', 'in_footer'=>true ] : true;
+}
+
+/** Features actually rendered by the current templates, plus editor content. */
+function nsp_page_asset_features(): array {
+    $post = get_queried_object();
+    $content = $post instanceof WP_Post ? $post->post_content : '';
+    return apply_filters( 'nsp_page_asset_features', [
+        'slick' => is_front_page() || is_page_template( 'page-templates/tpl-about.php' ) || false !== strpos( $content, '-slider' ),
+        'counters' => is_front_page() || is_page_template( 'page-templates/tpl-about.php' ) || false !== strpos( $content, 'class="counter' ),
+        'progress' => is_singular( 'team' ) || is_page_template( 'page-templates/tpl-about.php' ) || false !== strpos( $content, 'progress-bar' ),
+        'gallery' => false !== strpos( $content, 'zoom-gallery' ),
+        'video' => false !== strpos( $content, 'popup-video' ) || false !== strpos( $content, 'video_box' ),
+        'quantity' => false !== strpos( $content, 'quantity-input-2' ),
+        'filterizr' => is_post_type_archive( 'project' ) || is_tax( 'project_category' ),
+        'ripples' => is_front_page(),
+        'bootstrap' => is_front_page() || is_page_template( 'page-templates/tpl-faq.php' ) || false !== strpos( $content, 'data-bs-' ),
+    ] );
+}
+
 function nsp_enqueue_assets() {
     $v   = NSP_THEME_VERSION;
     $uri = NSP_THEME_URI;
+    $features = nsp_page_asset_features();
 
-    // Enqueue Google Fonts correctly instead of using @import or manual <link> tags.
-    $font_url = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap';
-	wp_enqueue_style( 'nsp-google-fonts', $font_url, [], null );
+    wp_enqueue_style( 'nsp-fonts', $uri . '/assets/css/fonts.css', [], nsp_asset_version( '/assets/css/fonts.css' ) );
 
     // ---------- Stylesheets (same order as source <head>) ----------
-    wp_enqueue_style( 'nsp-bootstrap',    $uri . '/assets/css/bootstrap.min.css',  [], $v );
-    wp_enqueue_style( 'nsp-fontawesome',  $uri . '/assets/css/fontawesome-all.css', [], $v );
-    wp_enqueue_style( 'nsp-animate',      $uri . '/assets/css/animate.css',         [], $v );
-    wp_enqueue_style( 'nsp-video',        $uri . '/assets/css/video.min.css',       [], $v );
-    wp_enqueue_style( 'nsp-slick',        $uri . '/assets/css/slick.css',           [], $v );
-    wp_enqueue_style( 'nsp-slick-theme',  $uri . '/assets/css/slick-theme.css',     [], $v );
-    wp_enqueue_style( 'nsp-magnific',     $uri . '/assets/css/magnific-popup.css',  [], $v );
-    wp_enqueue_style( 'nsp-reset',        $uri . '/assets/css/reset.css',           [], $v );
+    wp_enqueue_style( 'nsp-bootstrap',    $uri . '/assets/css/bootstrap.min.css',  [], nsp_asset_version( '/assets/css/bootstrap.min.css' ) );
+    wp_enqueue_style( 'nsp-fontawesome',  $uri . '/assets/css/fontawesome-all.css', [], nsp_asset_version( '/assets/css/fontawesome-all.css' ) );
+    wp_enqueue_style( 'nsp-animate',      $uri . '/assets/css/animate.css',         [], nsp_asset_version( '/assets/css/animate.css' ) );
+    if ( $features['video'] ) wp_enqueue_style( 'nsp-video', $uri . '/assets/css/video.min.css', [], nsp_asset_version( '/assets/css/video.min.css' ) );
+    if ( $features['slick'] ) wp_enqueue_style( 'nsp-slick', $uri . '/assets/css/slick.css', [], nsp_asset_version( '/assets/css/slick.css' ) );
+    if ( $features['slick'] ) wp_enqueue_style( 'nsp-slick-theme', $uri . '/assets/css/slick-theme.css', [], nsp_asset_version( '/assets/css/slick-theme.css' ) );
+    if ( $features['gallery'] || $features['video'] ) wp_enqueue_style( 'nsp-magnific', $uri . '/assets/css/magnific-popup.css', [], nsp_asset_version( '/assets/css/magnific-popup.css' ) );
+    wp_enqueue_style( 'nsp-reset',        $uri . '/assets/css/reset.css',           [], nsp_asset_version( '/assets/css/reset.css' ) );
     $main_css_file = NSP_THEME_DIR . '/assets/css/style.css';
     $main_css_ver  = file_exists( $main_css_file ) ? filemtime( $main_css_file ) : $v;
-    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-google-fonts' ], $main_css_ver );
+    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-fonts' ], $main_css_ver );
 
     // ---------- Arabic font + RTL stylesheet (must come after nsp-main and Bootstrap) ----------
     // Enqueueing rtl BEFORE Bootstrap caused WordPress to pull nsp-main early via the
@@ -83,40 +106,42 @@ function nsp_enqueue_assets() {
     }
 
 
-    // ---------- Scripts (footer, same order as scripts-inner-standard.php) ----------
-    // Deregister WP's jQuery and use the bundled one from source
-    wp_deregister_script( 'jquery' );
-    wp_register_script( 'jquery', $uri . '/assets/js/jquery.min.js', [], $v, true );
+    // Keep the WordPress jQuery + Migrate dependency graph; never load a second copy.
     wp_enqueue_script( 'jquery' );
-
-    wp_enqueue_script( 'nsp-popper',         $uri . '/assets/js/popper.min.js',                [ 'jquery' ], $v, true );
-    wp_enqueue_script( 'nsp-bootstrap',      $uri . '/assets/js/bootstrap.min.js',             [ 'jquery', 'nsp-popper' ], $v, true );
-    wp_enqueue_script( 'nsp-magnific',       $uri . '/assets/js/jquery.magnific-popup.min.js', [ 'jquery' ], $v, true );
-    wp_enqueue_script( 'nsp-appear',         $uri . '/assets/js/appear.js',                    [ 'jquery' ], $v, true );
-    wp_enqueue_script( 'nsp-slick',          $uri . '/assets/js/slick.js',                     [ 'jquery' ], $v, true );
-    wp_enqueue_script( 'nsp-counterup',      $uri . '/assets/js/jquery.counterup.min.js',      [ 'jquery' ], $v, true );
-    wp_enqueue_script( 'nsp-waypoints',      $uri . '/assets/js/waypoints.min.js',             [ 'jquery' ], $v, true );
-    if ( is_post_type_archive( 'project' ) || is_tax( 'project_category' ) ) {
-        wp_enqueue_script( 'nsp-imagesloaded', $uri . '/assets/js/imagesloaded.pkgd.min.js', [ 'jquery' ], $v, true );
-        wp_enqueue_script( 'nsp-filterizr',    $uri . '/assets/js/jquery.filterizr.js',      [ 'jquery', 'nsp-imagesloaded' ], $v, true );
+    foreach ( [ 'jquery', 'jquery-core', 'jquery-migrate' ] as $handle ) {
+        wp_scripts()->add_data( $handle, 'group', 1 );
     }
-    wp_enqueue_script( 'nsp-wow',            $uri . '/assets/js/wow.min.js',                   [ 'jquery' ], $v, true );
-    wp_enqueue_script( 'nsp-inputarrow',     $uri . '/assets/js/jquery.inputarrow.js',         [ 'jquery' ], $v, true );
-    // gmap3 + Google Maps API are loaded only from contact.php (pages that have #googleMaps)
-    // Ripples WebGL water effect — front page hero only
-    if ( is_front_page() ) {
-        wp_enqueue_script( 'nsp-ripples', $uri . '/assets/js/jquery.ripples.min.js', [ 'jquery' ], $v, true );
+    $main_dependencies = [ 'jquery', 'nsp-wow' ];
+    $scripts = [ 'nsp-wow'=>[ 'wow.min.js', [ 'jquery' ] ] ];
+    if ( $features['bootstrap'] ) {
+        // The rendered Bootstrap feature is Collapse; it does not use Popper.
+        $scripts['nsp-bootstrap'] = [ 'bootstrap.min.js', [ 'jquery' ] ];
     }
-
-    $main_js_file = NSP_THEME_DIR . '/assets/js/script.js';
-    $main_js_ver  = file_exists( $main_js_file ) ? filemtime( $main_js_file ) : $v;
-    wp_enqueue_script( 'nsp-main', $uri . '/assets/js/script.js', [ 'jquery', 'nsp-slick', 'nsp-wow' ], $main_js_ver, true );
-    $dropdown_js_file = NSP_THEME_DIR . '/assets/js/nsp-dropdowns.js';
-    $dropdown_js_ver  = file_exists( $dropdown_js_file ) ? filemtime( $dropdown_js_file ) : $v;
-    wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.js', [], $dropdown_js_ver, true );
+    if ( $features['slick'] ) $scripts['nsp-slick'] = [ 'slick.min.js', [ 'jquery' ] ];
+    if ( $features['gallery'] || $features['video'] ) $scripts['nsp-magnific'] = [ 'jquery.magnific-popup.min.js', [ 'jquery' ] ];
+    if ( $features['progress'] ) $scripts['nsp-appear'] = [ 'appear.js', [ 'jquery' ] ];
+    if ( $features['counters'] ) {
+        $scripts['nsp-waypoints'] = [ 'waypoints.min.js', [ 'jquery' ] ];
+        $scripts['nsp-counterup'] = [ 'jquery.counterup.min.js', [ 'jquery', 'nsp-waypoints' ] ];
+    }
+    if ( $features['filterizr'] ) {
+        $scripts['nsp-imagesloaded'] = [ 'imagesloaded.pkgd.min.js', [ 'jquery' ] ];
+        $scripts['nsp-filterizr'] = [ 'jquery.filterizr.js', [ 'jquery', 'nsp-imagesloaded' ] ];
+    }
+    if ( $features['quantity'] ) $scripts['nsp-inputarrow'] = [ 'jquery.inputarrow.js', [ 'jquery' ] ];
+    if ( $features['ripples'] ) $scripts['nsp-ripples'] = [ 'jquery.ripples.min.js', [ 'jquery' ] ];
+    // Contact uses a lazy iframe: no gmap3 or Maps JavaScript API is required.
+    foreach ( $scripts as $handle => $script ) {
+        $path = '/assets/js/' . $script[0];
+        wp_enqueue_script( $handle, $uri . $path, $script[1], nsp_asset_version( $path ), nsp_script_args() );
+        $main_dependencies[] = $handle;
+    }
+    wp_enqueue_script( 'nsp-main', $uri . '/assets/js/script.js', array_unique( $main_dependencies ), nsp_asset_version( '/assets/js/script.js' ), nsp_script_args() );
+    wp_enqueue_script( 'nsp-dropdowns', $uri . '/assets/js/nsp-dropdowns.js', [ 'jquery' ], nsp_asset_version( '/assets/js/nsp-dropdowns.js' ), nsp_script_args() );
     if ( is_front_page() ) {
-        wp_enqueue_script( 'nsp-about-services', $uri . '/assets/js/about-services.js', [], filemtime( NSP_THEME_DIR . '/assets/js/about-services.js' ), true );
-        wp_enqueue_script( 'nsp-home-booking', $uri . '/assets/js/home-booking.js', [], filemtime( NSP_THEME_DIR . '/assets/js/home-booking.js' ), true );
+        foreach ( [ 'nsp-about-services'=>'about-services.js', 'nsp-home-booking'=>'home-booking.js' ] as $handle=>$file ) {
+            wp_enqueue_script( $handle, $uri . '/assets/js/' . $file, [ 'jquery' ], nsp_asset_version( '/assets/js/' . $file ), nsp_script_args() );
+        }
     }
 
     // Pass dynamic data for JS
@@ -128,3 +153,7 @@ function nsp_enqueue_assets() {
     ] );
 }
 add_action( 'wp_enqueue_scripts', 'nsp_enqueue_assets' );
+
+add_action( 'wp_enqueue_scripts', function () {
+    wp_enqueue_style( 'nsp-accessibility', NSP_THEME_URI . '/assets/css/accessibility.css', [], nsp_asset_version( '/assets/css/accessibility.css' ) );
+}, 99 );

@@ -3,23 +3,23 @@
     <form id="nsp-booking-form" novalidate class="tw-flex tw-max-h-[92dvh] tw-flex-col">
         <header class="tw-shrink-0 tw-border-0 tw-border-b tw-border-solid tw-border-slate-200 tw-p-6">
             <div class="tw-flex tw-items-start tw-gap-4">
-                <button type="button" data-back hidden aria-label="Previous step" class="tw-rounded-full tw-border-0 tw-bg-mist tw-p-2 tw-text-ink">←</button>
+                <button type="button" data-back hidden aria-label="<?php echo esc_attr( nsp_t( __( 'Previous step', 'newsuperprime' ), __( 'الخطوة السابقة', 'newsuperprime' ) ) ); ?>" class="tw-rounded-full tw-border-0 tw-bg-mist tw-p-2 tw-text-ink">←</button>
                 <div class="tw-flex-1">
                     <p id="nsp-step-count" data-step-count class="tw-text-xs tw-font-bold tw-tracking-widest tw-text-prime" aria-live="polite">STEP 1 OF 5</p>
                     <h2 id="nsp-booking-title" tabindex="-1">Select service &amp; package</h2>
                 </div>
-                <button type="button" data-close aria-label="Close booking" class="tw-rounded-full tw-border-0 tw-bg-mist tw-px-3 tw-py-1 tw-text-2xl tw-text-ink">×</button>
+                <button type="button" data-close aria-label="<?php echo esc_attr( nsp_t( __( 'Close booking', 'newsuperprime' ), __( 'إغلاق الحجز', 'newsuperprime' ) ) ); ?>" class="tw-rounded-full tw-border-0 tw-bg-mist tw-px-3 tw-py-1 tw-text-2xl tw-text-ink">×</button>
             </div>
-            <div data-progress class="tw-mt-4 tw-flex tw-gap-2" aria-label="Booking progress">
+            <div role="group" data-progress class="tw-mt-4 tw-flex tw-gap-2" aria-label="Booking progress">
                 <?php for ( $i = 1; $i <= 5; $i++ ) : ?>
-                    <span data-dot class="tw-h-2 tw-w-2 tw-rounded-full tw-bg-slate-200" aria-label="Step <?php echo (int) $i; ?>"></span>
+                    <span role="img" data-dot class="tw-h-2 tw-w-2 tw-rounded-full tw-bg-slate-200" aria-label="Step <?php echo (int) $i; ?>"></span>
                 <?php endfor; ?>
             </div>
         </header>
         <div class="tw-overflow-y-auto tw-p-6" data-body>
             <section data-step="1" class="tw-space-y-5">
                 <div class="tw-flex tw-items-center tw-gap-4 tw-rounded-xl tw-bg-mist tw-p-4">
-                    <img data-service-image alt="" class="tw-h-20 tw-w-20 tw-rounded-lg tw-object-cover">
+                    <img data-service-image alt="" width="80" height="80" decoding="async" loading="lazy" class="tw-h-20 tw-w-20 tw-rounded-lg tw-object-cover">
                     <div><span data-service-category class="tw-text-xs tw-font-bold tw-uppercase tw-tracking-wide tw-text-prime"></span><h3 data-service-title></h3></div>
                 </div>
                 <fieldset class="tw-m-0 tw-min-w-0 tw-border-0 tw-p-0"><legend class="tw-mb-3 tw-text-base tw-font-bold">Choose your package</legend><div data-packages class="tw-space-y-3"></div></fieldset>

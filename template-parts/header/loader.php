@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 	<div id="preloader"></div>
 	<div class="up">
-		<a href="#" class="scrollup text-center"><i class="fas fa-chevron-up"></i></a>
+		<a href="#" class="scrollup text-center" aria-label="<?php echo esc_attr( nsp_t( __( 'Back to top', 'newsuperprime' ), __( 'العودة إلى الأعلى', 'newsuperprime' ) ) ); ?>"><i class="fas fa-chevron-up" aria-hidden="true"></i></a>
 	</div>
 	<script>
 	// Plain JS, deliberately not part of any enqueued file: JS-delay/optimization

@@ -1,0 +1,47 @@
+{
+  "fal": [
+    "fa-bars",
+    "fa-calendar-alt",
+    "fa-chevron-down",
+    "fa-envelope",
+    "fa-map-marker-alt",
+    "fa-phone-alt",
+    "fa-tag",
+    "fa-times",
+    "fa-user"
+  ],
+  "far": [
+    "fa-calendar-alt",
+    "fa-check-circle",
+    "fa-envelope",
+    "fa-long-arrow-left",
+    "fa-long-arrow-right",
+    "fa-search",
+    "fa-star",
+    "fa-user"
+  ],
+  "fas": [
+    "fa-angle-left",
+    "fa-angle-right",
+    "fa-arrow-right",
+    "fa-arrow-up",
+    "fa-caret-right",
+    "fa-check-circle",
+    "fa-chevron-up",
+    "fa-gift",
+    "fa-layer-group",
+    "fa-map-marker-alt",
+    "fa-shield-alt",
+    "fa-star",
+    "fa-tag",
+    "fa-th-large"
+  ],
+  "fab": [
+    "fa-facebook-f",
+    "fa-instagram",
+    "fa-snapchat-ghost",
+    "fa-tiktok",
+    "fa-twitter",
+    "fa-whatsapp"
+  ]
+}

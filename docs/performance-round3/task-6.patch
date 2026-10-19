@@ -1,0 +1,46 @@
+--- before/assets/js/script.js
++++ after/assets/js/script.js
+@@ -65,13 +65,17 @@
+ 				});
+ 			},
+ 			Animation: function (){
++				if (window.matchMedia('(max-width: 767px)').matches) {
++					$('.wow').css('visibility', 'visible');
++					return;
++				}
+ 				if($('.wow').length){
+ 					var wow = new WOW(
+ 					{
+ 						boxClass:     'wow',
+ 						animateClass: 'animated',
+ 						offset:       0,
+-						mobile:       true,
++						mobile:       false,
+ 						live:         true
+ 					}
+ 					);
+@@ -107,6 +111,7 @@
+ 
+ 				try {
+ 					$hero.ripples({
++                        imageUrl: $hero.attr('data-background'),
+ 						// Use hero section background (set via data-background / CSS)
+ 						resolution: 256,
+ 						dropRadius: 18,
+@@ -1028,7 +1033,8 @@
+ 		}
+ 	}
+ 	jQuery(document).ready(function (){
+-		clinox.init();
++		if (window.nspStylesReady) window.nspStylesReady.then(function(){ clinox.init(); });
++		else clinox.init();
+ 	});
+ 
+ })(jQuery);
+--- before/assets/css/animate.css
++++ after/assets/css/animate.css
+@@ -243,3 +243,4 @@
+         transform: rotate(359deg)
+     }
+ }
++@media(max-width:767px){.wow{visibility:visible!important;animation:none!important;-webkit-animation:none!important;}}

@@ -35,8 +35,8 @@ $tags = get_the_tags();
 								<?php endif; ?>
 								<div class="inner-meta ul-li">
 									<ul>
-										<li><a href="#"><i class="fal fa-user"></i><?php echo esc_html( get_the_author() ); ?></a></li>
-										<li><a href="#"><i class="fal fa-calendar-alt"></i><?php echo esc_html( nsp_get_the_date() ); ?></a></li>
+										<li><a href="#"><i class="fal fa-user" aria-hidden="true"></i><?php echo esc_html( get_the_author() ); ?></a></li>
+										<li><a href="#"><i class="fal fa-calendar-alt" aria-hidden="true"></i><?php echo esc_html( nsp_get_the_date() ); ?></a></li>
 									</ul>
 								</div>
 							</div>
@@ -61,8 +61,8 @@ $tags = get_the_tags();
 							<!-- Share -->
 							<div class="blog-share d-flex justify-content-between align-items-center">
 								<div class="share-social ul-li">
-									<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo esc_url( get_permalink() ); ?>" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
-									<a href="https://twitter.com/intent/tweet?url=<?php echo esc_url( get_permalink() ); ?>&amp;text=<?php echo esc_attr( $_s_post_title ); ?>" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+									<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo esc_url( get_permalink() ); ?>" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+									<a href="https://twitter.com/intent/tweet?url=<?php echo esc_url( get_permalink() ); ?>&amp;text=<?php echo esc_attr( $_s_post_title ); ?>" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter" aria-hidden="true"></i></a>
 								</div>
 							</div>
 
@@ -74,11 +74,11 @@ $tags = get_the_tags();
 								if ( $prev_post ) :
 								?>
 								<div class="prev-post">
-									<a href="<?php echo esc_url( get_permalink( $prev_post->ID ) ); ?>"><i class="fal fa-long-arrow-left"></i> <?php nsp_te( 'Previous Post', 'المقال السابق' ); ?></a>
+									<a href="<?php echo esc_url( get_permalink( $prev_post->ID ) ); ?>"><i class="fal fa-long-arrow-left" aria-hidden="true"></i> <?php nsp_te( 'Previous Post', 'المقال السابق' ); ?></a>
 								</div>
 								<?php endif; if ( $next_post ) : ?>
 								<div class="next-post">
-									<a href="<?php echo esc_url( get_permalink( $next_post->ID ) ); ?>"><?php nsp_te( 'Next Post', 'المقال التالي' ); ?> <i class="fal fa-long-arrow-right"></i></a>
+									<a href="<?php echo esc_url( get_permalink( $next_post->ID ) ); ?>"><?php nsp_te( 'Next Post', 'المقال التالي' ); ?> <i class="fal fa-long-arrow-right" aria-hidden="true"></i></a>
 								</div>
 								<?php endif; ?>
 							</div>

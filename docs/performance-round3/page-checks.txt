@@ -1,0 +1,22 @@
+en 375px home: stable first screen, functional hero/forms
+en 375px services/: stable first screen, functional hero/forms
+en 375px services/home-cleaning/: stable first screen, functional hero/forms
+en 375px contact/: stable first screen, functional hero/forms
+en 1440px home: stable first screen, functional hero/forms
+en 1440px services/: stable first screen, functional hero/forms
+en 1440px services/home-cleaning/: stable first screen, functional hero/forms
+en 1440px contact/: stable first screen, functional hero/forms
+ar 375px home: stable first screen, functional hero/forms
+ar 375px services/: stable first screen, functional hero/forms
+ar 375px services/home-cleaning/: stable first screen, functional hero/forms
+ar 375px contact/: stable first screen, functional hero/forms
+ar 1440px home: stable first screen, functional hero/forms
+ar 1440px services/: stable first screen, functional hero/forms
+ar 1440px services/home-cleaning/: stable first screen, functional hero/forms
+ar 1440px contact/: stable first screen, functional hero/forms
+en 375px special offer -> preview -> wizard: passed
+en 1440px special offer -> preview -> wizard: passed
+ar 375px special offer -> preview -> wizard: passed
+ar 1440px special offer -> preview -> wizard: passed
+Live booking -> WhatsApp payload: passed (navigation intercepted).
+CF7 plugin absent locally: fallback contact form validation checked; delivery requires production check.

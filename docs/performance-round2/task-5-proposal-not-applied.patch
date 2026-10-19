@@ -1,0 +1,311 @@
+--- current/assets/css/style.css
++++ proposed/assets/css/style.css
+@@ -363,8 +363,11 @@
+   }
+ }
+ .clinox-blog-feed-item .inner-text .read-more a,
+-.clinox-blog-details-area .inner-text .read-more a, .clinox-blog-inner-item .inner-text .more-btn a,
+-.clinox-blog-inner-item-2 .inner-text .more-btn a, .clinox-pricing-item .price-btn a, .banner-btn-wrapper .banner-btn a, .clinox-btn a,
++.clinox-blog-details-area .inner-text .read-more a,
++.clinox-blog-inner-item .inner-text .more-btn a,
++.clinox-pricing-item .price-btn a,
++.banner-btn-wrapper .banner-btn a,
++.clinox-btn a,
+ .clinox-btn-2 a {
+   color: #101010;
+   height: 55px;
+@@ -380,8 +383,11 @@
+           box-shadow: 0px 0px 20px 0px rgba(1, 83, 159, 0.4);
+ }
+ .clinox-blog-feed-item .inner-text .read-more a:after,
+-.clinox-blog-details-area .inner-text .read-more a:after, .clinox-blog-inner-item .inner-text .more-btn a:after,
+-.clinox-blog-inner-item-2 .inner-text .more-btn a:after, .clinox-pricing-item .price-btn a:after, .banner-btn-wrapper .banner-btn a:after, .clinox-btn a:after,
++.clinox-blog-details-area .inner-text .read-more a:after,
++.clinox-blog-inner-item .inner-text .more-btn a:after,
++.clinox-pricing-item .price-btn a:after,
++.banner-btn-wrapper .banner-btn a:after,
++.clinox-btn a:after,
+ .clinox-btn-2 a:after {
+   content: "";
+   position: absolute;
+@@ -397,15 +403,21 @@
+   z-index: -1;
+ }
+ .clinox-blog-feed-item .inner-text .read-more a:hover,
+-.clinox-blog-details-area .inner-text .read-more a:hover, .clinox-blog-inner-item .inner-text .more-btn a:hover,
+-.clinox-blog-inner-item-2 .inner-text .more-btn a:hover, .clinox-pricing-item .price-btn a:hover, .banner-btn-wrapper .banner-btn a:hover, .clinox-btn a:hover,
++.clinox-blog-details-area .inner-text .read-more a:hover,
++.clinox-blog-inner-item .inner-text .more-btn a:hover,
++.clinox-pricing-item .price-btn a:hover,
++.banner-btn-wrapper .banner-btn a:hover,
++.clinox-btn a:hover,
+ .clinox-btn-2 a:hover {
+   color: #fff;
+   background-color: #02aaf9;
+ }
+ .clinox-blog-feed-item .inner-text .read-more a:hover:after,
+-.clinox-blog-details-area .inner-text .read-more a:hover:after, .clinox-blog-inner-item .inner-text .more-btn a:hover:after,
+-.clinox-blog-inner-item-2 .inner-text .more-btn a:hover:after, .clinox-pricing-item .price-btn a:hover:after, .banner-btn-wrapper .banner-btn a:hover:after, .clinox-btn a:hover:after,
++.clinox-blog-details-area .inner-text .read-more a:hover:after,
++.clinox-blog-inner-item .inner-text .more-btn a:hover:after,
++.clinox-pricing-item .price-btn a:hover:after,
++.banner-btn-wrapper .banner-btn a:hover:after,
++.clinox-btn a:hover:after,
+ .clinox-btn-2 a:hover:after {
+   -webkit-animation: btn_shine 1.2s ease;
+   animation: btn_shine 1.2s ease;
+@@ -2530,12 +2542,6 @@
+   margin-bottom: 60px;
+   border-bottom: 1px solid #dedede;
+ }
+-.or-ofcanvas-cart-wrapper .title-area .cart-close button {
+-  padding: 0;
+-  border: none;
+-  font-size: 18px;
+-  background-color: transparent;
+-}
+ .or-ofcanvas-cart-wrapper .or-ofcart-product-item {
+   margin-bottom: 30px;
+   padding-bottom: 10px;
+@@ -3647,17 +3653,11 @@
+           animation: icon-bounce 0.8s ease-out infinite;
+ }
+ 
+-.clinox-service-section-2 {
+-  overflow: hidden;
+-  padding: 120px 0px;
+-  background-color: #f2fcfc;
+-}
+-
+-.clinox-project-content .slick-dots, .clinox-testimonial-slider-2 .slick-dots, .clinox-service-content-2 .slick-dots {
++.clinox-project-content .slick-dots {
+   position: static;
+   margin-top: 50px;
+ }
+-.clinox-project-content .slick-dots li, .clinox-testimonial-slider-2 .slick-dots li, .clinox-service-content-2 .slick-dots li {
++.clinox-project-content .slick-dots li {
+   height: 8px;
+   width: 25px;
+   border-radius: 15px;
+@@ -3665,16 +3665,11 @@
+   transition: 500ms all ease;
+   background-color: #02aaf9;
+ }
+-.clinox-project-content .slick-dots li button, .clinox-testimonial-slider-2 .slick-dots li button, .clinox-service-content-2 .slick-dots li button {
++.clinox-project-content .slick-dots li button {
+   display: none;
+ }
+-.clinox-project-content .slick-dots li.slick-active, .clinox-testimonial-slider-2 .slick-dots li.slick-active, .clinox-service-content-2 .slick-dots li.slick-active {
++.clinox-project-content .slick-dots li.slick-active {
+   background-color: #000e58;
+-}
+-
+-.clinox-service-content-2 {
+-  padding-top: 45px;
+-  margin: 0px -15px;
+ }
+ .clinex-service-item-2 {
+   padding: 60px 30px;
+@@ -4681,34 +4676,12 @@
+   opacity: 1;
+ }
+ 
+-.clinox-testimonial-section-2 {
+-  overflow: hidden;
+-  padding: 120px 0px;
+-}
+-.clinox-testimonial-section-2 .clinox-section-title-2 {
+-  max-width: 540px;
+-}
+-
+-.clinox-testimonial-content-2 {
+-  padding-top: 60px;
+-}
+-
+ .testimonial-item-2 .clinox-testimonial-item {
+   -webkit-box-shadow: none;
+           box-shadow: none;
+   border-radius: 5px;
+   background-color: #f2fcfc;
+   border-top-right-radius: 60px;
+-}
+-
+-.clinox-testimonial-slider-2 .slick-list {
+-  overflow: visible;
+-}
+-.clinox-testimonial-slider-2 .slick-slide {
+-  opacity: 0.3;
+-}
+-.clinox-testimonial-slider-2 .slick-slide.slick-active.slick-center {
+-  opacity: 1;
+ }
+ .clinox-testimonial-feed-section .clinox-testimonial-item {
+   margin-bottom: 30px;
+@@ -4867,25 +4840,21 @@
+   padding-top: 50px;
+ }
+ 
+-.clinox-blog-inner-item,
+-.clinox-blog-inner-item-2 {
++.clinox-blog-inner-item {
+   padding: 15px;
+   margin: 0 auto;
+   border-radius: 5px;
+   -webkit-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
+           box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
+ }
+-.clinox-blog-inner-item .inner-img,
+-.clinox-blog-inner-item-2 .inner-img {
++.clinox-blog-inner-item .inner-img {
+   overflow: hidden;
+ }
+-.clinox-blog-inner-item .inner-img img,
+-.clinox-blog-inner-item-2 .inner-img img {
++.clinox-blog-inner-item .inner-img img {
+   -webkit-transition: 500ms all ease;
+   transition: 500ms all ease;
+ }
+-.clinox-blog-inner-item .blog-cat,
+-.clinox-blog-inner-item-2 .blog-cat {
++.clinox-blog-inner-item .blog-cat {
+   right: 20px;
+   color: #fff;
+   bottom: 20px;
+@@ -4895,43 +4864,34 @@
+   border-radius: 5px;
+   background-color: #02aaf9;
+ }
+-.clinox-blog-inner-item .inner-text,
+-.clinox-blog-inner-item-2 .inner-text {
++.clinox-blog-inner-item .inner-text {
+   padding: 30px 15px 25px;
+ }
+-.clinox-blog-inner-item .inner-text h3,
+-.clinox-blog-inner-item-2 .inner-text h3 {
++.clinox-blog-inner-item .inner-text h3 {
+   color: #101010;
+   font-size: 20px;
+   font-weight: 700;
+   line-height: 1.5;
+ }
+-.clinox-blog-inner-item .inner-text h3:hover,
+-.clinox-blog-inner-item-2 .inner-text h3:hover {
++.clinox-blog-inner-item .inner-text h3:hover {
+   color: #02aaf9;
+ }
+-.clinox-blog-inner-item .inner-text .inner-meta,
+-.clinox-blog-inner-item-2 .inner-text .inner-meta {
++.clinox-blog-inner-item .inner-text .inner-meta {
+   margin-top: 15px;
+ }
+-.clinox-blog-inner-item .inner-text .inner-meta a,
+-.clinox-blog-inner-item-2 .inner-text .inner-meta a {
++.clinox-blog-inner-item .inner-text .inner-meta a {
+   margin-right: 20px;
+ }
+-.clinox-blog-inner-item .inner-text .inner-meta a i,
+-.clinox-blog-inner-item-2 .inner-text .inner-meta a i {
++.clinox-blog-inner-item .inner-text .inner-meta a i {
+   margin-right: 5px;
+ }
+-.clinox-blog-inner-item .inner-text .inner-meta a:last-child,
+-.clinox-blog-inner-item-2 .inner-text .inner-meta a:last-child {
++.clinox-blog-inner-item .inner-text .inner-meta a:last-child {
+   margin-right: 0;
+ }
+-.clinox-blog-inner-item .inner-text .more-btn,
+-.clinox-blog-inner-item-2 .inner-text .more-btn {
++.clinox-blog-inner-item .inner-text .more-btn {
+   margin-top: 30px;
+ }
+-.clinox-blog-inner-item .inner-text .more-btn a,
+-.clinox-blog-inner-item-2 .inner-text .more-btn a {
++.clinox-blog-inner-item .inner-text .more-btn a {
+   height: 45px;
+   width: 140px;
+   color: #101010;
+@@ -4942,40 +4902,13 @@
+   -webkit-box-shadow: none;
+           box-shadow: none;
+ }
+-.clinox-blog-inner-item .inner-text .more-btn a:hover,
+-.clinox-blog-inner-item-2 .inner-text .more-btn a:hover {
++.clinox-blog-inner-item .inner-text .more-btn a:hover {
+   color: #101010;
+   background-color: #ffcd05;
+ }
+-.clinox-blog-inner-item:hover .inner-img img,
+-.clinox-blog-inner-item-2:hover .inner-img img {
++.clinox-blog-inner-item:hover .inner-img img {
+   -webkit-transform: scale(1.2) rotate(5deg);
+           transform: scale(1.2) rotate(5deg);
+-}
+-
+-.clinox-blog-inner-item-2 {
+-  padding: 0;
+-  max-width: 370px;
+-  overflow: hidden;
+-  border-top-left-radius: 70px;
+-  background-color: rgb(255, 255, 255);
+-  -webkit-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
+-          box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
+-}
+-.clinox-blog-inner-item-2 .blog-cat {
+-  border-radius: 20px;
+-}
+-.clinox-blog-inner-item-2 .inner-text {
+-  padding: 30px 20px 40px 30px;
+-}
+-.clinox-blog-inner-item-2 .inner-text .more-btn a {
+-  border: none;
+-  border-radius: 30px;
+-  background-color: #e9f6f6;
+-}
+-.clinox-blog-inner-item-2 .inner-text .more-btn a:hover {
+-  color: #fff;
+-  background-color: #02aaf9;
+ }
+ 
+ .clinox-blog-feed-item,
+@@ -10499,12 +10432,6 @@
+   margin-bottom: 60px;
+   border-bottom: 1px solid #dedede;
+ }
+-.or-ofcanvas-cart-wrapper .title-area .cart-close button {
+-  padding: 0;
+-  border: none;
+-  font-size: 18px;
+-  background-color: transparent;
+-}
+ .or-ofcanvas-cart-wrapper .or-ofcart-product-item {
+   margin-bottom: 30px;
+   padding-bottom: 10px;
+@@ -12970,7 +12897,7 @@
+   .clinox-contact-info-wrap {
+     padding-left: 0;
+   }
+-  .clinox-blog-inner-item, .clinox-blog-inner-item-2 {
++  .clinox-blog-inner-item {
+     margin-bottom: 30px;
+   }
+   .clinox-footer-widget .newsleter-widget {
+@@ -13229,9 +13156,6 @@
+   .clinox-about-section-2 {
+     padding: 60px 0px;
+   }
+-  .clinox-service-section-2 {
+-    padding: 60px 0px;
+-  }
+   .clinox-fun-fact-section-2 {
+     padding: 60px 0px 30px;
+   }
+@@ -13247,8 +13171,7 @@
+   .clinox-why-choose-section-2 {
+     padding-bottom: 60px;
+   }
+-  .clinox-how-work-section,
+-.clinox-testimonial-section-2 {
++  .clinox-how-work-section {
+     padding: 60px 0px;
+   }
+   .clinox-contact-section-3 {

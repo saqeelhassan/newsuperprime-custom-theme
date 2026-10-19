@@ -1,0 +1,129 @@
+{
+  "fa-angle-left": [
+    "inc/helpers.php"
+  ],
+  "fa-angle-right": [
+    "inc/helpers.php"
+  ],
+  "fa-arrow-right": [
+    "archive-project.php",
+    "rtl.css",
+    "template-parts/sections/home-booking.php"
+  ],
+  "fa-arrow-up": [
+    "template-parts/header/navbar-home.php",
+    "template-parts/header/navbar-inner.php"
+  ],
+  "fa-bars": [
+    "template-parts/header/navbar-home.php",
+    "template-parts/header/navbar-inner.php"
+  ],
+  "fa-calendar-alt": [
+    "archive.php",
+    "inc/template-tags.php",
+    "index.php",
+    "single.php",
+    "template-parts/sections/how-booking.php",
+    "template-parts/services/catalog.php"
+  ],
+  "fa-calendar-check": [
+    "front-page.php"
+  ],
+  "fa-caret-right": [
+    "assets/js/script.js"
+  ],
+  "fa-check-circle": [
+    "template-parts/services/catalog.php",
+    "template-parts/services/hero.php"
+  ],
+  "fa-chevron-down": [
+    "inc/nav-walker.php"
+  ],
+  "fa-chevron-up": [
+    "template-parts/header/loader.php"
+  ],
+  "fa-envelope": [
+    "template-parts/header/navbar-inner.php"
+  ],
+  "fa-facebook-f": [
+    "inc/helpers.php",
+    "single.php"
+  ],
+  "fa-gift": [
+    "template-parts/booking/special-offers.php",
+    "template-parts/services/catalog.php"
+  ],
+  "fa-instagram": [
+    "inc/helpers.php"
+  ],
+  "fa-layer-group": [
+    "template-parts/sections/how-booking.php"
+  ],
+  "fa-long-arrow-left": [
+    "assets/js/scripts-2.js",
+    "page-templates/tpl-about.php",
+    "single.php"
+  ],
+  "fa-long-arrow-right": [
+    "assets/js/scripts-2.js",
+    "front-page.php",
+    "index.php",
+    "page-templates/tpl-about.php",
+    "rtl.css",
+    "single.php"
+  ],
+  "fa-map-marker-alt": [
+    "template-parts/header/navbar-inner.php",
+    "template-parts/sections/how-booking.php",
+    "template-parts/services/catalog.php"
+  ],
+  "fa-phone-alt": [
+    "front-page.php",
+    "page-templates/tpl-about.php",
+    "template-parts/header/navbar-inner.php"
+  ],
+  "fa-search": [
+    "searchform.php",
+    "template-parts/header/navbar-home.php",
+    "template-parts/header/navbar-inner.php"
+  ],
+  "fa-shield-alt": [
+    "template-parts/booking/special-offers.php"
+  ],
+  "fa-snapchat-ghost": [
+    "inc/helpers.php"
+  ],
+  "fa-star": [
+    "inc/template-tags.php"
+  ],
+  "fa-tag": [
+    "inc/template-tags.php",
+    "template-parts/services/catalog.php"
+  ],
+  "fa-th-large": [
+    "template-parts/services/catalog.php"
+  ],
+  "fa-tiktok": [
+    "inc/helpers.php"
+  ],
+  "fa-times": [
+    "template-parts/header/navbar-home.php",
+    "template-parts/header/navbar-inner.php"
+  ],
+  "fa-twitter": [
+    "inc/helpers.php",
+    "single.php"
+  ],
+  "fa-user": [
+    "archive.php",
+    "front-page.php",
+    "inc/template-tags.php",
+    "index.php",
+    "single.php",
+    "template-parts/sections/how-booking.php"
+  ],
+  "fa-whatsapp": [
+    "footer.php",
+    "template-parts/sections/how-booking.php"
+  ]
+}

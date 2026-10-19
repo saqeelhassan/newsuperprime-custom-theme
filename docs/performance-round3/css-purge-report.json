@@ -1,0 +1,33 @@
+{
+  "safelist": {
+    "standard": [
+      "/^(slick-|wow$|animated$|active$|show$|open$|is-|nsp-|rtl$|mfp-|modal-|collapse|fade$)/",
+      "/^(wp-|wpcf7|screen-reader|menu-|current-|page-|post-|type-|attachment-|size-|logged-in$|admin-bar$|hentry$)/",
+      "/^(col-|row$|container|g-|gx-|gy-|d-|align-|justify-|order-|offset-)/",
+      "/^(sticky-on|search-active|mobile_menu|dropdown-btn|filtr-|custom-|jquery-ripples|appeared$|view-on$)/"
+    ],
+    "deep": [
+      "/^(nsp-|slick-|mfp-|modal-|wpcf7|wp-block-|mobile_menu)/"
+    ],
+    "greedy": [
+      "/\\[data-/",
+      "/\\[aria-/",
+      "/\\[hidden\\]/",
+      "/:root/"
+    ]
+  },
+  "results": [
+    {
+      "file": "assets/css/bootstrap.min.css",
+      "before": 154875,
+      "after": 46061,
+      "rejected": 1812
+    },
+    {
+      "file": "assets/css/style.css",
+      "before": 325659,
+      "after": 157968,
+      "rejected": 1413
+    }
+  ]
+}

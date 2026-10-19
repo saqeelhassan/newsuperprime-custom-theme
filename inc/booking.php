@@ -79,10 +79,10 @@ add_action( 'wp_enqueue_scripts', function () {
         $path = '/assets/' . $extension . '/booking.' . $extension;
         $version = filemtime( NSP_THEME_DIR . $path );
         if ( 'style' === $type ) wp_enqueue_style( 'nsp-booking', NSP_THEME_URI . $path, [ 'nsp-main' ], $version );
-        else wp_enqueue_script( 'nsp-booking', NSP_THEME_URI . $path, [], $version, true );
+        else wp_enqueue_script( 'nsp-booking', NSP_THEME_URI . $path, [ 'jquery' ], $version, nsp_script_args() );
     }
     wp_enqueue_style( 'nsp-service-preview', NSP_THEME_URI . '/assets/css/service-preview.css', [ 'nsp-booking' ], filemtime( NSP_THEME_DIR . '/assets/css/service-preview.css' ) );
-    wp_enqueue_script( 'nsp-service-preview', NSP_THEME_URI . '/assets/js/service-preview.js', [ 'nsp-booking' ], filemtime( NSP_THEME_DIR . '/assets/js/service-preview.js' ), true );
+    wp_enqueue_script( 'nsp-service-preview', NSP_THEME_URI . '/assets/js/service-preview.js', [ 'jquery', 'nsp-booking' ], filemtime( NSP_THEME_DIR . '/assets/js/service-preview.js' ), nsp_script_args() );
 } );
 
 add_action( 'wp_footer', function () {

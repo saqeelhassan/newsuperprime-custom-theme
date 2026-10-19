@@ -1,0 +1,118 @@
+--- before/inc/enqueue.php
++++ after/inc/enqueue.php
+@@ -2,17 +2,14 @@
+ if ( ! defined( 'ABSPATH' ) ) exit;
+ 
+ /**
+- * Add preconnect resource hints for Google Fonts and Maps for performance.
++ * Keep DNS hints for the existing embedded Google map.
+  *
+  * @param array  $urls          URLs to print for resource hints.
+  * @param string $relation_type The relation type the URLs are printed for.
+  * @return array
+  */
+ function nsp_resource_hints( array $urls, string $relation_type ): array {
+-	if ( 'preconnect' === $relation_type ) {
+-		$urls[] = 'https://fonts.googleapis.com';
+-		$urls[] = 'https://fonts.gstatic.com';
+-	}
++
+ 	if ( 'dns-prefetch' === $relation_type ) {
+ 		$urls[] = 'https://maps.googleapis.com';
+ 		$urls[] = 'https://maps.google.com';
+@@ -60,9 +57,7 @@
+     $uri = NSP_THEME_URI;
+     $features = nsp_page_asset_features();
+ 
+-    // Enqueue Google Fonts correctly instead of using @import or manual <link> tags.
+-    $font_url = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap';
+-	wp_enqueue_style( 'nsp-google-fonts', $font_url, [], null );
++    wp_enqueue_style( 'nsp-fonts', $uri . '/assets/css/fonts.css', [], nsp_asset_version( '/assets/css/fonts.css' ) );
+ 
+     // ---------- Stylesheets (same order as source <head>) ----------
+     wp_enqueue_style( 'nsp-bootstrap',    $uri . '/assets/css/bootstrap.min.css',  [], nsp_asset_version( '/assets/css/bootstrap.min.css' ) );
+@@ -75,7 +70,7 @@
+     wp_enqueue_style( 'nsp-reset',        $uri . '/assets/css/reset.css',           [], nsp_asset_version( '/assets/css/reset.css' ) );
+     $main_css_file = NSP_THEME_DIR . '/assets/css/style.css';
+     $main_css_ver  = file_exists( $main_css_file ) ? filemtime( $main_css_file ) : $v;
+-    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-google-fonts' ], $main_css_ver );
++    wp_enqueue_style( 'nsp-main', $uri . '/assets/css/style.css', [ 'nsp-fonts' ], $main_css_ver );
+ 
+     // ---------- Arabic font + RTL stylesheet (must come after nsp-main and Bootstrap) ----------
+     // Enqueueing rtl BEFORE Bootstrap caused WordPress to pull nsp-main early via the
+--- before/assets/css/fonts.css
++++ after/assets/css/fonts.css
+@@ -0,0 +1,73 @@
++/* Self-hosted Google Fonts, Latin subset; SIL Open Font License. */
++@font-face {
++  font-family: 'DM Sans';
++  font-style: italic;
++  font-weight: 400;
++  font-display: swap;
++  src: url(../fonts/dm-sans-italic-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'DM Sans';
++  font-style: normal;
++  font-weight: 400;
++  font-display: swap;
++  src: url(../fonts/dm-sans-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'DM Sans';
++  font-style: normal;
++  font-weight: 500;
++  font-display: swap;
++  src: url(../fonts/dm-sans-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'DM Sans';
++  font-style: normal;
++  font-weight: 600;
++  font-display: swap;
++  src: url(../fonts/dm-sans-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'DM Sans';
++  font-style: normal;
++  font-weight: 700;
++  font-display: swap;
++  src: url(../fonts/dm-sans-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'Poppins';
++  font-style: normal;
++  font-weight: 400;
++  font-display: swap;
++  src: url(../fonts/poppins-400-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'Poppins';
++  font-style: normal;
++  font-weight: 500;
++  font-display: swap;
++  src: url(../fonts/poppins-500-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'Poppins';
++  font-style: normal;
++  font-weight: 600;
++  font-display: swap;
++  src: url(../fonts/poppins-600-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}
++@font-face {
++  font-family: 'Poppins';
++  font-style: normal;
++  font-weight: 700;
++  font-display: swap;
++  src: url(../fonts/poppins-700-normal-latin.woff2) format('woff2');
++  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
++}

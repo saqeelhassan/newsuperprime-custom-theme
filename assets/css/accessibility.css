@@ -1,0 +1,18 @@
+/* Accessible states shared by English and RTL; outlines do not affect layout. */
+:is(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #173b2a!important;outline-offset:3px;box-shadow:0 0 0 5px #fff!important}
+.nsp-catalog .nsp-small-accent{color:#a34c05}
+.nsp-catalog .nsp-hero-copy .nsp-booking-trigger:hover,.nsp-catalog .nsp-hero-copy .nsp-booking-trigger:focus-visible{color:#173b2a}
+#clinox-header button.mobile_menu_button,#clinox-header button.mobile_menu_close{border:0;padding:0;background:transparent}
+
+#nsp-booking .tw-text-prime{color:#147d32}
+#nsp-booking .tw-bg-prime{background-color:#147d32}
+#nsp-service-preview .nsp-preview-body>h3,#nsp-service-preview .nsp-preview-package-description,#nsp-service-preview .nsp-preview-footer>div>span{color:#607067}
+
+#clinox-header.sticky-on .main-navigation li a{color:#fff}
+#clinox-header.sticky-on .main-navigation li a:hover,#clinox-header.sticky-on .main-navigation li a:focus-visible{color:#ffd000}
+.screen-reader-text{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:991px){
+ #clinox-header .mobile_menu_close::before{content:"";position:absolute;inset:50% auto auto 50%;width:44px;height:44px;transform:translate(-50%,-50%)}
+ .mobile_menu_content{overflow-y:auto;overscroll-behavior:contain;max-height:100dvh}
+ body.mobile_menu_overlay_on{overflow:hidden}
+}

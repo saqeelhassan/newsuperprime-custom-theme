@@ -65,7 +65,7 @@ function nsp_social_links(): array {
 function nsp_social_links_html( bool $list_items = false ): void {
     foreach ( nsp_social_links() as $social ) {
         $link = sprintf(
-            '<a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s"><i class="%s"></i></a>',
+            '<a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s"><i aria-hidden="true" class="%s"></i></a>',
             esc_url( $social['url'] ),
             esc_attr( $social['label'] ),
             esc_attr( $social['icon'] )
@@ -761,8 +761,8 @@ function nsp_language_switcher(): void {
 function nsp_pagination() {
     the_posts_pagination( [
         'mid_size'  => 2,
-        'prev_text' => '<i class="fas fa-angle-left"></i>',
-        'next_text' => '<i class="fas fa-angle-right"></i>',
+        'prev_text' => '<span class="screen-reader-text">' . esc_html( nsp_t( __( 'Previous page', 'newsuperprime' ), __( 'الصفحة السابقة', 'newsuperprime' ) ) ) . '</span><i class="fas fa-angle-left" aria-hidden="true"></i>',
+        'next_text' => '<span class="screen-reader-text">' . esc_html( nsp_t( __( 'Next page', 'newsuperprime' ), __( 'الصفحة التالية', 'newsuperprime' ) ) ) . '</span><i class="fas fa-angle-right" aria-hidden="true"></i>',
         'class'     => 'nsp-pagination ul-li',
     ] );
 }

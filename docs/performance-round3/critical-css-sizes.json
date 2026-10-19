@@ -1,0 +1,32 @@
+[
+  {
+    "file": "assets/css/critical-catalog-ar.css",
+    "bytes": 84499,
+    "gzip_bytes": 13535
+  },
+  {
+    "file": "assets/css/critical-catalog-en.css",
+    "bytes": 79265,
+    "gzip_bytes": 13013
+  },
+  {
+    "file": "assets/css/critical-home-ar.css",
+    "bytes": 90972,
+    "gzip_bytes": 14408
+  },
+  {
+    "file": "assets/css/critical-home-en.css",
+    "bytes": 85614,
+    "gzip_bytes": 13869
+  },
+  {
+    "file": "assets/css/critical-inner-ar.css",
+    "bytes": 85079,
+    "gzip_bytes": 13618
+  },
+  {
+    "file": "assets/css/critical-inner-en.css",
+    "bytes": 79715,
+    "gzip_bytes": 12989
+  }
+]

@@ -1,3 +1,8 @@
 /.booking-build-cache/
 /test-results/
 /playwright-report/
+/assets/img-original/
+/node_modules/
+
+/assets/fonts/*.full.woff2
+/.claude/settings.local.json

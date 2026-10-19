@@ -1,0 +1,14 @@
+assets/css/fontawesome-all.css
+assets/css/animate.css
+assets/js/slick.min.js
+inc/enqueue.php
+inc/performance.php
+inc/image-performance.php
+template-parts/booking/modal.php
+template-parts/booking/preview.php
+assets/img/img-5/project/pro1-after.jpeg
+assets/img/img-5/project/pro1-before.jpeg
+assets/img/img-5/project/pro2-after.jpeg
+assets/img/img-5/project/pro2-before.jpeg
+assets/img/img-5/project/pro3-after.jpeg
+assets/img/img-5/project/pro3-before.jpeg
